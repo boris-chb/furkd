@@ -2624,7 +2624,9 @@ let ui_ = {
         `<div class="action-panel" style="display: grid; grid-template-columns: repeat(2, 2fr)"></div>`
       );
 
-      let routeDiv = $(`<div class="action-panel__route"></div>`);
+      let routeDiv = $(
+        `<div style="display:grid; grid-template-columns: 1fr 1fr 1fr;" class="action-panel__route"></div>`
+      );
       let approveDiv = $(`<div class="action-panel__action"></div>`);
 
       [routeDiv, approveDiv].forEach((div) => {
