@@ -2422,8 +2422,22 @@ let ui_ = {
     } = ui_;
 
     const container = strToNode(
-      `<div class="violative-words-container"></div>`
+      `<div style="opacity: 0; transition: opacity 500ms;" class="violative-words-container"></div>`
     );
+
+    // Function to handle mouseenter event
+    function handleMouseEnter() {
+      container.style.opacity = 1;
+    }
+
+    // Function to handle mouseleave event
+    function handleMouseLeave() {
+      container.style.opacity = 0;
+    }
+
+    // Add event listeners
+    container.addEventListener('mouseenter', handleMouseEnter);
+    container.addEventListener('mouseleave', handleMouseLeave);
 
     // const { seconds: timeVulgarLanguageSeconds } = findWordSequence(
     //   getViolativeWords().adult
