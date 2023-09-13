@@ -37,6 +37,38 @@ let remoteController = {
     let decisionCard = getElement('yurt-core-decision-policy-card')[0];
     decisionCard.annotation.notes = noteStr;
   },
+  release() {
+    getElement('.release')?.[0].click();
+  },
+  async getEntityHistory(videoId = utils_.get.queue.info().entityID) {
+    let enitityHistoryEvents = await fetch(
+      `https://yurt.corp.google.com/_/backends/review/v1/entityHistoryData:fetch?alt=json&key=${yt.config_.YURT_API_KEY}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          entityId: { externalVideoId: videoId },
+          filterEntries: [],
+          includeFilterConfigurations: false,
+          structuredJustificationId: {
+            packetId: '1202917203726073111',
+          },
+        }),
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => data.events);
+
+    formattedEvents = enitityHistoryEvents.map((event) => ({
+      time: event.eventTime.value,
+      type: event.eventType,
+      details: event.eventDetails,
+    }));
+
+    return formattedEvents;
+  },
 };
 
 let observers = {
@@ -2955,19 +2987,19 @@ let questionnaire_ = {
     // BUG TEMPORARY FIX labellingGraph.fh
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
-    if (!dom_.questionnaire.labellingGraph.ah)
+    if (!dom_.questionnaire.labellingGraph.ih)
       throw new Error('[i] Questions not Answered!');
 
     // questionnaire answering logic
     answers.forEach((answer) => dom_.questionnaire.setAnswers(answer));
 
-    if (dom_.questionnaire.labellingGraph.ah.size === 0) {
+    if (dom_.questionnaire.labellingGraph.ih.size === 0) {
       throw new Error('Questions not Answered!');
     }
 
     console.log(
       '💾 Saving questionnaire. Answers:',
-      dom_.questionnaire.labellingGraph.ah
+      dom_.questionnaire.labellingGraph.ih
     );
     dom_.questionnaire.onSave();
   },
