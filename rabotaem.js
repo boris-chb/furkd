@@ -456,11 +456,12 @@ let recommendationNotes = {
       {
         title: 'Spam',
         value: () =>
-          `please check for spam ${utils_.get.noteTimestamp}\napprove for VE`,
+          `please check for intent to drive traffic off-site ${utils_.get.noteTimestamp}\napprove for VE`,
       },
       {
         title: 'Spam (link)',
-        value: () => `please check for spam (link in comments)\napprove for VE`,
+        value: () =>
+          `please check for intent to drive traffic off-site (link in comments)\napprove for VE`,
       },
     ],
     hd: [
@@ -561,14 +562,24 @@ let recommendationNotes = {
           `${store_.selectedVEGroup.text} depictive content >50% of video without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
       {
-        title: '[3065] Depictive+Music',
+        title: '[3065] Upbeat Music',
         value: () =>
           `${store_.selectedVEGroup.text} depictive content with upbeat music without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
       {
-        title: '[3065] Song/Nasheed',
+        title: '[3065] >2x',
         value: () =>
-          `${store_.selectedVEGroup.text} glorifying song without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
+          `${store_.selectedVEGroup.text} produced content used 2x or more, without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
+      },
+      {
+        title: '[3065] Glorifying Lyrics',
+        value: () =>
+          `${store_.selectedVEGroup.text} glorifying lyrics without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
+      },
+      {
+        title: '[3065] Produced Song',
+        value: () =>
+          `${store_.selectedVEGroup.text} produced song without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
     ],
     3039: [
@@ -578,14 +589,20 @@ let recommendationNotes = {
           `${store_.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA ${utils_.get.noteTimestamp}\nChannel not dedicated\nRussian (not agnostic)`,
       },
       {
-        title: '[3039] Song',
-        value: () =>
-          `${store_.selectedVEGroup.text} glorifying lyrics ${utils_.get.noteTimestamp}\nChannel not dedicated\nRussian (not agnostic)`,
-      },
-      {
         title: '[3039] Glorification',
         value: () =>
           `Glorification of ${store_.selectedVEGroup.text} ${utils_.get.noteTimestamp}\nChannel not dedicated\nRussian (not agnostic)`,
+      },
+      {
+        title: '[3039] Glorifying Lyrics',
+        value: () =>
+          `${store_.selectedVEGroup.text} glorifying lyrics ${utils_.get.noteTimestamp}\nChannel not dedicated\nRussian (not agnostic)`,
+      },
+
+      {
+        title: '[3039] Produced Song',
+        value: () =>
+          `${store_.selectedVEGroup.text} produced song ${utils_.get.noteTimestamp}\nChannel not dedicated\nRussian (not agnostic)`,
       },
       {
         title: '[3039] Memorial',
@@ -605,7 +622,7 @@ let recommendationNotes = {
           `Glorification of ${store_.selectedVEGroup.text} ${utils_.get.noteTimestamp}\nChannel dedicated\n• _________\n• _________\nRussian (not agnostic)`,
       },
       {
-        title: '[3044] Song',
+        title: '[3044] Glorifying Lyrics',
         value: () =>
           `${store_.selectedVEGroup.text} glorifying lyrics ${utils_.get.noteTimestamp}\nChannel dedicated\n• _________\n• _________\nRussian (not agnostic)`,
       },
@@ -620,7 +637,7 @@ let recommendationNotes = {
           `Glorification of ${store_.selectedVEGroup.text} ${utils_.get.noteTimestamp}\nChannel dedicated (single video on channel)\nRussian (not agnostic)`,
       },
       {
-        title: '[3044][1] Song',
+        title: '[3044][1] Glorifying Lyrics',
         value: () =>
           `${store_.selectedVEGroup.text} glorifying lyrics ${utils_.get.noteTimestamp}\nChannel dedicated (single video on channel)\nRussian (not agnostic)`,
       },
@@ -2818,11 +2835,6 @@ let ui_ = {
           'filter-transcript-table'
         ),
         ui_.createIconButton(
-          'search',
-          transcript_.throttledFilter,
-          'transcript-filter-btn'
-        ),
-        ui_.createIconButton(
           'troubleshoot',
           async function filterCurrentChannelTranscripts() {
             transcript_.renderChannelViolativeWordsTable();
@@ -2880,9 +2892,7 @@ let ui_ = {
       if (store_.is.queue('comments')) return;
 
       let recommendationList = utils_.strToNode(
-        `<mwc-list id="recommendation-notes" style="margin: 30px 0px; opacity: ${
-          store_.opacity
-        }">${notesArr
+        `<mwc-list id="recommendation-notes" style="margin: 30px 0px; opacity: 0; transition: opacity 500ms;">${notesArr
           ?.map(
             (note) =>
               `<mwc-list-item class="recommendation-item" graphic="avatar" value="${note.value()}"><span>${
@@ -2892,11 +2902,24 @@ let ui_ = {
           .join('')}</mwc-list>`
       );
 
+      // Function to handle mouseenter event
+      function handleMouseEnter() {
+        recommendationList.style.opacity = 1;
+      }
+
+      // Function to handle mouseleave event
+      function handleMouseLeave() {
+        recommendationList.style.opacity = 0;
+      }
+
+      // Add event listeners
+      recommendationList.addEventListener('mouseenter', handleMouseEnter);
+      recommendationList.addEventListener('mouseleave', handleMouseLeave);
+
       [...recommendationList.childNodes].forEach(
         (recommendation) =>
           (recommendation.onclick = () => {
             action_.video.steps.addNote(recommendation.value);
-            ui_.toggleRecommendations();
           })
       );
 
