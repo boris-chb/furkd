@@ -2551,6 +2551,7 @@ let ui_ = {
     const timersArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((timerMin) =>
       ui_.createButton(timerMin, () => {
         setTimer(timerMin, store_.is.autosubmit);
+        mwcMenu.hidden = true;
       })
     );
 
@@ -2850,7 +2851,14 @@ let ui_ = {
           'filter-ids-btn'
         ),
         ui_.createIconButton('note_add', utils_.showNotes, 'show-notes-btn'),
-        ui_.createIconButton('delete', utils_.clearTimers, 'clear-timers-btn'),
+        ui_.createIconButton(
+          'delete',
+          () => {
+            clearTimeout(store_.submitId);
+            store_.submitId = 0;
+          },
+          'clear-timers-btn'
+        ),
       ];
 
       container.replaceChildren(...buttons);
