@@ -1,4 +1,4 @@
-// 13.08.2023
+// 19.09.2023
 
 try {
   utils_.clearTimers();
@@ -2112,11 +2112,28 @@ let transcript_ = {
   getTranscript() {
     let transcript = getElement('yurt-video-transcript')[0];
 
-    let res = Object.getOwnPropertyNames(transcript.__proto__)
+    let res = Object.getOwnPropertyNames(transcript)
       .filter((opt) => Array.isArray(transcript[opt]))
       ?.map((opt) => transcript[opt]);
 
-    return res;
+    function findLargestArray(arrays) {
+      let largestArray = [];
+      let largestSize = 0;
+
+      for (let i = 0; i < arrays.length; i++) {
+        const currentArray = arrays[i];
+        const currentSize = currentArray.length;
+
+        if (currentSize > largestSize) {
+          largestArray = currentArray;
+          largestSize = currentSize;
+        }
+      }
+
+      return largestArray;
+    }
+
+    return findLargestArray(res);
   },
   async getAllChannelTranscripts(channelId) {
     const { videos } = await utils_.getChannelVideos(channelId);
@@ -2203,7 +2220,7 @@ let transcript_ = {
     violativeWordsByCategory = store_.wordsByCategory,
     sourceList
   ) {
-    const allWords = sourceList ?? this.getTranscript()[0];
+    const allWords = sourceList ?? this.getTranscript()
     if (!allWords || allWords.length === 0) return {};
 
     const filteredWordsByCategory = {};
@@ -3840,5 +3857,5 @@ function checkForLewd(
 
 $main();
 
-// 13.08.2023
+// 19.09.2023
 // [✅] radu pidar
