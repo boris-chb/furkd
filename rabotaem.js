@@ -2551,7 +2551,7 @@ let ui_ = {
     const timersArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((timerMin) =>
       ui_.createButton(timerMin, () => {
         setTimer(timerMin, store_.is.autosubmit);
-        mwcMenu.hidden = true;
+        mwcMenu.open = false;
       })
     );
 
