@@ -2220,7 +2220,7 @@ let transcript_ = {
     violativeWordsByCategory = store_.wordsByCategory,
     sourceList
   ) {
-    const allWords = sourceList ?? this.getTranscript()
+    const allWords = sourceList ?? this.getTranscript();
     if (!allWords || allWords.length === 0) return {};
 
     const filteredWordsByCategory = {};
@@ -2551,7 +2551,7 @@ let ui_ = {
 
   showTimers() {
     const { setTimer, strToNode } = utils_;
-    let mwcMenu = getElement('mwc-menu')[0];
+    let mwcMenu = getElement('.share-menu')[0];
 
     if (!mwcMenu)
       throw new Error('Nowhere to append buttons (mwcMenu not rendered)');
