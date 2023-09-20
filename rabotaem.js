@@ -286,7 +286,7 @@ let store_ = {
   },
   is: {
     get autosubmit() {
-      return getElement('.autosubmit-switch')[0].checked;
+      return getElement('.endreview-checkbox')[0].checked;
     },
     readyForSubmit() {
       return getElement('yurt-core-decision-submit-panel')?.[0]?.readyForSubmit;
@@ -2300,15 +2300,6 @@ let transcript_ = {
   },
 };
 
-transcript_.throttledFilter = lib_._throttle(
-  transcript_.filterTranscriptByCategory,
-  1000
-);
-transcript_.debouncedFilter = lib_._debounce(
-  transcript_.filterTranscriptByCategory,
-  1000
-);
-
 let ui_ = {
   draw() {
     try {
@@ -2550,6 +2541,7 @@ let ui_ = {
   },
 
   showTimers() {
+    if (getElement('.submit-timers')?.[0]) return;
     const { setTimer, strToNode } = utils_;
     let mwcMenu = getElement('.share-menu')[0];
 
@@ -2564,13 +2556,13 @@ let ui_ = {
     );
 
     const timersWrapper = strToNode(
-      `<div style="display: grid; grid-template-columns: 1fr 1fr 1fr;"></div>`
+      `<div class="submit-timers" style="display: grid; grid-template-columns: 1fr 1fr 1fr;"></div>`
     );
-    const autoreloadCheckbox = strToNode(
-      `<mwc-checkbox value="autoreload-page"></mwc-checkbox>`
+    const endReviewCheckbox = strToNode(
+      `<mwc-checkbox class="endreview-checkbox"></mwc-checkbox>`
     );
 
-    timersWrapper.replaceChildren(...[...timersArr, autoreloadCheckbox]);
+    timersWrapper.replaceChildren(...[...timersArr, endReviewCheckbox]);
     mwcMenu.replaceChildren(...[...mwcMenu.children, timersWrapper]);
     // stopwatch.parentNode.appendChild(timersWrapper);
   },
@@ -3742,16 +3734,6 @@ let on_ = {
     }
 
     await lib_.retry(initUI, 1000, 10000);
-  },
-  onScrollFilterTranscript() {
-    // for testing WbpGScJMwag
-    try {
-      getElement('.transcript-container')[0].addEventListener('scroll', () =>
-        transcript_.throttledFilter()
-      );
-    } catch (e) {
-      console.log(e.stack);
-    }
   },
 };
 
