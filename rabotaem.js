@@ -225,7 +225,7 @@ let store_ = {
       'валькир',
     ],
     hate: [
-      'сво',
+      ' сво ',
       'демилитаризация',
       'москал',
       'кацап',
@@ -1347,15 +1347,10 @@ let action_ = {
         questionnaire_.setAnswers(questionnaire_.answersByPolicy['9008']);
       }
 
-      if (store_.is.queue('metrics')) {
-        setTimeout(() => dom_.videoDecisionPanel.onSave(), 500);
-        console.log('saving in 0.5s');
-      } else {
-        await retry(approveQuestionnaire);
-        await retry(function saveReviewShowTimers() {
-          dom_.videoDecisionPanel.onSave();
-        });
-      }
+      await retry(approveQuestionnaire);
+      await retry(function saveReviewShowTimers() {
+        dom_.videoDecisionPanel.onSave();
+      });
 
       if (store_.is.autosubmit) {
         await retry(function submitVideo() {
