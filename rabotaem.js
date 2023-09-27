@@ -225,6 +225,8 @@ let store_ = {
       'валькир',
     ],
     hate: [
+      'сво',
+      'демилитаризация',
       'москал',
       'кацап',
       'укроп',
@@ -3037,22 +3039,22 @@ let ui_ = {
 
 let questionnaire_ = {
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.fh
+    // BUG TEMPORARY FIX labellingGraph.kh
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
-    if (!dom_.questionnaire.labellingGraph.ih)
+    if (!dom_.questionnaire.labellingGraph.kh)
       throw new Error('[i] Questions not Answered!');
 
     // questionnaire answering logic
     answers.forEach((answer) => dom_.questionnaire.setAnswers(answer));
 
-    if (dom_.questionnaire.labellingGraph.ih.size === 0) {
+    if (dom_.questionnaire.labellingGraph.kh.size === 0) {
       throw new Error('Questions not Answered!');
     }
 
     console.log(
       '💾 Saving questionnaire. Answers:',
-      dom_.questionnaire.labellingGraph.ih
+      dom_.questionnaire.labellingGraph.kh
     );
     dom_.questionnaire.onSave();
   },
