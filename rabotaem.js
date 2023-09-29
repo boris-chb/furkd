@@ -353,6 +353,26 @@ let store_ = {
       actionCategorySummary: 'ACTION_RESTRICT',
     },
     {
+      id: '3999',
+      description: 'For VE Escalations Only: SDN individual',
+      tags: ['Speaker violation', 'SDN list'],
+      policyVertical: 'VIOLENT_EXTREMISM',
+      actionCategorySummary: 'ACTION_REMOVE',
+    },
+    {
+      id: '3888',
+      description:
+        'Dedicated/Owned & Operated Account by Government Designated Person, Government Proscribed Individuals',
+      tags: [
+        'individual violation',
+        'dedicated/owned & operated account',
+        'government designated person',
+        'gdp',
+      ],
+      policyVertical: 'VIOLENT_EXTREMISM',
+      actionCategorySummary: 'ACTION_REMOVE',
+    },
+    {
       id: '6120',
       description:
         'Perpetrator-filmed footage where weapons, injured bodies, or violence is in frame or heard in audio uploaded on or after 6/15/2020',
@@ -649,6 +669,13 @@ let recommendationNotes = {
         title: '[3999] Prigozhin',
         value: () =>
           `Yevgeny Prigozhin footage without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
+      },
+    ],
+    3888: [
+      {
+        title: '[3888] Prigozhin',
+        value: () =>
+          `Yevgeny Prigozhin produced content without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
     ],
     5013: [
@@ -1256,7 +1283,7 @@ let lib_ = {
     while (Date.now() < endTime) {
       try {
         const result = await fn();
-        console.log(`✅ ${fn?.name}() ${result ?? ''}`);
+        console.log(`✅ ${fn?.name}()`, result);
         return result;
       } catch (error) {
         console.log(`[ℹ] ${fn?.name}:`, error.message);
@@ -1277,33 +1304,44 @@ let action_ = {
         return dom_.videoDecisionPanel.viewMode === 2;
       },
       selectPolicy(policyId) {
-        let foundPolicy = [
-          ...(getElement('yurt-core-policy-selector-item') ?? []),
-        ]?.filter((policyItem) => policyItem?.policy?.id === policyId)?.[0];
+        try {
+          const foundPolicy = [
+            ...(getElement('yurt-core-policy-selector-item') ?? []),
+          ].filter((policyItem) => policyItem.policy.id === policyId)[0];
 
-        if (!foundPolicy) {
-          //console.log('[recursion] looking for 9008 tag');
-          // FIX
-          setTimeout(
-            () => action_.video.steps.selectPolicy(policyId),
-            config_.FUNCTION_CALL_RETRY_MS
-          );
-          return;
+          if (!foundPolicy) {
+            //console.log('[recursion] looking for 9008 tag');
+            // FIX
+            setTimeout(
+              () => action_.video.steps.selectPolicy(policyId),
+              config_.FUNCTION_CALL_RETRY_MS
+            );
+            return;
+          }
+          foundPolicy.click();
+          return foundPolicy.policy;
+        } catch (e) {
+          console.log(e);
+          throw new Error('Could not select policy', policyId);
         }
-
-        //console.log('approvePolicyTag');
-        foundPolicy?.click();
       },
       selectLanguage(language) {
-        let langOptions = Array.from(
-          getElement('#decision-panel-language-select > mwc-list-item')
-        );
+        try {
+          let langOptions = Array.from(
+            getElement('#decision-panel-language-select > mwc-list-item')
+          );
 
-        const foundLanguageOption = langOptions.filter(
-          (option) => option.value.toLowerCase() === language.toLowerCase()
-        )[0];
+          const foundLanguageOption = langOptions.filter(
+            (option) => option.value.toLowerCase() === language.toLowerCase()
+          )[0];
 
-        foundLanguageOption.click();
+          foundLanguageOption.click();
+
+          return foundLanguageOption.value;
+        } catch (e) {
+          console.log(e);
+          throw new Error('Could not select language', policyId);
+        }
       },
       addNote(note) {
         try {
@@ -1362,7 +1400,11 @@ let action_ = {
         return true;
       }
     },
-    async strike(policyId = '3039', contentType = 'video') {
+    async strike(
+      policyId = '3039',
+      contentType = 'video',
+      language = 'russian'
+    ) {
       store_.selectedVEGroup = utils_.get.selectedVEGroup;
       const { expandNotesArea } = ui_.mutations;
       const { answersByPolicy, setAnswers } = questionnaire_;
@@ -1371,22 +1413,26 @@ let action_ = {
         selectPolicy,
         addReview,
       } = action_.video.steps;
+      const { retry } = lib_;
 
-      addReview();
-      selectPolicy(policyId);
-      store_.selectedVEGroup.text === 'Wagner PMC' &&
-        (await lib_.retry(selectLanguage));
+      await retry(addReview);
+      await retry(function selectPolicyAndLanguage() {
+        selectPolicy(policyId);
+        selectLanguageDropdrown(language);
+      });
 
       function answerQuestionnaireAndSave() {
-        const selectedPolicyId = policyId === '3044' ? '3039' : policyId;
-        setAnswers(answersByPolicy[selectedPolicyId][contentType]);
+        // for 3044 select 3039 to avoid duplicates since they have same structure
+        const selectedPolicyId =
+          policyId === '3044'
+            ? '3039'
+            : policyId === '3888'
+            ? '3999'
+            : policyId;
+        return setAnswers(answersByPolicy[selectedPolicyId][contentType]);
       }
 
-      function selectLanguage() {
-        selectLanguageDropdrown('russian');
-      }
-
-      await lib_.retry(answerQuestionnaireAndSave, 800, 4000);
+      await retry(answerQuestionnaireAndSave, 800, 4000);
       utils_.showNotes();
       expandNotesArea();
 
@@ -1641,6 +1687,11 @@ let props_ = {
         text: '3044 :: Song 🎻',
         onClick: () => action_.video.strike('3044', 'song'),
       },
+      {
+        text: '3044 :: Speech 🎤',
+        onClick: () => action_.video.strike('3044', 'speech'),
+      },
+
       {
         text: '3044 :: Speech 🎤',
         onClick: () => action_.video.strike('3044', 'speech'),
@@ -1973,6 +2024,46 @@ let props_ = {
           key: '📎 Metadata',
           value: 'metadata',
           onClick: () => action_.video.strike('3044', 'metadata'),
+        },
+      ],
+    },
+    3999: {
+      label: '3999',
+      children: [
+        {
+          key: '📽 Prigozhin Video',
+          value: 'video',
+          onClick: () => action_.video.strike('3999', 'video'),
+        },
+        {
+          key: '🎤 Prigozhin Speech',
+          value: 'speech',
+          onClick: () => action_.video.strike('3999', 'speech'),
+        },
+        {
+          key: '📎 Prigozhin Metadata',
+          value: 'metadata',
+          onClick: () => action_.video.strike('3999', 'metadata'),
+        },
+      ],
+    },
+    3888: {
+      label: '3888',
+      children: [
+        {
+          key: '📽 Prigozhin Video',
+          value: 'video',
+          onClick: () => action_.video.strike('3888', 'video'),
+        },
+        {
+          key: '🎤 Prigozhin Speech',
+          value: 'speech',
+          onClick: () => action_.video.strike('3888', 'speech'),
+        },
+        {
+          key: '📎 Prigozhin Metadata',
+          value: 'metadata',
+          onClick: () => action_.video.strike('3888', 'metadata'),
         },
       ],
     },
@@ -2349,226 +2440,6 @@ let ui_ = {
       throw new Error('Could not draw UI', e);
     }
   },
-  mutate() {
-    const { expandTranscriptContainer } = ui_.mutations;
-
-    expandTranscriptContainer();
-  },
-  createButton(label = 'My Button', onClick = () => {}, className) {
-    let btn = this.strToNode(
-      `<tcs-button spec="flat-primary">${label}</tcs-button>`
-    );
-    btn.onclick = onClick;
-    className && btn.classList.add(className);
-    return btn;
-  },
-  createIconButton(
-    icon,
-    onClick = () => {},
-    className,
-    size,
-    spec = 'primary'
-  ) {
-    const element = this.strToNode(
-      `<tcs-icon-button ${size && `size=${size}`} icon=${icon} spec=${spec} />`
-    );
-    element.onclick = onClick;
-    if (className) element.classList.add(className);
-    if (size) element.size = size;
-
-    return element;
-  },
-  createDropdownMenu(props) {
-    const { strToNode } = ui_;
-    const { label, children } = props;
-
-    const parentList =
-      strToNode(`<mwc-list><mwc-list-item hasmeta="" value="video" mwc-list-item="" tabindex="0" aria-disabled="false">
-    <!--?lit$658385021$-->
-    <span class="option-label"><tcs-text>${label ?? ''}</tcs-text></span>
-    <tcs-icon data-test-id="label-questionnaire-list-category-icon" slot="meta" class="category-icon" family="material" spec="default">
-    <!--?lit$658385021$-->expand_more
-    </tcs-icon>
-    </mwc-list-item>
-    </mwc-list>`);
-
-    const childList = strToNode(`<mwc-list></mwc-list>`);
-    childList.style.display = 'none';
-
-    function toggleShowList() {
-      childList.style.display === 'none'
-        ? (childList.style.display = 'block')
-        : (childList.style.display = 'none');
-    }
-
-    const childListItems = children.map((item) => {
-      const listItem = strToNode(`<mwc-list-item value="${
-        item?.value ?? ''
-      }" graphic="control" aria-disabled="false">
-      <span class="option-label"><tcs-text>${item?.key ?? ''}</tcs-text></span>
-      </mwc-list-item>`);
-
-      function handleClick(e) {
-        e.stopPropagation();
-        item.onClick();
-        toggleShowList();
-      }
-
-      listItem.addEventListener('click', handleClick);
-
-      return listItem;
-    });
-
-    childList.replaceChildren(...childListItems);
-
-    parentList.appendChild(childList);
-    parentList.addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleShowList();
-    });
-    return parentList;
-  },
-  typography(str) {
-    const textElement = ui_.strToNode(
-      `<tcs-text spec="body" >${str}</tcs-text>`
-    );
-    return textElement;
-  },
-  strToNode(str) {
-    const tmp = document.createElement('div');
-    tmp.innerHTML = str;
-    if (tmp.childNodes.length < 2) {
-      return tmp.childNodes[0];
-    }
-    return tmp.childNodes;
-  },
-
-  toggleRecommendations(policyId) {
-    const existing = getElement('#recommendation-notes')?.[0];
-    if (existing) {
-      existing.remove();
-      return true;
-    }
-    ui_.components
-      .recommendationPanel({
-        notesArr: recommendationNotes.strike[policyId],
-      })
-      .render();
-  },
-  async renderViolativeIds() {
-    if (getElement('.violative-ids-section')) return;
-    const violativeIds = await utils_.filterVideoByKeywords();
-
-    let content;
-    if (!violativeIds) content = 'No videos.';
-
-    content = violativeIds.toString();
-
-    const urlBtn = ui_.createIconButton(
-      'open_in_new',
-      () => lib_.openRelLinks(violativeIds),
-      'open-violative-ids'
-    );
-
-    const mySection =
-      utils_.strToNode(`<tcs-view class="section violative-ids-section" spacing="small" spec="column" display="flex" wrap="nowrap" align="stretch" padding="none">
-        <tcs-view spacing="small" align="center" display="flex" spec="row" wrap="nowrap" padding="none">
-          <tcs-text spec="caption-2" data-test-id="channel-test-id" texttype="default">Violative IDs</tcs-text>
-          <!--?lit$7724557512$-->
-        </tcs-view>
-        <!--?lit$7724557512$--><div class="scroll-wrapper">
-        <tcs-text secondary="" compact="" spec="body" texttype="default">
-        ${content}
-        </tcs-text>
-      </div>
-      </tcs-view>`);
-
-    dom_.metadataPanel.appendChild(mySection);
-    dom_.metadataPanel.appendChild(urlBtn);
-  },
-  renderWordsTable() {
-    if (getElement('.violative-words-container')) return;
-    const violativeWords = transcript_.getViolativeWords();
-    const {
-      strToNode,
-      components: { createWordsList },
-    } = ui_;
-
-    const container = strToNode(
-      `<div style="opacity: 0; transition: opacity 500ms;" class="violative-words-container"></div>`
-    );
-
-    // Function to handle mouseenter event
-    function handleMouseEnter() {
-      container.style.opacity = 1;
-    }
-
-    // Function to handle mouseleave event
-    function handleMouseLeave() {
-      container.style.opacity = 0;
-    }
-
-    // Add event listeners
-    container.addEventListener('mouseenter', handleMouseEnter);
-    container.addEventListener('mouseleave', handleMouseLeave);
-
-    // const { seconds: timeVulgarLanguageSeconds } = findWordSequence(
-    //   getViolativeWords().adult
-    // ).first;
-
-    let wordsListTablesByCategory = Object.getOwnPropertyNames(
-      violativeWords
-    ).map((category) => {
-      if (!violativeWords[category]) return;
-
-      const mySection = strToNode(
-        `<tcs-view class="section violative-words-table-section" spacing="small" spec="column" display="flex" wrap="nowrap" align="stretch" padding="none"><tcs-view spacing="small" align="center" display="flex" spec="row" wrap="nowrap" padding="none"><tcs-text spec="caption-2" data-test-id="channel-test-id" texttype="default">${category.toUpperCase()} Violative Words</tcs-text></tcs-view><div style="max-height: 100%;" class="scroll-wrapper"></div></tcs-view>`
-      );
-
-      const wordsList = createWordsList(violativeWords[category]);
-      mySection.children[1].replaceChildren(wordsList);
-
-      return mySection;
-    });
-
-    if (!wordsListTablesByCategory || wordsListTablesByCategory.length === 0)
-      return;
-
-    container.replaceChildren(...wordsListTablesByCategory);
-    dom_.metadataPanel.appendChild(container);
-
-    setTimeout(checkForLewd, 3000);
-
-    return container;
-  },
-
-  showTimers() {
-    if (getElement('.submit-timers')?.[0]) return;
-    const { setTimer, strToNode } = utils_;
-    let mwcMenu = getElement('.share-menu')[0];
-
-    if (!mwcMenu)
-      throw new Error('Nowhere to append buttons (mwcMenu not rendered)');
-
-    const timersArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((timerMin) =>
-      ui_.createButton(timerMin, () => {
-        setTimer(timerMin, store_.is.autosubmit);
-        mwcMenu.open = false;
-      })
-    );
-
-    const timersWrapper = strToNode(
-      `<div class="submit-timers" style="display: grid; grid-template-columns: 1fr 1fr 1fr;"></div>`
-    );
-    const endReviewCheckbox = strToNode(
-      `<mwc-checkbox class="endreview-checkbox"></mwc-checkbox>`
-    );
-
-    timersWrapper.replaceChildren(...[...timersArr, endReviewCheckbox]);
-    mwcMenu.replaceChildren(...[...mwcMenu.children, timersWrapper]);
-    // stopwatch.parentNode.appendChild(timersWrapper);
-  },
-
   atoms: {
     card({ children }) {
       let elem = utils_.strToNode(`<yurt-core-card></yurt-core-card>`);
@@ -2756,13 +2627,12 @@ let ui_ = {
         (policy) => createDropdownMenu(props_.dropdownList[policy])
       );
 
+      const [approveMenu, routeMenu] = strikeDropdownMenus.splice(-2);
       container.replaceChildren(
         stopwatch,
-        strikeDropdownMenus[3],
-        strikeDropdownMenus[4],
-        strikeDropdownMenus[2],
-        strikeDropdownMenus[0],
-        strikeDropdownMenus[1],
+        routeMenu,
+        approveMenu,
+        ...strikeDropdownMenus,
         veGroupDropdownSelector
       );
 
@@ -2990,6 +2860,226 @@ let ui_ = {
       return container;
     },
   },
+  mutate() {
+    const { expandTranscriptContainer } = ui_.mutations;
+
+    expandTranscriptContainer();
+  },
+  createButton(label = 'My Button', onClick = () => {}, className) {
+    let btn = this.strToNode(
+      `<tcs-button spec="flat-primary">${label}</tcs-button>`
+    );
+    btn.onclick = onClick;
+    className && btn.classList.add(className);
+    return btn;
+  },
+  createIconButton(
+    icon,
+    onClick = () => {},
+    className,
+    size,
+    spec = 'primary'
+  ) {
+    const element = this.strToNode(
+      `<tcs-icon-button ${size && `size=${size}`} icon=${icon} spec=${spec} />`
+    );
+    element.onclick = onClick;
+    if (className) element.classList.add(className);
+    if (size) element.size = size;
+
+    return element;
+  },
+  createDropdownMenu(props) {
+    const { strToNode } = ui_;
+    const { label, children, style } = props;
+
+    const parentList =
+      strToNode(`<mwc-list><mwc-list-item hasmeta="" value="video" mwc-list-item="" tabindex="0" aria-disabled="false">
+    <!--?lit$658385021$-->
+    <span class="option-label"><tcs-text>${label ?? ''}</tcs-text></span>
+    <tcs-icon data-test-id="label-questionnaire-list-category-icon" slot="meta" class="category-icon" family="material" spec="default">
+    <!--?lit$658385021$-->expand_more
+    </tcs-icon>
+    </mwc-list-item>
+    </mwc-list>`);
+
+    const childList = strToNode(`<mwc-list></mwc-list>`);
+    childList.style.display = 'none';
+
+    function toggleShowList() {
+      childList.style.display === 'none'
+        ? (childList.style.display = 'block')
+        : (childList.style.display = 'none');
+    }
+
+    const childListItems = children.map((item) => {
+      const listItem = strToNode(`<mwc-list-item value="${
+        item?.value ?? ''
+      }" graphic="control" aria-disabled="false">
+      <span class="option-label"><tcs-text>${item?.key ?? ''}</tcs-text></span>
+      </mwc-list-item>`);
+
+      function handleClick(e) {
+        e.stopPropagation();
+        item.onClick();
+        toggleShowList();
+      }
+
+      listItem.addEventListener('click', handleClick);
+
+      return listItem;
+    });
+
+    childList.replaceChildren(...childListItems);
+
+    parentList.appendChild(childList);
+    parentList.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleShowList();
+    });
+    return parentList;
+  },
+  typography(str) {
+    const textElement = ui_.strToNode(
+      `<tcs-text spec="body" >${str}</tcs-text>`
+    );
+    return textElement;
+  },
+  strToNode(str) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = str;
+    if (tmp.childNodes.length < 2) {
+      return tmp.childNodes[0];
+    }
+    return tmp.childNodes;
+  },
+
+  toggleRecommendations(policyId) {
+    const existing = getElement('#recommendation-notes')?.[0];
+    if (existing) {
+      existing.remove();
+      return true;
+    }
+    ui_.components
+      .recommendationPanel({
+        notesArr: recommendationNotes.strike[policyId],
+      })
+      .render();
+  },
+  async renderViolativeIds() {
+    if (getElement('.violative-ids-section')) return;
+    const violativeIds = await utils_.filterVideoByKeywords();
+
+    let content;
+    if (!violativeIds) content = 'No videos.';
+
+    content = violativeIds.toString();
+
+    const urlBtn = ui_.createIconButton(
+      'open_in_new',
+      () => lib_.openRelLinks(violativeIds),
+      'open-violative-ids'
+    );
+
+    const mySection =
+      utils_.strToNode(`<tcs-view class="section violative-ids-section" spacing="small" spec="column" display="flex" wrap="nowrap" align="stretch" padding="none">
+        <tcs-view spacing="small" align="center" display="flex" spec="row" wrap="nowrap" padding="none">
+          <tcs-text spec="caption-2" data-test-id="channel-test-id" texttype="default">Violative IDs</tcs-text>
+          <!--?lit$7724557512$-->
+        </tcs-view>
+        <!--?lit$7724557512$--><div class="scroll-wrapper">
+        <tcs-text secondary="" compact="" spec="body" texttype="default">
+        ${content}
+        </tcs-text>
+      </div>
+      </tcs-view>`);
+
+    dom_.metadataPanel.appendChild(mySection);
+    dom_.metadataPanel.appendChild(urlBtn);
+  },
+  renderWordsTable() {
+    if (getElement('.violative-words-container')) return;
+    const violativeWords = transcript_.getViolativeWords();
+    const {
+      strToNode,
+      components: { createWordsList },
+    } = ui_;
+
+    const container = strToNode(
+      `<div style="opacity: 0; transition: opacity 500ms;" class="violative-words-container"></div>`
+    );
+
+    // Function to handle mouseenter event
+    function handleMouseEnter() {
+      container.style.opacity = 1;
+    }
+
+    // Function to handle mouseleave event
+    function handleMouseLeave() {
+      container.style.opacity = 0;
+    }
+
+    // Add event listeners
+    container.addEventListener('mouseenter', handleMouseEnter);
+    container.addEventListener('mouseleave', handleMouseLeave);
+
+    // const { seconds: timeVulgarLanguageSeconds } = findWordSequence(
+    //   getViolativeWords().adult
+    // ).first;
+
+    let wordsListTablesByCategory = Object.getOwnPropertyNames(
+      violativeWords
+    ).map((category) => {
+      if (!violativeWords[category]) return;
+
+      const mySection = strToNode(
+        `<tcs-view class="section violative-words-table-section" spacing="small" spec="column" display="flex" wrap="nowrap" align="stretch" padding="none"><tcs-view spacing="small" align="center" display="flex" spec="row" wrap="nowrap" padding="none"><tcs-text spec="caption-2" data-test-id="channel-test-id" texttype="default">${category.toUpperCase()} Violative Words</tcs-text></tcs-view><div style="max-height: 100%;" class="scroll-wrapper"></div></tcs-view>`
+      );
+
+      const wordsList = createWordsList(violativeWords[category]);
+      mySection.children[1].replaceChildren(wordsList);
+
+      return mySection;
+    });
+
+    if (!wordsListTablesByCategory || wordsListTablesByCategory.length === 0)
+      return;
+
+    container.replaceChildren(...wordsListTablesByCategory);
+    dom_.metadataPanel.appendChild(container);
+
+    setTimeout(checkForLewd, 3000);
+
+    return container;
+  },
+
+  showTimers() {
+    if (getElement('.submit-timers')?.[0]) return;
+    const { setTimer, strToNode } = utils_;
+    let mwcMenu = getElement('.share-menu')[0];
+
+    if (!mwcMenu)
+      throw new Error('Nowhere to append buttons (mwcMenu not rendered)');
+
+    const timersArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((timerMin) =>
+      ui_.createButton(timerMin, () => {
+        setTimer(timerMin, store_.is.autosubmit);
+        mwcMenu.open = false;
+      })
+    );
+
+    const timersWrapper = strToNode(
+      `<div class="submit-timers" style="display: grid; grid-template-columns: 1fr 1fr 1fr;"></div>`
+    );
+    const endReviewCheckbox = strToNode(
+      `<mwc-checkbox class="endreview-checkbox"></mwc-checkbox>`
+    );
+
+    timersWrapper.replaceChildren(...[...timersArr, endReviewCheckbox]);
+    mwcMenu.replaceChildren(...[...mwcMenu.children, timersWrapper]);
+    // stopwatch.parentNode.appendChild(timersWrapper);
+  },
+
   create: {},
 
   mutations: {
@@ -3661,8 +3751,32 @@ let questionnaire_ = {
       ],
       metadata: [],
     },
-    GDP: {
-      3999: [
+    3999: {
+      video: [
+        {
+          questionId:
+            'violent_extremism/question/video_3999_3888_tvc_fte/applicable_individual_name_beats1',
+          answers: [
+            {
+              id: 'yevgeny_prigozhin',
+              label: 'Yevgeny Prigozhin',
+              value: {},
+            },
+          ],
+        },
+        {
+          questionId:
+            'violent_extremism/question/video_3999_3888_tvc_fte/abuse_location',
+          answers: [
+            {
+              id: 'video',
+              label: 'Video',
+              value: {},
+            },
+          ],
+        },
+      ],
+      speech: [
         {
           questionId:
             'violent_extremism/question/video_3999_3888_tvc_fte/applicable_individual_name_beats1',
@@ -3686,7 +3800,7 @@ let questionnaire_ = {
           ],
         },
       ],
-      3888: [
+      metadata: [
         {
           questionId:
             'violent_extremism/question/video_3999_3888_tvc_fte/applicable_individual_name_beats1',
@@ -3703,8 +3817,18 @@ let questionnaire_ = {
             'violent_extremism/question/video_3999_3888_tvc_fte/abuse_location',
           answers: [
             {
-              id: 'audio',
-              label: 'Audio',
+              id: 'metadata_title',
+              label: 'Metadata - Video title',
+              value: {},
+            },
+            {
+              id: 'metadata_description',
+              label: 'Metadata - Video description',
+              value: {},
+            },
+            {
+              id: 'metadata_video_tags',
+              label: 'Metadata - Video tags',
               value: {},
             },
           ],
