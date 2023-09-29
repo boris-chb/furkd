@@ -1,4 +1,4 @@
-// 19.09.2023
+// 29.09.2023
 
 try {
   utils_.clearTimers();
@@ -288,7 +288,7 @@ let store_ = {
   },
   is: {
     get autosubmit() {
-      return getElement('.endreview-checkbox')[0].checked;
+      return getElement('.autosubmit-switch')[0].checked;
     },
     readyForSubmit() {
       return getElement('yurt-core-decision-submit-panel')?.[0]?.readyForSubmit;
@@ -1343,13 +1343,16 @@ let action_ = {
 
       action_.video.steps.selectPolicy('9008');
 
-      function approveQuestionnaire() {
-        questionnaire_.setAnswers(questionnaire_.answersByPolicy['9008']);
+      if (!store_.is.queue('metrics')) {
+        // don't answer questionnaire in metrics
+        await retry(function approveQuestionnaire() {
+          questionnaire_.setAnswers(questionnaire_.answersByPolicy['9008']);
+        });
       }
 
-      await retry(approveQuestionnaire);
-      await retry(function saveReviewShowTimers() {
+      await retry(function saveReview() {
         dom_.videoDecisionPanel.onSave();
+        if (!dom_.decisionCard) throw new Error('Could not save review');
       });
 
       if (store_.is.autosubmit) {
@@ -1358,10 +1361,6 @@ let action_ = {
         });
         return true;
       }
-
-      setTimeout(ui_.showTimers, 1);
-
-      // langAndSave();
     },
     async strike(policyId = '3039', contentType = 'video') {
       store_.selectedVEGroup = utils_.get.selectedVEGroup;
@@ -1983,6 +1982,12 @@ let props_ = {
 let dom_ = {
   get filterControlsPanel() {
     return getElement('.filter-controls-on')?.[0];
+  },
+  get decisionCard() {
+    return getElement('yurt-core-decision-policy-card')[0];
+  },
+  get allDecisionCards() {
+    return getElement('yurt-core-decision-policy-card');
   },
   get videoTitleRow() {
     return getElement('.video-title-row')?.[0];
@@ -3034,24 +3039,24 @@ let ui_ = {
 
 let questionnaire_ = {
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.kh
+    // BUG TEMPORARY FIX labellingGraph.nh
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
-
-    if (!dom_.questionnaire.labellingGraph.kh)
-      throw new Error('[i] Questions not Answered!');
 
     // questionnaire answering logic
     answers.forEach((answer) => dom_.questionnaire.setAnswers(answer));
 
-    if (dom_.questionnaire.labellingGraph.kh.size === 0) {
+    if (
+      !dom_.questionnaire.labellingGraph.nh ||
+      dom_.questionnaire.labellingGraph.nh.size === 0
+    ) {
       throw new Error('Questions not Answered!');
     }
 
-    console.log(
-      '💾 Saving questionnaire. Answers:',
-      dom_.questionnaire.labellingGraph.kh
-    );
+    console.log('💾 Saving questionnaire. Answers:');
+
     dom_.questionnaire.onSave();
+
+    return dom_.questionnaire.labellingGraph.nh;
   },
   answersByPolicy: {
     3039: {
@@ -3843,5 +3848,5 @@ function checkForLewd(
 
 $main();
 
-// 19.09.2023
+// 29.09.2023
 // [✅] radu pidar
