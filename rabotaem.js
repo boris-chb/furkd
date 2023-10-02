@@ -120,7 +120,7 @@ let store_ = {
     id: '',
     label: '',
   },
-  selectedVEGroup: '',
+  selectedVEGroup: store_.newVeGroups.wagner,
   opacity: '0.8',
   veGroups: {
     alq: 'al_qaida_aq_including',
@@ -209,6 +209,7 @@ let store_ = {
   },
   wordsByCategory: {
     ve: [
+      'спецопераци',
       'чувака',
       'чувакова',
       'вагнер',
@@ -1384,7 +1385,7 @@ let action_ = {
       if (!store_.is.queue('metrics')) {
         // don't answer questionnaire in metrics
         await retry(function approveQuestionnaire() {
-          questionnaire_.setAnswers(questionnaire_.answersByPolicy['9008']);
+          questionnaire_.setAnswers(questionnaire_.generateAnswers('9008'));
         });
       }
 
@@ -1405,9 +1406,8 @@ let action_ = {
       contentType = 'video',
       language = 'russian'
     ) {
-      store_.selectedVEGroup = utils_.get.selectedVEGroup;
       const { expandNotesArea } = ui_.mutations;
-      const { answersByPolicy, setAnswers } = questionnaire_;
+      const { setAnswers, generateAnswers } = questionnaire_;
       const {
         selectLanguage: selectLanguageDropdrown,
         selectPolicy,
@@ -1429,7 +1429,7 @@ let action_ = {
             : policyId === '3888'
             ? '3999'
             : policyId;
-        return setAnswers(answersByPolicy[selectedPolicyId][contentType]);
+        return setAnswers(generateAnswers(selectedPolicyId, contentType));
       }
 
       await retry(answerQuestionnaireAndSave, 800, 4000);
@@ -1628,16 +1628,46 @@ let props_ = {
       label: 'Select VE Group',
       value: 'strike_ve_group_dropdown',
       options: [
-        { value: store_.veGroups.wagner, label: 'Wagner PMC' },
-        { value: store_.veGroups.alq, label: 'Al Qaeda' },
-        { value: store_.veGroups.ik, label: 'Imarat Kavkaz' },
-        { value: store_.veGroups.isis, label: 'ISIS' },
-        { value: store_.veGroups.hamas, label: 'Hamas' },
-        { value: store_.veGroups.hezbollah, label: 'Hezbollah' },
-        { value: store_.veGroups.ira, label: 'IRA' },
-        { value: store_.veGroups.lte, label: 'LTTE' },
-        { value: store_.veGroups.unknown, label: 'UNKNOWN' },
-        { value: store_.veGroups.vnsa, label: 'VNSA' },
+        {
+          value: 'wagner',
+          label: 'Wagner PMC',
+        },
+        {
+          value: `alq`,
+          label: 'Al Qaeda',
+        },
+        {
+          value: `ik`,
+          label: 'Imarat Kavkaz',
+        },
+        {
+          value: `isis`,
+          label: 'ISIS',
+        },
+        {
+          value: `hamas`,
+          label: 'Hamas',
+        },
+        {
+          value: `hezbollah`,
+          label: 'Hezbollah',
+        },
+        {
+          value: `ira`,
+          label: 'IRA',
+        },
+        {
+          value: `lte`,
+          label: 'LTTE',
+        },
+        {
+          value: `unknown`,
+          label: 'UNKNOWN',
+        },
+        {
+          value: `vnsa`,
+          label: 'VNSA',
+        },
       ],
     },
   },
@@ -2623,6 +2653,13 @@ let ui_ = {
         props_.dropdown.strike
       );
 
+      veGroupDropdownSelector.onclick = (e) => e.stopPropagation();
+
+      veGroupDropdownSelector.onchange = () => {
+        store_.selectedVEGroup =
+          store_.newVeGroups[veGroupDropdownSelector.selected.value];
+      };
+
       const strikeDropdownMenus = Object.keys(props_.dropdownList).map(
         (policy) => createDropdownMenu(props_.dropdownList[policy])
       );
@@ -3148,705 +3185,701 @@ let questionnaire_ = {
 
     return dom_.questionnaire.labellingGraph.nh;
   },
-  answersByPolicy: {
-    3039: {
-      song: [
-        {
-          questionId: 'violent_extremism/question/abuse_location',
-          answers: [
-            {
-              id: 'audio_abusive',
-              label: 'Abusive',
-              parentId: 'audio',
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/applicable_ve_group',
-          answers: [
-            {
-              id: 'wagner_pmc',
-              label: 'Wagner PMC - VNSA',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/act_type',
-          answers: [
-            {
-              id: 'glorification_terrorism',
-              label: 'Glorification of terrorism or terrorist acts',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/audio_features',
-          answers: [
-            {
-              id: 'song',
-              label: 'Song',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/audio_segment',
-          answers: [
-            {
-              id: 'audio_time_interval',
-              value: {
-                timeValue: {
-                  intervals: [
-                    {
-                      startTime: `${Math.floor(
-                        dom_?.playerControls?.player?.getCurrentTime() ?? 0
-                      )}s`,
-                      endTime: `${Math.floor(
-                        dom_?.playerControls?.player?.getDuration() ?? 0
-                      )}s`,
-                    },
-                  ],
-                },
-              },
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/confidence_level',
-          answers: [
-            {
-              id: 'very_confident',
-              label: 'Very confident',
-              value: {},
-            },
-          ],
-        },
-      ],
+  generateAnswers(policyId = '3039', contentType = 'video') {
+    abuseLocationMapper = {
       video: [
         {
-          questionId: 'violent_extremism/question/abuse_location',
-          answers: [
-            {
-              id: 'video_abusive',
-              label: 'Abusive',
-              parentId: 'video',
-            },
-          ],
+          id: 'video_abusive',
+          label: 'Abusive',
+          parentId: 'video',
         },
+      ],
+      song: [
         {
-          questionId: 'violent_extremism/question/applicable_ve_group',
-          answers: [
-            {
-              id: 'wagner_pmc',
-              label: 'Wagner PMC - VNSA',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/act_type',
-          answers: [
-            {
-              id: 'glorification_terrorism',
-              label: 'Glorification of terrorism or terrorist acts',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/video_contents',
-          answers: [
-            {
-              id: 'other',
-              label: 'Other',
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/video_features',
-          answers: [
-            {
-              id: 've_logo',
-              label: 'Logo of VE actor',
-              value: {},
-            },
-            {
-              id: 'featured_person',
-              label: 'Featured person',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/video_type',
-          answers: [
-            {
-              id: 'single_take',
-              label: 'Single take / no changes of scene',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/video_segment',
-          answers: [
-            {
-              id: 'video_time_interval',
-              value: {
-                timeValue: {
-                  intervals: [
-                    {
-                      startTime: `${Math.floor(
-                        dom_?.playerControls?.player?.getCurrentTime() ?? 0
-                      )}s`,
-                      endTime: `${Math.floor(
-                        dom_?.playerControls?.player?.getDuration() ?? 0
-                      )}s`,
-                    },
-                  ],
-                },
-              },
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/confidence_level',
-          answers: [
-            {
-              id: 'very_confident',
-              label: 'Very confident',
-              value: {},
-            },
-          ],
+          id: 'audio_abusive',
+          label: 'Abusive',
+          parentId: 'audio',
         },
       ],
       speech: [
         {
-          questionId: 'violent_extremism/question/abuse_location',
-          answers: [
-            {
-              id: 'audio_abusive',
-              label: 'Abusive',
-              parentId: 'audio',
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/applicable_ve_group',
-          answers: [
-            {
-              id: 'wagner_pmc',
-              label: 'Wagner PMC - VNSA',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/act_type',
-          answers: [
-            {
-              id: 'glorification_terrorism',
-              label: 'Glorification of terrorism or terrorist acts',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/audio_features',
-          answers: [
-            {
-              id: 'speech',
-              label: 'Speech',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/audio_segment',
-          answers: [
-            {
-              id: 'audio_time_interval',
-              value: {
-                timeValue: {
-                  intervals: [
-                    {
-                      startTime: `${Math.floor(
-                        dom_?.playerControls?.player?.getCurrentTime() ?? 0
-                      )}s`,
-                      endTime: `${Math.floor(
-                        dom_?.playerControls?.player?.getDuration() ?? 0
-                      )}s`,
-                    },
-                  ],
-                },
-              },
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/confidence_level',
-          answers: [
-            {
-              id: 'very_confident',
-              label: 'Very confident',
-              value: {},
-            },
-          ],
+          id: 'audio_abusive',
+          label: 'Abusive',
+          parentId: 'audio',
         },
       ],
       metadata: [
         {
-          questionId: 'violent_extremism/question/abuse_location',
-          answers: [
-            {
-              id: 'metadata_abusive',
-              label: 'Abusive',
-              parentId: 'metadata',
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/applicable_ve_group',
-          answers: [
-            {
-              id: 'wagner_pmc',
-              label: 'Wagner PMC - VNSA',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/act_type',
-          answers: [
-            {
-              id: 'glorification_terrorism',
-              label: 'Glorification of terrorism or terrorist acts',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/metadata_features',
-          answers: [
-            {
-              id: 'video_title',
-              label: 'Video Title',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/metadata_abuse_type',
-          answers: [
-            {
-              id: 'abusive_meaning',
-              label: 'Metadata has relevant/abusive meaning',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/confidence_level',
-          answers: [
-            {
-              id: 'very_confident',
-              label: 'Very confident',
-              value: {},
-            },
-          ],
+          id: 'metadata_abusive',
+          label: 'Abusive',
+          parentId: 'metadata',
         },
       ],
-    },
-    3065: {
-      song: [
-        {
-          questionId:
-            'violent_extremism/question/video_3065_tvc/applicable_ve_group',
-          answers: [
-            {
-              id: 'wagner_pmc',
-              label: 'Wagner PMC - VNSA',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/video_3065_tvc/act_type',
-          answers: [
-            {
-              id: 'glorification_terrorism',
-              label: 'Glorification of terrorism or terrorist acts',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId:
-            'violent_extremism/question/video_3065_tvc/violation_reason',
-          answers: [
-            {
-              id: 'produced_content',
-              label: 'Produced Content',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId:
-            'violent_extremism/question/video_3065_tvc/abuse_location',
-          answers: [
-            {
-              id: 'audio_abusive',
-              label: 'Audio: Abusive',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId:
-            'violent_extremism/question/video_3065_tvc/audio_features',
-          answers: [
-            {
-              id: 'song',
-              label: 'Song',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/video_3065_tvc/audio_segment',
-          answers: [
-            {
-              id: 'time_interval',
-              value: {
-                timeValue: {
-                  intervals: [
-                    {
-                      startTime: `${Math.floor(
-                        dom_?.playerControls?.player?.getCurrentTime() ?? 0
-                      )}s`,
-                      endTime: `${Math.floor(
-                        dom_?.playerControls?.player?.getDuration() ?? 0
-                      )}s`,
-                    },
-                  ],
-                },
-              },
-            },
-          ],
-        },
-        {
-          questionId:
-            'violent_extremism/question/video_3065_tvc/confidence_level',
-          answers: [
-            {
-              id: 'very_confident',
-              label: 'Very confident',
-              value: {},
-            },
-          ],
-        },
-      ],
-      video: [
-        {
-          questionId:
-            'violent_extremism/question/video_3065_tvc/applicable_ve_group',
-          answers: [
-            {
-              id: 'wagner_pmc',
-              label: 'Wagner PMC - VNSA',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/video_3065_tvc/act_type',
-          answers: [
-            {
-              id: 'glorification_terrorism',
-              label: 'Glorification of terrorism or terrorist acts',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId:
-            'violent_extremism/question/video_3065_tvc/violation_reason',
-          answers: [
-            {
-              id: 'produced_content',
-              label: 'Produced Content',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId:
-            'violent_extremism/question/video_3065_tvc/abuse_location',
-          answers: [
-            {
-              id: 'abusive',
-              label: 'Video: Abusive',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId:
-            'violent_extremism/question/video_3065_tvc/video_features',
-          answers: [
-            {
-              id: 've_logo',
-              label: 'Logo of VE actor',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/video_3065_tvc/video_type',
-          answers: [
-            {
-              id: 'compilation',
-              label: 'Compliation of videos',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId:
-            'violent_extremism/question/video_3065_tvc/video_contents',
-          answers: [
-            {
-              id: 'other',
-              label: 'Other',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId:
-            'violent_extremism/question/video_3065_tvc/visual_segment',
-          answers: [
-            {
-              id: 'time_interval',
-              value: {
-                timeValue: {
-                  intervals: [
-                    {
-                      startTime: `${Math.floor(
-                        dom_?.playerControls?.player?.getCurrentTime() ?? 0
-                      )}s`,
-                      endTime: `${Math.floor(
-                        dom_?.playerControls?.player?.getDuration() ?? 0
-                      )}s`,
-                    },
-                  ],
-                },
-              },
-            },
-          ],
-        },
-        {
-          questionId:
-            'violent_extremism/question/video_3065_tvc/confidence_level',
-          answers: [
-            {
-              id: 'very_confident',
-              label: 'Very confident',
-              value: {},
-            },
-          ],
-        },
-      ],
-      speech: [
-        {
-          questionId:
-            'violent_extremism/question/video_3065_tvc/applicable_ve_group',
-          answers: [
-            {
-              id: 'wagner_pmc',
-              label: 'Wagner PMC - VNSA',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/video_3065_tvc/act_type',
-          answers: [
-            {
-              id: 'glorification_terrorism',
-              label: 'Glorification of terrorism or terrorist acts',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId:
-            'violent_extremism/question/video_3065_tvc/violation_reason',
-          answers: [
-            {
-              id: 'produced_content',
-              label: 'Produced Content',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId:
-            'violent_extremism/question/video_3065_tvc/abuse_location',
-          answers: [
-            {
-              id: 'audio_abusive',
-              label: 'Audio: Abusive',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId:
-            'violent_extremism/question/video_3065_tvc/audio_features',
-          answers: [
-            {
-              id: 'speech',
-              label: 'Speech',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId: 'violent_extremism/question/video_3065_tvc/audio_segment',
-          answers: [
-            {
-              id: 'time_interval',
-              value: {
-                timeValue: {
-                  intervals: [
-                    {
-                      startTime: `${Math.floor(
-                        dom_?.playerControls?.player?.getCurrentTime() ?? 0
-                      )}s`,
-                      endTime: `${Math.floor(
-                        dom_?.playerControls?.player?.getDuration() ?? 0
-                      )}s`,
-                    },
-                  ],
-                },
-              },
-            },
-          ],
-        },
-        {
-          questionId:
-            'violent_extremism/question/video_3065_tvc/confidence_level',
-          answers: [
-            {
-              id: 'very_confident',
-              label: 'Very confident',
-              value: {},
-            },
-          ],
-        },
-      ],
-      metadata: [],
-    },
-    3999: {
-      video: [
-        {
-          questionId:
-            'violent_extremism/question/video_3999_3888_tvc_fte/applicable_individual_name_beats1',
-          answers: [
-            {
-              id: 'yevgeny_prigozhin',
-              label: 'Yevgeny Prigozhin',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId:
-            'violent_extremism/question/video_3999_3888_tvc_fte/abuse_location',
-          answers: [
-            {
-              id: 'video',
-              label: 'Video',
-              value: {},
-            },
-          ],
-        },
-      ],
-      speech: [
-        {
-          questionId:
-            'violent_extremism/question/video_3999_3888_tvc_fte/applicable_individual_name_beats1',
-          answers: [
-            {
-              id: 'yevgeny_prigozhin',
-              label: 'Yevgeny Prigozhin',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId:
-            'violent_extremism/question/video_3999_3888_tvc_fte/abuse_location',
-          answers: [
-            {
-              id: 'audio',
-              label: 'Audio',
-              value: {},
-            },
-          ],
-        },
-      ],
-      metadata: [
-        {
-          questionId:
-            'violent_extremism/question/video_3999_3888_tvc_fte/applicable_individual_name_beats1',
-          answers: [
-            {
-              id: 'yevgeny_prigozhin',
-              label: 'Yevgeny Prigozhin',
-              value: {},
-            },
-          ],
-        },
-        {
-          questionId:
-            'violent_extremism/question/video_3999_3888_tvc_fte/abuse_location',
-          answers: [
-            {
-              id: 'metadata_title',
-              label: 'Metadata - Video title',
-              value: {},
-            },
-            {
-              id: 'metadata_description',
-              label: 'Metadata - Video description',
-              value: {},
-            },
-            {
-              id: 'metadata_video_tags',
-              label: 'Metadata - Video tags',
-              value: {},
-            },
-          ],
-        },
-      ],
-    },
-    9008: [
-      {
-        questionId:
-          'violent_extremism/question/borderline_video/borderline_decision',
-        answers: [
+    };
+    answersById = {
+      3039: {
+        song: [
           {
-            id: 'no',
-            label: 'No, unrelated to VE',
+            questionId: 'violent_extremism/question/abuse_location',
+            answers: [
+              {
+                id: 'audio_abusive',
+                label: 'Abusive',
+                parentId: 'audio',
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/applicable_ve_group',
+            answers: [store_.selectedVEGroup],
+          },
+          {
+            questionId: 'violent_extremism/question/act_type',
+            answers: [
+              {
+                id: 'glorification_terrorism',
+                label: 'Glorification of terrorism or terrorist acts',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/audio_features',
+            answers: [
+              {
+                id: 'song',
+                label: 'Song',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/audio_segment',
+            answers: [
+              {
+                id: 'audio_time_interval',
+                value: {
+                  timeValue: {
+                    intervals: [
+                      {
+                        startTime: `${Math.floor(
+                          dom_?.playerControls?.player?.getCurrentTime() ?? 0
+                        )}s`,
+                        endTime: `${Math.floor(
+                          dom_?.playerControls?.player?.getDuration() ?? 0
+                        )}s`,
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/confidence_level',
+            answers: [
+              {
+                id: 'very_confident',
+                label: 'Very confident',
+                value: {},
+              },
+            ],
+          },
+        ],
+        video: [
+          {
+            questionId: 'violent_extremism/question/abuse_location',
+            answers: [
+              {
+                id: 'video_abusive',
+                label: 'Abusive',
+                parentId: 'video',
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/applicable_ve_group',
+            answers: [store_.selectedVEGroup],
+          },
+          {
+            questionId: 'violent_extremism/question/act_type',
+            answers: [
+              {
+                id: 'glorification_terrorism',
+                label: 'Glorification of terrorism or terrorist acts',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/video_contents',
+            answers: [
+              {
+                id: 'other',
+                label: 'Other',
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/video_features',
+            answers: [
+              {
+                id: 've_logo',
+                label: 'Logo of VE actor',
+                value: {},
+              },
+              {
+                id: 'featured_person',
+                label: 'Featured person',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/video_type',
+            answers: [
+              {
+                id: 'single_take',
+                label: 'Single take / no changes of scene',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/video_segment',
+            answers: [
+              {
+                id: 'video_time_interval',
+                value: {
+                  timeValue: {
+                    intervals: [
+                      {
+                        startTime: `${Math.floor(
+                          dom_?.playerControls?.player?.getCurrentTime() ?? 0
+                        )}s`,
+                        endTime: `${Math.floor(
+                          dom_?.playerControls?.player?.getDuration() ?? 0
+                        )}s`,
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/confidence_level',
+            answers: [
+              {
+                id: 'very_confident',
+                label: 'Very confident',
+                value: {},
+              },
+            ],
+          },
+        ],
+        speech: [
+          {
+            questionId: 'violent_extremism/question/abuse_location',
+            answers: [
+              {
+                id: 'audio_abusive',
+                label: 'Abusive',
+                parentId: 'audio',
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/applicable_ve_group',
+            answers: [store_.selectedVEGroup],
+          },
+          {
+            questionId: 'violent_extremism/question/act_type',
+            answers: [
+              {
+                id: 'glorification_terrorism',
+                label: 'Glorification of terrorism or terrorist acts',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/audio_features',
+            answers: [
+              {
+                id: 'speech',
+                label: 'Speech',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/audio_segment',
+            answers: [
+              {
+                id: 'audio_time_interval',
+                value: {
+                  timeValue: {
+                    intervals: [
+                      {
+                        startTime: `${Math.floor(
+                          dom_?.playerControls?.player?.getCurrentTime() ?? 0
+                        )}s`,
+                        endTime: `${Math.floor(
+                          dom_?.playerControls?.player?.getDuration() ?? 0
+                        )}s`,
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/confidence_level',
+            answers: [
+              {
+                id: 'very_confident',
+                label: 'Very confident',
+                value: {},
+              },
+            ],
+          },
+        ],
+        metadata: [
+          {
+            questionId: 'violent_extremism/question/abuse_location',
+            answers: [
+              {
+                id: 'metadata_abusive',
+                label: 'Abusive',
+                parentId: 'metadata',
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/applicable_ve_group',
+            answers: [store_.selectedVEGroup],
+          },
+          {
+            questionId: 'violent_extremism/question/act_type',
+            answers: [
+              {
+                id: 'glorification_terrorism',
+                label: 'Glorification of terrorism or terrorist acts',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/metadata_features',
+            answers: [
+              {
+                id: 'video_title',
+                label: 'Video Title',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/metadata_abuse_type',
+            answers: [
+              {
+                id: 'abusive_meaning',
+                label: 'Metadata has relevant/abusive meaning',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/confidence_level',
+            answers: [
+              {
+                id: 'very_confident',
+                label: 'Very confident',
+                value: {},
+              },
+            ],
           },
         ],
       },
-    ],
+      3065: {
+        song: [
+          {
+            questionId:
+              'violent_extremism/question/video_3065_tvc/applicable_ve_group',
+            answers: [store_.selectedVEGroup],
+          },
+          {
+            questionId: 'violent_extremism/question/video_3065_tvc/act_type',
+            answers: [
+              {
+                id: 'glorification_terrorism',
+                label: 'Glorification of terrorism or terrorist acts',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_3065_tvc/violation_reason',
+            answers: [
+              {
+                id: 'produced_content',
+                label: 'Produced Content',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_3065_tvc/abuse_location',
+            answers: [
+              {
+                id: 'audio_abusive',
+                label: 'Audio: Abusive',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_3065_tvc/audio_features',
+            answers: [
+              {
+                id: 'song',
+                label: 'Song',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_3065_tvc/audio_segment',
+            answers: [
+              {
+                id: 'time_interval',
+                value: {
+                  timeValue: {
+                    intervals: [
+                      {
+                        startTime: `${Math.floor(
+                          dom_?.playerControls?.player?.getCurrentTime() ?? 0
+                        )}s`,
+                        endTime: `${Math.floor(
+                          dom_?.playerControls?.player?.getDuration() ?? 0
+                        )}s`,
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_3065_tvc/confidence_level',
+            answers: [
+              {
+                id: 'very_confident',
+                label: 'Very confident',
+                value: {},
+              },
+            ],
+          },
+        ],
+        video: [
+          {
+            questionId:
+              'violent_extremism/question/video_3065_tvc/applicable_ve_group',
+            answers: [store_.selectedVEGroup],
+          },
+          {
+            questionId: 'violent_extremism/question/video_3065_tvc/act_type',
+            answers: [
+              {
+                id: 'glorification_terrorism',
+                label: 'Glorification of terrorism or terrorist acts',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_3065_tvc/violation_reason',
+            answers: [
+              {
+                id: 'produced_content',
+                label: 'Produced Content',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_3065_tvc/abuse_location',
+            answers: [
+              {
+                id: 'abusive',
+                label: 'Video: Abusive',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_3065_tvc/video_features',
+            answers: [
+              {
+                id: 've_logo',
+                label: 'Logo of VE actor',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/video_3065_tvc/video_type',
+            answers: [
+              {
+                id: 'compilation',
+                label: 'Compliation of videos',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_3065_tvc/video_contents',
+            answers: [
+              {
+                id: 'other',
+                label: 'Other',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_3065_tvc/visual_segment',
+            answers: [
+              {
+                id: 'time_interval',
+                value: {
+                  timeValue: {
+                    intervals: [
+                      {
+                        startTime: `${Math.floor(
+                          dom_?.playerControls?.player?.getCurrentTime() ?? 0
+                        )}s`,
+                        endTime: `${Math.floor(
+                          dom_?.playerControls?.player?.getDuration() ?? 0
+                        )}s`,
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_3065_tvc/confidence_level',
+            answers: [
+              {
+                id: 'very_confident',
+                label: 'Very confident',
+                value: {},
+              },
+            ],
+          },
+        ],
+        speech: [
+          {
+            questionId:
+              'violent_extremism/question/video_3065_tvc/applicable_ve_group',
+            answers: [store_.selectedVEGroup],
+          },
+          {
+            questionId: 'violent_extremism/question/video_3065_tvc/act_type',
+            answers: [
+              {
+                id: 'glorification_terrorism',
+                label: 'Glorification of terrorism or terrorist acts',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_3065_tvc/violation_reason',
+            answers: [
+              {
+                id: 'produced_content',
+                label: 'Produced Content',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_3065_tvc/abuse_location',
+            answers: [
+              {
+                id: 'audio_abusive',
+                label: 'Audio: Abusive',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_3065_tvc/audio_features',
+            answers: [
+              {
+                id: 'speech',
+                label: 'Speech',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_3065_tvc/audio_segment',
+            answers: [
+              {
+                id: 'time_interval',
+                value: {
+                  timeValue: {
+                    intervals: [
+                      {
+                        startTime: `${Math.floor(
+                          dom_?.playerControls?.player?.getCurrentTime() ?? 0
+                        )}s`,
+                        endTime: `${Math.floor(
+                          dom_?.playerControls?.player?.getDuration() ?? 0
+                        )}s`,
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_3065_tvc/confidence_level',
+            answers: [
+              {
+                id: 'very_confident',
+                label: 'Very confident',
+                value: {},
+              },
+            ],
+          },
+        ],
+        metadata: [],
+      },
+      3999: {
+        video: [
+          {
+            questionId:
+              'violent_extremism/question/video_3999_3888_tvc_fte/applicable_individual_name_beats1',
+            answers: [
+              {
+                id: 'yevgeny_prigozhin',
+                label: 'Yevgeny Prigozhin',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_3999_3888_tvc_fte/abuse_location',
+            answers: [
+              {
+                id: 'video',
+                label: 'Video',
+                value: {},
+              },
+            ],
+          },
+        ],
+        speech: [
+          {
+            questionId:
+              'violent_extremism/question/video_3999_3888_tvc_fte/applicable_individual_name_beats1',
+            answers: [
+              {
+                id: 'yevgeny_prigozhin',
+                label: 'Yevgeny Prigozhin',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_3999_3888_tvc_fte/abuse_location',
+            answers: [
+              {
+                id: 'audio',
+                label: 'Audio',
+                value: {},
+              },
+            ],
+          },
+        ],
+        metadata: [
+          {
+            questionId:
+              'violent_extremism/question/video_3999_3888_tvc_fte/applicable_individual_name_beats1',
+            answers: [
+              {
+                id: 'yevgeny_prigozhin',
+                label: 'Yevgeny Prigozhin',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_3999_3888_tvc_fte/abuse_location',
+            answers: [
+              {
+                id: 'metadata_title',
+                label: 'Metadata - Video title',
+                value: {},
+              },
+              {
+                id: 'metadata_description',
+                label: 'Metadata - Video description',
+                value: {},
+              },
+              {
+                id: 'metadata_video_tags',
+                label: 'Metadata - Video tags',
+                value: {},
+              },
+            ],
+          },
+        ],
+      },
+      9008: [
+        {
+          questionId:
+            'violent_extremism/question/borderline_video/borderline_decision',
+          answers: [
+            {
+              id: 'no',
+              label: 'No, unrelated to VE',
+            },
+          ],
+        },
+      ],
+    };
+
+    if (policyId === '9008') return answersById[policyId];
+
+    return answersById[policyId][contentType];
   },
 };
 
