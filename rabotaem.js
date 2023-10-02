@@ -2670,8 +2670,8 @@ let ui_ = {
       const [approveMenu, routeMenu] = strikeDropdownMenus.splice(-2);
       container.replaceChildren(
         stopwatch,
-        routeMenu,
         approveMenu,
+        routeMenu,
         ...strikeDropdownMenus,
         veGroupDropdownSelector
       );
