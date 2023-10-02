@@ -585,87 +585,87 @@ let recommendationNotes = {
       {
         title: '[3065] Depictive >50%',
         value: () =>
-          `${store_.selectedVEGroup.text} depictive content >50% of video without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
+          `${utils_.get.selectedVEGroup.text} depictive content >50% of video without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
       {
         title: '[3065] Upbeat Music',
         value: () =>
-          `${store_.selectedVEGroup.text} depictive content with upbeat music without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
+          `${utils_.get.selectedVEGroup.text} depictive content with upbeat music without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
       {
         title: '[3065] >2x',
         value: () =>
-          `${store_.selectedVEGroup.text} produced content used 2x or more, without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
+          `${utils_.get.selectedVEGroup.text} produced content used 2x or more, without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
       {
         title: '[3065] Glorifying Lyrics',
         value: () =>
-          `${store_.selectedVEGroup.text} glorifying lyrics without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
+          `${utils_.get.selectedVEGroup.text} glorifying lyrics without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
       {
         title: '[3065] Produced Song',
         value: () =>
-          `${store_.selectedVEGroup.text} produced song without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
+          `${utils_.get.selectedVEGroup.text} produced song without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
     ],
     3039: [
       {
         title: '[3039] Raw reupload',
         value: () =>
-          `${store_.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA ${utils_.get.noteTimestamp}\nChannel not dedicated\nRussian (not agnostic)`,
+          `${utils_.get.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA ${utils_.get.noteTimestamp}\nChannel not dedicated\nRussian (not agnostic)`,
       },
       {
         title: '[3039] Glorification',
         value: () =>
-          `Glorification of ${store_.selectedVEGroup.text} ${utils_.get.noteTimestamp}\nChannel not dedicated\nRussian (not agnostic)`,
+          `Glorification of ${utils_.get.selectedVEGroup.text} ${utils_.get.noteTimestamp}\nChannel not dedicated\nRussian (not agnostic)`,
       },
       {
         title: '[3039] Glorifying Lyrics',
         value: () =>
-          `${store_.selectedVEGroup.text} glorifying lyrics ${utils_.get.noteTimestamp}\nChannel not dedicated\nRussian (not agnostic)`,
+          `${utils_.get.selectedVEGroup.text} glorifying lyrics ${utils_.get.noteTimestamp}\nChannel not dedicated\nRussian (not agnostic)`,
       },
 
       {
         title: '[3039] Produced Song',
         value: () =>
-          `${store_.selectedVEGroup.text} produced song ${utils_.get.noteTimestamp}\nChannel not dedicated\nRussian (not agnostic)`,
+          `${utils_.get.selectedVEGroup.text} produced song ${utils_.get.noteTimestamp}\nChannel not dedicated\nRussian (not agnostic)`,
       },
       {
         title: '[3039] Memorial',
         value: () =>
-          `${store_.selectedVEGroup.text} memorial video ${utils_.get.noteTimestamp}\nChannel not dedicated\nRussian (not agnostic)`,
+          `${utils_.get.selectedVEGroup.text} memorial video ${utils_.get.noteTimestamp}\nChannel not dedicated\nRussian (not agnostic)`,
       },
     ],
     3044: [
       {
         title: '[3044] Raw reupload',
         value: () =>
-          `${store_.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA ${utils_.get.noteTimestamp}\nChannel dedicated\n• _________\n• _________\nRussian (not agnostic)`,
+          `${utils_.get.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA ${utils_.get.noteTimestamp}\nChannel dedicated\n• _________\n• _________\nRussian (not agnostic)`,
       },
       {
         title: '[3044] Glorification',
         value: () =>
-          `Glorification of ${store_.selectedVEGroup.text} ${utils_.get.noteTimestamp}\nChannel dedicated\n• _________\n• _________\nRussian (not agnostic)`,
+          `Glorification of ${utils_.get.selectedVEGroup.text} ${utils_.get.noteTimestamp}\nChannel dedicated\n• _________\n• _________\nRussian (not agnostic)`,
       },
       {
         title: '[3044] Glorifying Lyrics',
         value: () =>
-          `${store_.selectedVEGroup.text} glorifying lyrics ${utils_.get.noteTimestamp}\nChannel dedicated\n• _________\n• _________\nRussian (not agnostic)`,
+          `${utils_.get.selectedVEGroup.text} glorifying lyrics ${utils_.get.noteTimestamp}\nChannel dedicated\n• _________\n• _________\nRussian (not agnostic)`,
       },
       {
         title: '[3044][1] Raw reupload',
         value: () =>
-          `${store_.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA ${utils_.get.noteTimestamp}\nChannel dedicated (single video on channel)\nRussian (not agnostic)`,
+          `${utils_.get.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA ${utils_.get.noteTimestamp}\nChannel dedicated (single video on channel)\nRussian (not agnostic)`,
       },
       {
         title: '[3044][1] Glorification',
         value: () =>
-          `Glorification of ${store_.selectedVEGroup.text} ${utils_.get.noteTimestamp}\nChannel dedicated (single video on channel)\nRussian (not agnostic)`,
+          `Glorification of ${utils_.get.selectedVEGroup.text} ${utils_.get.noteTimestamp}\nChannel dedicated (single video on channel)\nRussian (not agnostic)`,
       },
       {
         title: '[3044][1] Glorifying Lyrics',
         value: () =>
-          `${store_.selectedVEGroup.text} glorifying lyrics ${utils_.get.noteTimestamp}\nChannel dedicated (single video on channel)\nRussian (not agnostic)`,
+          `${utils_.get.selectedVEGroup.text} glorifying lyrics ${utils_.get.noteTimestamp}\nChannel dedicated (single video on channel)\nRussian (not agnostic)`,
       },
     ],
     3999: [
@@ -686,7 +686,7 @@ let recommendationNotes = {
       {
         title: '[5013] Raw reupload',
         value: () =>
-          `${store_.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA ${utils_.get.noteTimestamp}\n5013 PIA\nRussian (not agnostic)`,
+          `${utils_.get.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA ${utils_.get.noteTimestamp}\n5013 PIA\nRussian (not agnostic)`,
       },
     ],
   },
