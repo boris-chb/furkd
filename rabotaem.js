@@ -120,7 +120,10 @@ let store_ = {
     id: '',
     label: '',
   },
-  selectedVEGroup: store_.newVeGroups.wagner,
+  selectedVEGroup: {
+    id: 'wagner_pmc',
+    label: 'Wagner PMC - VNSA',
+  },
   opacity: '0.8',
   veGroups: {
     alq: 'al_qaida_aq_including',
