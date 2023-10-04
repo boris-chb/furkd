@@ -344,6 +344,14 @@ let store_ = {
       actionCategorySummary: 'ACTION_REMOVE',
     },
     {
+      id: '3099',
+      description:
+        'Videos posted to share violent extremism behaviors including glorifying violence, aiding violent organizations, or depicting hostages with the intent to solicit, threaten, or intimidate.',
+      tags: ['non-designated VE behaviors'],
+      policyVertical: 'VIOLENT_EXTREMISM',
+      actionCategorySummary: 'ACTION_REMOVE',
+    },
+    {
       id: '5013',
       description:
         'Low EDSA incitement to violence, FTO, ultra graphic violence',
@@ -673,6 +681,12 @@ let recommendationNotes = {
         title: '[3999] Prigozhin',
         value: () =>
           `Yevgeny Prigozhin footage without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
+      },
+    ],
+    3099: [
+      {
+        title: '[3099] Physical abuse',
+        value: () => `Hostages physical abuse without 4C EDSA\n`,
       },
     ],
     3888: [
@@ -1407,7 +1421,7 @@ let action_ = {
     async strike(
       policyId = '3039',
       contentType = 'video',
-      language = 'russian'
+      language
     ) {
       const { expandNotesArea } = ui_.mutations;
       const { setAnswers, generateAnswers } = questionnaire_;
@@ -1425,6 +1439,8 @@ let action_ = {
       });
 
       function answerQuestionnaireAndSave() {
+        // dom_.videoDecisionPanel.onSave();
+        if (!store_.is.queue('xsource')) return;
         // for 3044 select 3039 to avoid duplicates since they have same structure
         const selectedPolicyId =
           policyId === '3044'
@@ -1437,8 +1453,8 @@ let action_ = {
 
       await retry(answerQuestionnaireAndSave, 800, 4000);
       utils_.showNotes();
-      expandNotesArea();
 
+      expandNotesArea();
       setTimeout(ui_.showTimers, 1);
     },
     route(queue, noteType, reason = 'policy vertical') {
@@ -2057,6 +2073,16 @@ let props_ = {
           key: '📎 Metadata',
           value: 'metadata',
           onClick: () => action_.video.strike('3044', 'metadata'),
+        },
+      ],
+    },
+    3099: {
+      label: '3099',
+      children: [
+        {
+          key: 'Demo',
+          value: 'video',
+          onClick: () => action_.video.strike('3099'),
         },
       ],
     },
