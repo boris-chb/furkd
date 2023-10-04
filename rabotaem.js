@@ -1167,7 +1167,7 @@ let utils_ = {
       console.log(arguments.callee.name, e.stack);
     }
   },
-  showNotes() {
+  showNotes(policyId = utils_.get.selectedPolicyId) {
     // remove old notes
     const existingNotes = getElement('#recommendation-notes')?.[0];
 
@@ -1176,9 +1176,7 @@ let utils_ = {
     }
 
     const isRouting = store_.is.routing;
-    let notesArr = isRouting
-      ? []
-      : recommendationNotes.strike[utils_.get.selectedPolicyId];
+    let notesArr = isRouting ? [] : recommendationNotes.strike[policyId];
 
     // render new ones
     ui_.components
@@ -1376,6 +1374,7 @@ let action_ = {
       },
       selectLanguage(language) {
         try {
+          if (!language) return;
           let langOptions = Array.from(
             getElement('#decision-panel-language-select > mwc-list-item')
           );
@@ -1465,22 +1464,26 @@ let action_ = {
         selectLanguageDropdrown(language);
       });
 
-      function answerQuestionnaireAndSave() {
-        // for 3044 select 3039 to avoid duplicates since they have same structure
-        const selectedPolicyId =
-          policyId === '3044'
-            ? '3039'
-            : policyId === '3888'
-            ? '3999'
-            : policyId;
-        return setAnswers(generateAnswers(selectedPolicyId, contentType));
+      // answer strike questionnaire only in xsource
+      if (store_.is.queue('xsource')) {
+        await retry(
+          function answerQuestionnaireAndSave() {
+            // for 3044 select 3039 to avoid duplicates since they have same structure
+            const selectedPolicyId =
+              policyId === '3044'
+                ? '3039'
+                : policyId === '3888'
+                ? '3999'
+                : policyId;
+            return setAnswers(generateAnswers(selectedPolicyId, contentType));
+          },
+          800,
+          4000
+        );
       }
 
-      await retry(answerQuestionnaireAndSave, 800, 4000);
-      utils_.showNotes();
-
       expandNotesArea();
-      setTimeout(ui_.showTimers, 1);
+      setTimeout(() =>utils_.showNotes(), 500)
     },
     route(queue, noteType, reason = 'policy vertical') {
       // TODO
@@ -2951,6 +2954,12 @@ let ui_ = {
       return container;
     },
   },
+  toggleMediaLibrary() {
+    let myframe = utils_.strToNode(
+      `<iframe src="https://dashboards.corp.google.com/embed/_c2a46c2c_a513_4f1a_8add_135ffc560fe8" height="100%" width="100%" frameborder="0"></iframe>`
+    );
+    getElement('.view-overflow')[0].shadowRoot.appendChild(myframe);
+  },
   mutate() {
     const { expandTranscriptContainer } = ui_.mutations;
 
@@ -3226,7 +3235,6 @@ let ui_ = {
 let questionnaire_ = {
   setAnswers(answers) {
     // BUG TEMPORARY FIX labellingGraph.oh
-    if (!store_.is.queue('xsource')) return true;
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
