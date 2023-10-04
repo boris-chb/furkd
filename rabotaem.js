@@ -685,6 +685,11 @@ let recommendationNotes = {
     ],
     3099: [
       {
+        title: '[3099] School shooting + music',
+        value: () =>
+          `School shooting attack in 4C paired with upbeat music #fullvideo\n`,
+      },
+      {
         title: '[3099] Physical abuse',
         value: () =>
           `Hostages are being beaten, slapped, shot, sprayed with liquids, left unattended despite visible wounds, burned, submerged in water, or any other form of violent physical contact, without 4C EDSA #fullvideo\n`,
@@ -1425,8 +1430,8 @@ let action_ = {
 
       action_.video.steps.selectPolicy('9008');
 
-      if (!store_.is.queue('metrics')) {
-        // don't answer questionnaire in metrics
+      if (store_.is.queue('xsource')) {
+        // approve questionnaire only in xsource
         await retry(function approveQuestionnaire() {
           questionnaire_.setAnswers(questionnaire_.generateAnswers('9008'));
         });
@@ -1461,8 +1466,6 @@ let action_ = {
       });
 
       function answerQuestionnaireAndSave() {
-        // dom_.videoDecisionPanel.onSave();
-        if (!store_.is.queue('xsource')) return;
         // for 3044 select 3039 to avoid duplicates since they have same structure
         const selectedPolicyId =
           policyId === '3044'
@@ -3223,6 +3226,7 @@ let ui_ = {
 let questionnaire_ = {
   setAnswers(answers) {
     // BUG TEMPORARY FIX labellingGraph.oh
+    if (!store_.is.queue('xsource')) return true;
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
@@ -3232,7 +3236,10 @@ let questionnaire_ = {
       !dom_.questionnaire.labellingGraph.oh ||
       dom_.questionnaire.labellingGraph.oh.size === 0
     ) {
-      throw new Error('Questions not Answered!');
+      throw new Error(
+        'Questions not Answered!',
+        dom_.questionnaire.labellingGraph
+      );
     }
 
     console.log('💾 Saving questionnaire. Answers:');
