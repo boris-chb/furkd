@@ -2943,12 +2943,18 @@ let ui_ = {
     </mwc-list-item>
     </mwc-list>`);
 
-    const childList = strToNode(`<mwc-list></mwc-list>`);
+    // const childList = strToNode(`<mwc-list></mwc-list>`);
+
+    const childList = strToNode(
+      `<div style="display: grid; grid-template-columns: 1fr 1fr ${
+        label?.toLowerCase()?.includes('route') ? '1fr' : ''
+      };"></div>`
+    );
     childList.style.display = 'none';
 
     function toggleShowList() {
       childList.style.display === 'none'
-        ? (childList.style.display = 'block')
+        ? (childList.style.display = 'grid')
         : (childList.style.display = 'none');
     }
 
@@ -2971,7 +2977,6 @@ let ui_ = {
     });
 
     childList.replaceChildren(...childListItems);
-
     parentList.appendChild(childList);
     parentList.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -3141,7 +3146,7 @@ let ui_ = {
         console.log(e);
       }
     },
-    expandNotesArea(rows = 12, actionType = 'route') {
+    expandNotesArea(rows = 8, actionType = 'route') {
       let notesTextArea;
       notesTextArea = actionType = 'route'
         ? getElement('.mdc-text-field__input')?.[0]
@@ -3169,15 +3174,15 @@ let ui_ = {
 
 let questionnaire_ = {
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.nh
+    // BUG TEMPORARY FIX labellingGraph.oh
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
     answers.forEach((answer) => dom_.questionnaire.setAnswers(answer));
 
     if (
-      !dom_.questionnaire.labellingGraph.nh ||
-      dom_.questionnaire.labellingGraph.nh.size === 0
+      !dom_.questionnaire.labellingGraph.oh ||
+      dom_.questionnaire.labellingGraph.oh.size === 0
     ) {
       throw new Error('Questions not Answered!');
     }
@@ -3186,7 +3191,7 @@ let questionnaire_ = {
 
     dom_.questionnaire.onSave();
 
-    return dom_.questionnaire.labellingGraph.nh;
+    return dom_.questionnaire.labellingGraph.oh;
   },
   generateAnswers(policyId = '3039', contentType = 'video') {
     abuseLocationMapper = {
