@@ -686,7 +686,33 @@ let recommendationNotes = {
     3099: [
       {
         title: '[3099] Physical abuse',
-        value: () => `Hostages physical abuse without 4C EDSA\n`,
+        value: () =>
+          `Hostages are being beaten, slapped, shot, sprayed with liquids, left unattended despite visible wounds, burned, submerged in water, or any other form of violent physical contact, without 4C EDSA #fullvideo\n`,
+      },
+      {
+        title: '[3099] Verbal abuse',
+        value: () =>
+          `Hostages are being threatened, mocked, called names or insults, taunted, etc., without 4C EDSA #fullvideo\n`,
+      },
+      {
+        title: '[3099] Humiliation',
+        value: () =>
+          `Hostages are stripped of their clothes, shown naked, paraded in front of crowds, forced to beg, etc., without 4C EDSA #fullvideo\n`,
+      },
+      {
+        title: '[3099] Restrained',
+        value: () =>
+          `Hostages are shown tied up, handcuffed, jailed, blindfolded, gagged, or otherwise confined, without 4C EDSA #fullvideo\n`,
+      },
+      {
+        title: '[3099] Likely prepared or forced statements in captivity',
+        value: () =>
+          `Hostages are shown reading scripted or prepared remarks while captive. If the individual is described in the 4-corners or metadata as a hostage, treat statements as though they are prepared or forced. E.g., confessions, appeals to military or civilian leadership, soliciting demands etc., without 4C EDSA #fullvideo\n`,
+      },
+      {
+        title: '[3099] Drive traffic',
+        value: () =>
+          `Statements, legible or audible links in the 4-corners or metadata, directing viewers to footage that could contain hostage-taking content. Link validation is not necessary. Links are assessed based on surrounding context, without 4C EDSA #fullvideo\n`,
       },
     ],
     3888: [
@@ -1418,11 +1444,7 @@ let action_ = {
         return true;
       }
     },
-    async strike(
-      policyId = '3039',
-      contentType = 'video',
-      language
-    ) {
+    async strike(policyId = '3039', contentType = 'video', language) {
       const { expandNotesArea } = ui_.mutations;
       const { setAnswers, generateAnswers } = questionnaire_;
       const {
