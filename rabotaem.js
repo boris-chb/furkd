@@ -1,4 +1,4 @@
-// 02.10.2023
+// 26.10.2023
 
 try {
   utils_.clearTimers();
@@ -123,6 +123,7 @@ let store_ = {
   selectedVEGroup: {
     id: 'wagner_pmc',
     label: 'Wagner PMC - VNSA',
+    value: {},
   },
   opacity: '0.8',
   veGroups: {
@@ -1448,7 +1449,11 @@ let action_ = {
         return true;
       }
     },
-    async strike(policyId = '3039', contentType = 'video', language) {
+    async strike(
+      policyId = '3039',
+      contentType = 'video',
+      language = 'russian'
+    ) {
       const { expandNotesArea } = ui_.mutations;
       const { setAnswers, generateAnswers } = questionnaire_;
       const {
@@ -1460,12 +1465,13 @@ let action_ = {
 
       await retry(addReview);
       await retry(function selectPolicyAndLanguage() {
+        console.log(policyId, language);
         selectPolicy(policyId);
         selectLanguageDropdrown(language);
       });
 
-      // answer strike questionnaire only in xsource
-      if (store_.is.queue('xsource')) {
+      // answer strike questionnaire only in xsource and appeals
+      if (store_.is.queue('xsource') || store_.is.queue('User Appeals')) {
         await retry(
           function answerQuestionnaireAndSave() {
             // for 3044 select 3039 to avoid duplicates since they have same structure
@@ -1483,7 +1489,7 @@ let action_ = {
       }
 
       expandNotesArea();
-      setTimeout(() =>utils_.showNotes(), 500)
+      setTimeout(() => utils_.showNotes(policyId), 500);
     },
     route(queue, noteType, reason = 'policy vertical') {
       // TODO
@@ -2816,7 +2822,11 @@ let ui_ = {
           },
           'filter-ids-btn'
         ),
-        ui_.createIconButton('note_add', utils_.showNotes, 'show-notes-btn'),
+        ui_.createIconButton(
+          'note_add',
+          () => utils_.showNotes(),
+          'show-notes-btn'
+        ),
         ui_.createIconButton(
           'delete',
           () => {
@@ -3234,15 +3244,15 @@ let ui_ = {
 
 let questionnaire_ = {
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.oh
+    // BUG TEMPORARY FIX labellingGraph.sg
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
     answers.forEach((answer) => dom_.questionnaire.setAnswers(answer));
 
     if (
-      !dom_.questionnaire.labellingGraph.oh ||
-      dom_.questionnaire.labellingGraph.oh.size === 0
+      !dom_.questionnaire.labellingGraph.sg ||
+      dom_.questionnaire.labellingGraph.sg.size === 0
     ) {
       throw new Error(
         'Questions not Answered!',
@@ -3254,7 +3264,7 @@ let questionnaire_ = {
 
     dom_.questionnaire.onSave();
 
-    return dom_.questionnaire.labellingGraph.oh;
+    return dom_.questionnaire.labellingGraph.sg;
   },
   generateAnswers(policyId = '3039', contentType = 'video') {
     abuseLocationMapper = {
@@ -3948,9 +3958,40 @@ let questionnaire_ = {
       ],
     };
 
-    if (policyId === '9008') return answersById[policyId];
+    let newAnswers = {
+      3039: [
+        {
+          questionId: `violent_extremism/question/video_${policyId}_tvc/applicable_ve_group`,
+          answers: [store_.selectedVEGroup],
+        },
+        {
+          questionId: `violent_extremism/question/video_${policyId}_tvc/act_type`,
+          answers: [
+            {
+              id: 'glorification_terrorism',
+              label: 'Glorification of terrorism or terrorist acts',
+              value: {},
+            },
+          ],
+        },
+      ],
+    };
 
-    return answersById[policyId][contentType];
+    // 3065 has one extra question (produced/depictive/bystander)
+    if (policyId === '3065') {
+      newAnswers['3039'].push({
+        questionId: `violent_extremism/question/video_${policyId}_tvc/violation_reason`,
+        answers: [
+          {
+            id: 'produced_content',
+            label: 'Produced Content',
+            value: {},
+          },
+        ],
+      });
+    }
+
+    return newAnswers['3039'];
   },
 };
 
@@ -4076,5 +4117,5 @@ function checkForLewd(
 
 $main();
 
-// 02.10.2023
+// 26.10.2023
 // [✅] radu pidar
