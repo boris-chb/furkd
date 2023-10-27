@@ -1430,12 +1430,12 @@ let action_ = {
 
       action_.video.steps.selectPolicy('9008');
 
-      if (store_.is.queue('xsource')) {
-        // approve questionnaire only in xsource
-        await retry(function approveQuestionnaire() {
-          questionnaire_.setAnswers(questionnaire_.generateAnswers('9008'));
-        });
-      }
+      // if (store_.is.queue('xsource')) {
+      //   // approve questionnaire only in xsource
+      //   await retry(function approveQuestionnaire() {
+      //     questionnaire_.setAnswers(questionnaire_.generateAnswers('9008'));
+      //   });
+      // }
 
       await retry(function saveReview() {
         dom_.videoDecisionPanel.onSave();
