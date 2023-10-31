@@ -1,4 +1,4 @@
-// 26.10.2023
+// 31.10.2023
 
 try {
   utils_.clearTimers();
@@ -213,6 +213,7 @@ let store_ = {
   },
   wordsByCategory: {
     ve: [
+      '25.000',
       'спецопераци',
       'чувака',
       'чувакова',
@@ -4122,5 +4123,5 @@ function checkForLewd(
 
 $main();
 
-// 26.10.2023
+// 31.10.2023
 // [✅] radu pidar
