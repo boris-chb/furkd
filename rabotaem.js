@@ -421,6 +421,11 @@ let recommendationNotes = {
   route: {
     arabic: [
       {
+        title: 'Language support',
+        value: () =>
+          `Need language support ${utils_.get.noteTimestamp}\nRussian part is approve`,
+      },
+      {
         title: 'Nasheed',
         value: () =>
           `Please check nasheed ${utils_.get.noteTimestamp}\nRussian part is approve`,
