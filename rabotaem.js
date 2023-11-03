@@ -3250,15 +3250,15 @@ let ui_ = {
 
 let questionnaire_ = {
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.sg
+    // BUG TEMPORARY FIX labellingGraph.xg
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
     answers.forEach((answer) => dom_.questionnaire.setAnswers(answer));
 
     if (
-      !dom_.questionnaire.labellingGraph.sg ||
-      dom_.questionnaire.labellingGraph.sg.size === 0
+      !dom_.questionnaire.labellingGraph.xg ||
+      dom_.questionnaire.labellingGraph.xg.size === 0
     ) {
       throw new Error(
         'Questions not Answered!',
@@ -3270,7 +3270,7 @@ let questionnaire_ = {
 
     dom_.questionnaire.onSave();
 
-    return dom_.questionnaire.labellingGraph.sg;
+    return dom_.questionnaire.labellingGraph.xg;
   },
   generateAnswers(policyId = '3039', contentType = 'video') {
     abuseLocationMapper = {
