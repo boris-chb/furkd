@@ -422,11 +422,6 @@ let recommendationNotes = {
   route: {
     arabic: [
       {
-        title: 'Language support',
-        value: () =>
-          `Need language support ${utils_.get.noteTimestamp}\nRussian part is approve`,
-      },
-      {
         title: 'Nasheed',
         value: () =>
           `Please check nasheed ${utils_.get.noteTimestamp}\nRussian part is approve`,
@@ -440,6 +435,16 @@ let recommendationNotes = {
         title: 'Arabic Part',
         value: () =>
           `Please check Arabic part ${utils_.get.noteTimestamp}\nRussian part is approve`,
+      },
+      {
+        title: 'Language support (ru)',
+        value: () =>
+          `Need language support ${utils_.get.noteTimestamp}\nRussian part is approve`,
+      },
+      {
+        title: 'Language support (agn)',
+        value: () =>
+          `Need language support ${utils_.get.noteTimestamp}\nAgnostic review`,
       },
     ],
     drugs: [
@@ -3250,15 +3255,15 @@ let ui_ = {
 
 let questionnaire_ = {
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.fh
+    // BUG TEMPORARY FIX labellingGraph.gh
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
     answers.forEach((answer) => dom_.questionnaire.setAnswers(answer));
 
     if (
-      !dom_.questionnaire.labellingGraph.fh ||
-      dom_.questionnaire.labellingGraph.fh.size === 0
+      !dom_.questionnaire.labellingGraph.gh ||
+      dom_.questionnaire.labellingGraph.gh.size === 0
     ) {
       throw new Error(
         'Questions not Answered!',
@@ -3270,7 +3275,7 @@ let questionnaire_ = {
 
     dom_.questionnaire.onSave();
 
-    return dom_.questionnaire.labellingGraph.fh;
+    return dom_.questionnaire.labellingGraph.gh;
   },
   generateAnswers(policyId = '3039', contentType = 'video') {
     abuseLocationMapper = {
@@ -4074,6 +4079,7 @@ function $main() {
   // init
   on_.newVideo();
 
+  // multiple tabs
   getElement('.stopwatch')?.[0].addEventListener('contextmenu', (e) => {
     if (e.ctrlKey) {
       history.pushState({}, '', '#yort');
