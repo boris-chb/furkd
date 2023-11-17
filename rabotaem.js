@@ -296,6 +296,9 @@ let store_ = {
     get autosubmit() {
       return getElement('.autosubmit-switch')[0].checked;
     },
+    get endreview() {
+      return getElement('.endreview-checkbox')[0].checked;
+    },
     readyForSubmit() {
       return getElement('yurt-core-decision-submit-panel')?.[0]?.readyForSubmit;
     },
@@ -1135,8 +1138,7 @@ let utils_ = {
       );
     }
   },
-
-  setTimer(minutes, endReview = store_.is.autosubmit) {
+  setTimer(minutes, endReview = store_.is.endreview) {
     // clear the previous timer
     clearTimeout(store_.submitId);
 
@@ -1938,32 +1940,6 @@ let props_ = {
       },
       { text: '⏭ Hate', onClick: () => action_.video.route('hate') },
       { text: 'X L A N G', onClick: () => action_.video.route('xlang') },
-    ],
-    timers: [
-      {
-        text: '1',
-        onClick: () => utils_.setTimer(1, store_.is.autosubmit),
-      },
-      {
-        text: '2',
-        onClick: () => utils_.setTimer(2, store_.is.autosubmit),
-      },
-      {
-        text: '3',
-        onClick: () => utils_.setTimer(3, store_.is.autosubmit),
-      },
-      {
-        text: '4',
-        onClick: () => utils_.setTimer(4, store_.is.autosubmit),
-      },
-      {
-        text: '5',
-        onClick: () => utils_.setTimer(5, store_.is.autosubmit),
-      },
-      {
-        text: '10',
-        onClick: () => utils_.setTimer(10, store_.is.autosubmit),
-      },
     ],
   },
   dropdownList: {
@@ -2777,13 +2753,6 @@ let ui_ = {
             return;
           }
 
-          const timersArr = [1, 2, 3, 4, 5, 10].map((timerMin) =>
-            ui_.createButton(timerMin, function () {
-              setTimer(timerMin, store_.is.autosubmit);
-              ui_.components.stopwatchPanel.showTimers();
-            })
-          );
-
           const timersWrapper = strToNode(
             `<tcs-view class="timers container" align="center" spec="row"></tcs-view>`
           );
@@ -3189,7 +3158,7 @@ let ui_ = {
 
     const timersArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((timerMin) =>
       ui_.createButton(timerMin, () => {
-        setTimer(timerMin, store_.is.autosubmit);
+        setTimer(timerMin);
         mwcMenu.open = false;
       })
     );
