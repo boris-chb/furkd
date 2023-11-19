@@ -126,6 +126,7 @@ let store_ = {
     value: {},
   },
   opacity: '0.8',
+  textAreaRows: 10,
   veGroups: {
     alq: 'al_qaida_aq_including',
     hezbollah: 'hizballah_political_and_militant_organizations',
@@ -747,6 +748,13 @@ let recommendationNotes = {
         title: '[5013] Raw reupload',
         value: () =>
           `${utils_.get.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA ${utils_.get.noteTimestamp}\n5013 PIA\nRussian (not agnostic)`,
+      },
+    ],
+    6120: [
+      {
+        title: '[6120] PFF + weapon',
+        value: () =>
+          `Perpetrator-filmed footage where weapons, injured bodies, or violence is in frame or heard in audio ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
     ],
   },
@@ -1533,7 +1541,7 @@ let action_ = {
       setTimeout(() => {
         $selectTarget(queue, reason);
         selectTextArea();
-        ui_.mutate();
+        ui_.mutations.expandRouteNotesArea();
         ui_.showTimers();
         ui_.components
           .recommendationPanel({
@@ -2950,11 +2958,6 @@ let ui_ = {
     );
     getElement('.view-overflow')[0].shadowRoot.appendChild(myframe);
   },
-  mutate() {
-    const { expandTranscriptContainer } = ui_.mutations;
-
-    expandTranscriptContainer();
-  },
   createButton(label = 'My Button', onClick = () => {}, className) {
     let btn = this.strToNode(
       `<tcs-button spec="flat-primary">${label}</tcs-button>`
@@ -3196,13 +3199,9 @@ let ui_ = {
         console.log(e);
       }
     },
-    expandNotesArea(rows = 8, actionType = 'route') {
+    expandNotesArea(rows = store_.textAreaRows) {
       let notesTextArea;
-      notesTextArea = actionType = 'route'
-        ? getElement('.mdc-text-field__input')?.[0]
-        : getElement(
-            'mwc-textarea[data-test-id=core-decision-policy-edit-notes]'
-          )?.[0];
+      notesTextArea = getElement('.mdc-text-field__input')?.[0];
 
       // increase size of note input box
       notesTextArea.rows = rows;
@@ -3218,6 +3217,9 @@ let ui_ = {
       } catch (e) {
         // console.error('Could not expand add review', e);
       }
+    },
+    expandRouteNotesArea(rows = store_.textAreaRows) {
+      getElement('.notes-input')[0].rows = rows;
     },
   },
 };
@@ -3987,7 +3989,7 @@ let on_ = {
     function initUI() {
       // transcript_.observeTranscriptMutations();
       ui_.draw();
-      ui_.mutate();
+      ui_.mutations.expandTranscriptContainer();
       ui_.showTimers();
     }
 
