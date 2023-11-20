@@ -2524,6 +2524,10 @@ let ui_ = {
             : (configPanel.style.display = 'none');
         }
       }
+
+      if (!getElement('.approve-panel__header')) {
+        dom_.header.appendChild(ui_.components.approvePanelHeader);
+      }
     } catch (e) {
       throw new Error('Could not draw UI', e);
     }
@@ -2692,7 +2696,32 @@ let ui_ = {
 
       return element;
     },
-    get strikePanel() {
+    get approvePanelHeader() {
+      const container = utils_.strToNode(
+        '<div style="opacity: 0; margin-left:auto; margin-right: 50px; transition: opacity 300ms;" class="approve-panel__header"></div>'
+      );
+      const btns = props_.button.approve.map(({ text, onClick }) =>
+        ui_.createButton(text, onClick)
+      );
+      container.replaceChildren(...btns);
+
+      // Function to handle mouseenter event
+      function handleMouseEnter() {
+        container.style.opacity = 1;
+      }
+
+      // Function to handle mouseleave event
+      function handleMouseLeave() {
+        container.style.opacity = 0;
+      }
+
+      // Add event listeners
+      container.addEventListener('mouseenter', handleMouseEnter);
+      container.addEventListener('mouseleave', handleMouseLeave);
+
+      return container;
+    },
+    get actionPanel() {
       const {
         createDropdownMenu,
         atoms: { card: createCard, dropdown: createDropdownSelector },
@@ -2702,10 +2731,8 @@ let ui_ = {
       } = ui_;
 
       const container = utils_.strToNode(
-        `<div class="strike-panel container"></div>`
+        `<div style="margin-bottom: 20px;" class="strike-panel container"></div>`
       );
-
-      stopwatch.style.marginBottom = '20px';
 
       const veGroupDropdownSelector = createDropdownSelector(
         props_.dropdown.strike
@@ -2872,7 +2899,7 @@ let ui_ = {
       if (store_.is.queue('comments')) return;
 
       let recommendationList = utils_.strToNode(
-        `<mwc-list id="recommendation-notes" style="margin: 30px 0px; opacity: 0; transition: opacity 500ms;">${notesArr
+        `<mwc-list id="recommendation-notes" style="margin: 30px 0px; opacity: 0; transition: opacity 300ms;">${notesArr
           ?.map(
             (note) =>
               `<mwc-list-item class="recommendation-item" graphic="avatar" value="${note.value()}"><span>${
@@ -2934,8 +2961,8 @@ let ui_ = {
         },
       };
     },
-    get actionPanel() {
-      const { approvePanel, strikePanel } = this;
+    get DEPRECATED_actionPanel() {
+      const { approvePanel, actionPanel } = this;
 
       let container = utils_.strToNode(
         `<div class="action-panel" style="display: flex; flex-direction: column; justify-content: start; gap: 1rem; padding: 3rem 0 10rem 0;"></div>`
@@ -2943,7 +2970,7 @@ let ui_ = {
 
       const elemsArr = [
         // approvePanel,
-        strikePanel,
+        actionPanel,
         // approveNotesPanel,
       ];
 
@@ -3104,7 +3131,7 @@ let ui_ = {
     } = ui_;
 
     const container = strToNode(
-      `<div style="opacity: 0; transition: opacity 500ms;" class="violative-words-container"></div>`
+      `<div style="opacity: 0; transition: opacity 300ms;" class="violative-words-container"></div>`
     );
 
     // Function to handle mouseenter event
@@ -3999,7 +4026,7 @@ let on_ = {
 
 function $main() {
   // Event Listeners & Notifications
-  dom_.strikePanel = ui_.components.strikePanel;
+  dom_.strikePanel = ui_.components.actionPanel;
   dom_.autosubmitSwitch = ui_.atoms.switch('🢅', 'autosubmit-switch');
   dom_.strikePanel.style.position = 'absolute';
   dom_.strikePanel.style.display = 'none';
