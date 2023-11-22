@@ -1,4 +1,4 @@
-// 09.11.2023
+// 22.11.2023
 
 try {
   utils_.clearTimers();
@@ -13,7 +13,7 @@ function getElement(query) {
     if (
       queryselector &&
       rootElement.querySelectorAll(queryselector) &&
-      rootElement.querySelectorAll(queryselector)[0]
+      rootElement.querySelectorAll(queryselector)?.[0]
     ) {
       myElement = rootElement.querySelectorAll(queryselector);
       return;
@@ -34,14 +34,14 @@ function getElement(query) {
 
 let remoteController = {
   addNote(noteStr) {
-    let decisionCard = getElement('yurt-core-decision-policy-card')[0];
+    let decisionCard = getElement('yurt-core-decision-policy-card')?.[0];
     decisionCard.annotation.notes = noteStr;
   },
   startReview() {
-    getElement('#start-review-button')[0]?.click();
+    getElement('#start-review-button')?.[0]?.click();
   },
   release() {
-    getElement('.release')[0].click();
+    getElement('.release')?.[0].click();
   },
   async getEntityHistory(videoId = utils_.get.queue.info().entityID) {
     let enitityHistoryEvents = await fetch(
@@ -295,13 +295,13 @@ let store_ = {
   },
   is: {
     get autosubmit() {
-      return getElement('.autosubmit-switch')[0].checked;
+      return getElement('.autosubmit-switch')?.[0].checked;
     },
     get endreview() {
-      return getElement('.endreview-checkbox')[0].checked;
+      return getElement('.endreview-checkbox')?.[0].checked;
     },
     readyForSubmit() {
-      return getElement('yurt-core-decision-submit-panel')[0]?.readyForSubmit;
+      return getElement('yurt-core-decision-submit-panel')?.[0]?.readyForSubmit;
     },
     queue(qName) {
       return utils_.get.queue.name()?.includes(qName.toLowerCase());
@@ -562,7 +562,7 @@ let recommendationNotes = {
         title: '{ Slur }',
         value: () =>
           `please check for slur ${(() => {
-            const highlightedWord = getElement('.current-transcript')[0]
+            const highlightedWord = getElement('.current-transcript')?.[0]
               .textContent;
 
             return highlightedWord ? highlightedWord : '';
@@ -767,8 +767,8 @@ let utils_ = {
       if (queryStr === 'mwc-list-item') {
         // for list-item, convert nodelist to array, then filter based on value
         let btnNodeList = getElement(queryStr);
-        let filterKey = Object.keys(args)[0];
-        let filterValue = Object.values(args)[0];
+        let filterKey = Object.keys(args)?.[0];
+        let filterValue = Object.values(args)?.[0];
 
         let foundBtn = btnNodeList
           ? Array.from(btnNodeList).find(
@@ -784,7 +784,7 @@ let utils_ = {
           ? `${queryStr}[${Object.keys(args)}=${Object.values(args)}]`
           : queryStr;
 
-        btn = getElement(queryStr)[0];
+        btn = getElement(queryStr)?.[0];
       }
 
       if (btn?.active || btn?.checked) return;
@@ -843,14 +843,16 @@ let utils_ = {
       utils_.click.element('mwc-radio', listArgs);
     },
     myReviews() {
-      let annotationTabs = getElement('yurt-core-decision-annotation-tabs')[0];
+      let annotationTabs = getElement(
+        'yurt-core-decision-annotation-tabs'
+      )?.[0];
 
       annotationTabs.selectedTab = 0;
     },
   },
   get: {
     get selectedPolicyId() {
-      let policyItem = getElement('yurt-core-policy-selector-item')[0];
+      let policyItem = getElement('yurt-core-policy-selector-item')?.[0];
       if (!policyItem) return;
       return policyItem.policy.id;
     },
@@ -866,7 +868,7 @@ let utils_ = {
     },
     commentText() {
       let reviewData =
-        getElement('yurt-review-root')[0].hostAllocatedMessage.reviewData;
+        getElement('yurt-review-root')?.[0].hostAllocatedMessage.reviewData;
       return reviewData.commentReviewData.commentThread.requestedComment
         .commentText;
     },
@@ -882,7 +884,7 @@ let utils_ = {
       return t;
     },
     safetyNetProtections() {
-      let safetyNetDialog = getElement('yurt-core-safety-nets-dialog')[0];
+      let safetyNetDialog = getElement('yurt-core-safety-nets-dialog')?.[0];
 
       try {
         return safetyNetDialog?.safetyNetProtections
@@ -901,7 +903,9 @@ let utils_ = {
       vl = vl[0].innerText.split(' / ')[1];
       if (vl.split(':').length <= 2) {
         var mins =
-          vl.split(':')[0] < 10 ? '0' + vl.split(':')[0] : vl.split(':')[0];
+          vl.split(':')?.[0] < 10
+            ? '0' + vl.split(':')?.[0]
+            : vl.split(':')?.[0];
         vl = '0:' + mins + ':' + vl.split(':')[1];
       }
       if (!seconds) {
@@ -923,22 +927,23 @@ let utils_ = {
       return utils_.get.queue.info().entityID;
     },
     get videoTimestamp() {
-      let videoRoot = getElement('yurt-video-root')[0];
+      let videoRoot = getElement('yurt-video-root')?.[0];
 
       return utils_.formatTime(videoRoot.playerApi.getCurrentTime());
     },
     get selectedVEGroup() {
-      const text = getElement('mwc-select[value=strike_ve_group_dropdown]')[0]
+      const text = getElement('mwc-select[value=strike_ve_group_dropdown]')?.[0]
         .selectedText;
 
-      const label = getElement('mwc-select[value=strike_ve_group_dropdown]')[0]
-        .value;
+      const label = getElement(
+        'mwc-select[value=strike_ve_group_dropdown]'
+      )?.[0].value;
 
       return { text, label };
     },
     queue: {
       info() {
-        var reviewRoot = getElement('yurt-review-root')[0];
+        var reviewRoot = getElement('yurt-review-root')?.[0];
 
         if (!reviewRoot?.hostAllocatedMessage) return;
 
@@ -967,7 +972,7 @@ let utils_ = {
 
         entityID =
           reviewRoot.hostAllocatedMessage.yurtEntityId[
-            Object.keys(reviewRoot.hostAllocatedMessage.yurtEntityId)[0]
+            Object.keys(reviewRoot.hostAllocatedMessage.yurtEntityId)?.[0]
           ];
 
         function findMostNested(obj) {
@@ -1073,7 +1078,7 @@ let utils_ = {
   appendNode(node, parent) {
     parent = getElement(
       'yurt-core-decision-annotation-tabs > div:nth-child(1)'
-    )[0];
+    )?.[0];
 
     try {
       parent?.appendChild(node);
@@ -1132,7 +1137,7 @@ let utils_ = {
 
   // SETTERS //
   setNote(noteStr) {
-    let decisionCard = getElement('yurt-core-decision-policy-card')[0];
+    let decisionCard = getElement('yurt-core-decision-policy-card')?.[0];
     try {
       decisionCard.annotation.notes = noteStr;
     } catch (e) {
@@ -1188,7 +1193,7 @@ let utils_ = {
   },
   showNotes(policyId = utils_.get.selectedPolicyId) {
     // remove old notes
-    const existingNotes = getElement('#recommendation-notes')[0];
+    const existingNotes = getElement('#recommendation-notes')?.[0];
 
     if (existingNotes) {
       existingNotes.parentNode.removeChild(existingNotes);
@@ -1217,7 +1222,7 @@ let utils_ = {
       setTimeout(() => n.close(), config_.NOTIFICATION_TIMEOUT_SEC * 1000);
   },
   removeLock() {
-    let lock = getElement('yurt-review-activity-dialog')[0];
+    let lock = getElement('yurt-review-activity-dialog')?.[0];
     if (lock) {
       lock.lockTimeoutSec = 3000;
       lock.secondsToExpiry = 3000;
@@ -1227,7 +1232,7 @@ let utils_ = {
     console.log(`🔐LOCK: ${utils_.formatTime(lock?.secondsToExpiry)}`);
   },
   seekVideo(timestampStr) {
-    let videoRoot = getElement('yurt-video-root')[0];
+    let videoRoot = getElement('yurt-video-root')?.[0];
     let timeArr = timestampStr.split(':');
     let h, m, s, secondsTotal;
     if (timeArr.length === 3) {
@@ -1280,7 +1285,7 @@ let lib_ = {
     window.open(url, '_blank');
   },
   dVideo() {
-    let ytpPlayer = getElement('ytp-player')[0];
+    let ytpPlayer = getElement('ytp-player')?.[0];
     return JSON.parse(ytpPlayer.playerVars.player_response).streamingData
       .formats[0].url;
   },
@@ -1374,7 +1379,7 @@ let action_ = {
         try {
           const foundPolicy = [
             ...(getElement('yurt-core-policy-selector-item') ?? []),
-          ].filter((policyItem) => policyItem.policy.id === policyId)[0];
+          ].filter((policyItem) => policyItem.policy.id === policyId)?.[0];
 
           if (!foundPolicy) {
             //console.log('[recursion] looking for 9008 tag');
@@ -1401,7 +1406,7 @@ let action_ = {
 
           const foundLanguageOption = langOptions.filter(
             (option) => option.value.toLowerCase() === language.toLowerCase()
-          )[0];
+          )?.[0];
 
           foundLanguageOption.click();
 
@@ -1414,10 +1419,10 @@ let action_ = {
       addNote(note) {
         try {
           let noteInputBox =
-            getElement('.notes-input')[0] ||
+            getElement('.notes-input')?.[0] ||
             getElement(
               'mwc-textarea[data-test-id=core-decision-policy-edit-notes]'
-            )[0];
+            )?.[0];
 
           noteInputBox.value = note;
           action_.video.steps.selectTextArea();
@@ -1427,14 +1432,14 @@ let action_ = {
       },
       selectTextArea() {
         let link;
-        link = getElement('.mdc-text-field__input')[0];
+        link = getElement('.mdc-text-field__input')?.[0];
 
         //console.log('text area');
         link && link.select();
       },
     },
     addNote(noteStr) {
-      let decisionCard = getElement('yurt-core-decision-policy-card')[0];
+      let decisionCard = getElement('yurt-core-decision-policy-card')?.[0];
       decisionCard.annotation.notes = noteStr;
     },
     // actual complete actions
@@ -1528,7 +1533,7 @@ let action_ = {
       }
 
       function selectTextArea() {
-        let textArea = getElement('.mdc-text-field__input')[0];
+        let textArea = getElement('.mdc-text-field__input')?.[0];
         textArea.select();
       }
 
@@ -1558,7 +1563,7 @@ let action_ = {
         let VEpolicy = policiesArr?.filter((item) => {
           let tags = item.policy.tags;
           return tags?.includes(commentPolicy);
-        })[0];
+        })?.[0];
 
         if (!VEpolicy) {
           () => this.selectVEpolicy(commentPolicy);
@@ -1598,7 +1603,7 @@ let action_ = {
             //console.log(item.value);
             //console.log(groupsMap[targetGroup]);
             return item.value === store_.veGroups[targetGroup];
-          })[0];
+          })?.[0];
           return group;
         }
 
@@ -1653,7 +1658,7 @@ let action_ = {
       );
       let approvePolicy = policiesArr.filter(
         (policy) => policy.policy.id === '35265'
-      )[0];
+      )?.[0];
 
       approvePolicy.click();
     },
@@ -1664,14 +1669,14 @@ let action_ = {
         (target) =>
           target.innerHTML.includes('Hate') &&
           target.innerHTML.includes('English')
-      )[0];
+      )?.[0];
       let xlang = routeTargetsArr.filter((target) =>
         target.innerHTML.includes('Xlang')
-      )[0];
+      )?.[0];
       let policyVertical = routeTargetsArr.filter((target) =>
         target.innerHTML.includes('policy vertical')
-      )[0];
-      let routeBtn = getElement('.submit')[0];
+      )?.[0];
+      let routeBtn = getElement('.submit')?.[0];
     },
   },
   delete() {
@@ -2158,49 +2163,49 @@ let props_ = {
 
 let dom_ = {
   get filterControlsPanel() {
-    return getElement('.filter-controls-on')[0];
+    return getElement('.filter-controls-on')?.[0];
   },
   get decisionCard() {
-    return getElement('yurt-core-decision-policy-card')[0];
+    return getElement('yurt-core-decision-policy-card')?.[0];
   },
   get allDecisionCards() {
     return getElement('yurt-core-decision-policy-card');
   },
   get videoTitleRow() {
-    return getElement('.video-title-row')[0];
+    return getElement('.video-title-row')?.[0];
   },
   get rightSidebar() {
     return getElement(
       'yurt-core-decision-annotation-tabs > div:nth-child(1)'
-    )[0];
+    )?.[0];
   },
   get videoDecisionPanel() {
-    return getElement('yurt-video-decision-panel-v2')[0];
+    return getElement('yurt-video-decision-panel-v2')?.[0];
   },
   get header() {
     return store_.is.queue('comments')
-      ? getElement('tcs-text[spec=title-2]')[0].shadowRoot
-      : getElement('yurt-core-plugin-header > div > tcs-view')[0];
+      ? getElement('tcs-text[spec=title-2]')?.[0].shadowRoot
+      : getElement('yurt-core-plugin-header > div > tcs-view')?.[0];
   },
   get metadataPanel() {
-    return getElement('yurt-video-metadata-panel')[0].shadowRoot;
+    return getElement('yurt-video-metadata-panel')?.[0].shadowRoot;
   },
   get submitBtn() {
-    return getElement('.mdc-button--unelevated')[0];
+    return getElement('.mdc-button--unelevated')?.[0];
   },
   get submitEndReviewBtn() {
-    return getElement('div > mwc-menu > mwc-list-item')[0];
+    return getElement('div > mwc-menu > mwc-list-item')?.[0];
   },
   get routeBtn() {
-    return getElement('div > tcs-view > tcs-button')[0];
+    return getElement('div > tcs-view > tcs-button')?.[0];
   },
   get routeEndReviewBtn() {
-    return getElement('div > mwc-menu > mwc-list-item')[0];
+    return getElement('div > mwc-menu > mwc-list-item')?.[0];
   },
   get transcriptContainer() {
     let transcriptContainer;
     try {
-      transcriptContainer = getElement('.transcript-container')[0];
+      transcriptContainer = getElement('.transcript-container')?.[0];
     } catch (e) {
       console.log('Could not find transcript-container');
     }
@@ -2208,17 +2213,17 @@ let dom_ = {
   },
   get videoPlayer() {
     try {
-      let videoPlayer = getElement('yurt-video-root')[0].playerApi;
+      let videoPlayer = getElement('yurt-video-root')?.[0].playerApi;
       return videoPlayer;
     } catch (e) {
       console.log('[DOM-element] Player not found');
     }
   },
   get questionnaire() {
-    return getElement('yurt-core-questionnaire')[0];
+    return getElement('yurt-core-questionnaire')?.[0];
   },
   get reviewRoot() {
-    return getElement('yurt-review-root')[0];
+    return getElement('yurt-review-root')?.[0];
   },
   playerControls: {
     get player() {
@@ -2274,7 +2279,7 @@ let dom_ = {
       container.replaceChildren(...buttons);
 
       try {
-        let ytpLeftControls = getElement('.ytp-left-controls')[0];
+        let ytpLeftControls = getElement('.ytp-left-controls')?.[0];
         ytpLeftControls.replaceChildren(
           ...[...ytpLeftControls.children, container]
         );
@@ -2289,7 +2294,7 @@ let dom_ = {
 
 let transcript_ = {
   getTranscript() {
-    let transcript = getElement('yurt-video-transcript')[0];
+    let transcript = getElement('yurt-video-transcript')?.[0];
 
     let res = Object.getOwnPropertyNames(transcript)
       .filter((opt) => Array.isArray(transcript[opt]))
@@ -2771,8 +2776,8 @@ let ui_ = {
       );
 
       let parentNode = store_.is.queue('comments')
-        ? getElement('tcs-text[spec=title-2]')[0]?.shadowRoot
-        : getElement('yurt-core-plugin-header > div > tcs-view')[0];
+        ? getElement('tcs-text[spec=title-2]')?.[0]?.shadowRoot
+        : getElement('yurt-core-plugin-header > div > tcs-view')?.[0];
 
       parentNode.spacing = 'small';
 
@@ -2780,7 +2785,7 @@ let ui_ = {
       if (config_.SU) {
         function showTimers() {
           const { setTimer, strToNode } = utils_;
-          let existingTimers = getElement('.timers')[0];
+          let existingTimers = getElement('.timers')?.[0];
 
           if (existingTimers) {
             existingTimers.remove();
@@ -2878,7 +2883,7 @@ let ui_ = {
             // APPROVE NOTE RECOMMENDATION
             utils_.setNote(noteItem.value);
             console.log('note', noteItem.value);
-            getElement('tcs-icon-button#create')[0]?.click();
+            getElement('tcs-icon-button#create')?.[0]?.click();
             utils_.clickSave();
           })
       );
@@ -2934,8 +2939,8 @@ let ui_ = {
         render() {
           // find parent
           const parent =
-            getElement('yurt-core-decision-route')[0]?.shadowRoot ||
-            getElement('yurt-core-decision-annotation-edit')[0]?.shadowRoot;
+            getElement('yurt-core-decision-route')?.[0]?.shadowRoot ||
+            getElement('yurt-core-decision-annotation-edit')?.[0]?.shadowRoot;
 
           parent.appendChild(recommendationList);
         },
@@ -2954,7 +2959,7 @@ let ui_ = {
         element,
         render() {
           // return if there is a panel already
-          if (getElement('.action-panel__comments')[0]) return;
+          if (getElement('.action-panel__comments')?.[0]) return;
 
           utils_.appendNode(element);
         },
@@ -2982,7 +2987,7 @@ let ui_ = {
     let myframe = utils_.strToNode(
       `<iframe src="https://dashboards.corp.google.com/embed/_c2a46c2c_a513_4f1a_8add_135ffc560fe8" height="100%" width="100%" frameborder="0"></iframe>`
     );
-    getElement('.view-overflow')[0].shadowRoot.appendChild(myframe);
+    getElement('.view-overflow')?.[0].shadowRoot.appendChild(myframe);
   },
   createButton(label = 'My Button', onClick = () => {}, className) {
     let btn = this.strToNode(
@@ -3079,7 +3084,7 @@ let ui_ = {
   },
 
   toggleRecommendations(policyId) {
-    const existing = getElement('#recommendation-notes')[0];
+    const existing = getElement('#recommendation-notes')?.[0];
     if (existing) {
       existing.remove();
       return true;
@@ -3178,9 +3183,9 @@ let ui_ = {
   },
 
   showTimers() {
-    if (getElement('.submit-timers')[0]) return;
+    if (getElement('.submit-timers')?.[0]) return;
     const { setTimer, strToNode } = utils_;
-    let mwcMenu = getElement('.share-menu')[0];
+    let mwcMenu = getElement('.share-menu')?.[0];
 
     if (!mwcMenu)
       throw new Error('Nowhere to append buttons (mwcMenu not rendered)');
@@ -3209,11 +3214,11 @@ let ui_ = {
   mutations: {
     expandTranscriptContainer() {
       try {
-        let videoContextContainer = getElement('.video-context-section')[0];
-        let videoContextPanel = getElement('yurt-video-context-panel')[0];
+        let videoContextContainer = getElement('.video-context-section')?.[0];
+        let videoContextPanel = getElement('yurt-video-context-panel')?.[0];
         let transcriptContainer = getElement(
           '.transcript-container.transcript-container-auto-scroll-disable-fab-padding'
-        )[0];
+        )?.[0];
 
         [videoContextContainer, videoContextPanel].forEach((elem) => {
           elem.style.height = '700px';
@@ -3227,14 +3232,14 @@ let ui_ = {
     },
     expandNotesArea(rows = store_.textAreaRows) {
       let notesTextArea;
-      notesTextArea = getElement('.mdc-text-field__input')[0];
+      notesTextArea = getElement('.mdc-text-field__input')?.[0];
 
       // increase size of note input box
       notesTextArea.rows = rows;
     },
     expandPoliciesContainer() {
-      const policiesWrapper = getElement('.policies-wrapper')[0];
-      const sidebarBtns = getElement('.action-buttons')[0];
+      const policiesWrapper = getElement('.policies-wrapper')?.[0];
+      const sidebarBtns = getElement('.action-buttons')?.[0];
 
       try {
         sidebarBtns.style.paddingBottom = '100px';
@@ -3248,8 +3253,8 @@ let ui_ = {
       getElement('.notes-input')[0].rows = rows;
     },
     moveChannelLink() {
-      let link = getElement('tcs-link[data-test-id="open-in-yurt-link"]')[0];
-      let videosCount = getElement('tcs-labeled-list-item[key="Videos"]')[0]
+      let link = getElement('tcs-link[data-test-id="open-in-yurt-link"]')?.[0];
+      let videosCount = getElement('tcs-labeled-list-item[key="Videos"]')?.[0]
         .children[0];
 
       videosCount.appendChild(link);
@@ -4027,6 +4032,7 @@ let on_ = {
         ui_.showTimers();
       } catch (e) {
         console.log(e);
+        throw new Error('initUI');
       }
     }
 
@@ -4088,7 +4094,7 @@ function $main() {
   on_.newVideo();
 
   // multiple tabs
-  getElement('.stopwatch')[0].addEventListener('contextmenu', (e) => {
+  getElement('.stopwatch')?.[0].addEventListener('contextmenu', (e) => {
     if (e.ctrlKey) {
       history.pushState({}, '', '#yort');
       window.open('https://yurt.corp.google.com/#review');
@@ -4116,7 +4122,7 @@ function checkForLewd(
         const firstWord = wordsArray[sequenceStart];
         const lastWord = wordsArray[i];
 
-        const chip = getElement(`tcs-chip[text="${firstWord.value}"]`)[0];
+        const chip = getElement(`tcs-chip[text="${firstWord.value}"]`)?.[0];
 
         chip.shadowRoot.children[0].style.backgroundColor =
           'var(--google-red-500)';
@@ -4137,5 +4143,5 @@ function checkForLewd(
 
 $main();
 
-// 09.11.2023
+// 22.11.2023
 // [✅] radu pidar
