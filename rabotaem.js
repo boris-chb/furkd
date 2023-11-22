@@ -2185,7 +2185,7 @@ let dom_ = {
       : getElement('yurt-core-plugin-header > div > tcs-view')?.[0];
   },
   get metadataPanel() {
-    return getElement('yurt-video-metadata-video')?.[0]?.shadowRoot;
+    return getElement('yurt-video-metadata')?.[0]?.shadowRoot;
   },
   get submitBtn() {
     return getElement('.mdc-button--unelevated')?.[0];
@@ -3253,15 +3253,15 @@ let ui_ = {
 
 let questionnaire_ = {
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.gh
+    // BUG TEMPORARY FIX labellingGraph.eh
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
     answers.forEach((answer) => dom_.questionnaire.setAnswers(answer));
 
     if (
-      !dom_.questionnaire.labellingGraph.gh ||
-      dom_.questionnaire.labellingGraph.gh.size === 0
+      !dom_.questionnaire.labellingGraph.eh ||
+      dom_.questionnaire.labellingGraph.eh.size === 0
     ) {
       throw new Error(
         'Questions not Answered!',
@@ -3273,7 +3273,7 @@ let questionnaire_ = {
 
     dom_.questionnaire.onSave();
 
-    return dom_.questionnaire.labellingGraph.gh;
+    return dom_.questionnaire.labellingGraph.eh;
   },
   generateAnswers(policyId = '3039', contentType = 'video') {
     abuseLocationMapper = {
