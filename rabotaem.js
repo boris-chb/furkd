@@ -428,165 +428,165 @@ let recommendationNotes = {
       {
         title: 'Nasheed',
         value: () =>
-          `Please check nasheed ${utils_.get.noteTimestamp}\nRussian part is approve`,
+          `9008 for Russian VE\nTimestamp: #fullvideo\n\nReview for Arabic nasheed at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Religious',
         value: () =>
-          `Russian part is approve, religious content ${utils_.get.noteTimestamp}\nPlease action for Arabic`,
+          `9008 for Russian VE\nTimestamp: #fullvideo\n\nReview for religious content at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Arabic Part',
         value: () =>
-          `Please check Arabic part ${utils_.get.noteTimestamp}\nRussian part is approve`,
+          `9008 for Russian VE\nTimestamp: #fullvideo\n\nReview Arabic part at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Language support (ru)',
         value: () =>
-          `Need language support ${utils_.get.noteTimestamp}\nRussian part is approve`,
+          `9008 for Russian VE\nTimestamp: #fullvideo\n\nReview lanugage part at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Language support (agn)',
         value: () =>
-          `Need language support ${utils_.get.noteTimestamp}\nAgnostic review`,
+          `9008 for agnostic VE\nTimestamp: #fullvideo\n\nReview lanugage part at ${utils_.get.noteTimestamp}`,
       },
     ],
     drugs: [
       {
         title: 'Drugs policy',
         value: () =>
-          `please check for drugs ${utils_.get.noteTimestamp}\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for drug policy violation at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Illegal Sales',
         value: () =>
-          `please check for illegal sales ${utils_.get.noteTimestamp}\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for illegal sales at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Gambling',
         value: () =>
-          `please check for gambling policy violations ${utils_.get.noteTimestamp}\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for gamblingviolation at ${utils_.get.noteTimestamp}`,
       },
     ],
     gv: [
       {
         title: 'MOD',
         value: () =>
-          `please check for MOD ${utils_.get.noteTimestamp}\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for MOD at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'GV',
         value: () =>
-          `please check for GV ${utils_.get.noteTimestamp}\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for graphic violence at ${utils_.get.noteTimestamp}`,
       },
     ],
     adult: [
       {
         title: 'Vulgar language',
         value: () =>
-          `please check for excessive use of vulgar language ${utils_.get.noteTimestamp}\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for excessive vulgar language at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Nudity',
         value: () =>
-          `please check for nudity ${utils_.get.noteTimestamp}\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for nudity at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Sexual act',
         value: () =>
-          `please check for implied sexual act ${utils_.get.noteTimestamp}\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for implied sexual act at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Adult',
         value: () =>
-          `please check for adult violations ${utils_.get.noteTimestamp}\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for adult violation at ${utils_.get.noteTimestamp}`,
       },
     ],
     spam: [
       {
         title: 'Spam',
         value: () =>
-          `please check for intent to drive traffic off-site ${utils_.get.noteTimestamp}\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for intent to drive traffic off-site at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Spam (link)',
         value: () =>
-          `please check for intent to drive traffic off-site (link in comments)\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for intent to drive traffic off-site (link in comments) at ${utils_.get.noteTimestamp}`,
       },
     ],
     hd: [
       {
         title: 'Dangerous Pranks',
         value: () =>
-          `please check for dangerous pranks ${utils_.get.noteTimestamp}\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for dangerous pranks at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Gambling',
         value: () =>
-          `please check for gambling ${utils_.get.noteTimestamp}\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for gambling at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'H&D violation',
         value: () =>
-          `please check for H&D acts ${utils_.get.noteTimestamp}\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for H&D acts at ${utils_.get.noteTimestamp}`,
       },
     ],
     haras: [
       {
         title: 'Doxxing',
         value: () =>
-          `please check for doxxing ${utils_.get.noteTimestamp}\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for doxxing at ${utils_.get.noteTimestamp}`,
       },
     ],
     ds: [
       {
         title: 'Terms of Service',
         value: () =>
-          `please check for TOS violations ${utils_.get.noteTimestamp}\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for TOS violations at ${utils_.get.noteTimestamp}`,
       },
     ],
     cs: [
       {
         title: 'Minors Sex',
         value: () =>
-          `please check for minors sexualization ${utils_.get.noteTimestamp}\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for minors sexualization at ${utils_.get.noteTimestamp}`,
       },
     ],
     hate: [
       {
         title: 'Slur',
         value: () =>
-          `please check for slur ${utils_.get.noteTimestamp}\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for violative slur at ${utils_.get.noteTimestamp}`,
       },
       {
         title: '{ Slur }',
         value: () =>
-          `please check for slur ${(() => {
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for violative slur [${(() => {
             const highlightedWord = getElement('.current-transcript')?.[0]
               .textContent;
 
             return highlightedWord ? highlightedWord : '';
-          })()} ${utils_.get.noteTimestamp}\napprove for VE`,
+          })()}] at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Hate',
         value: () =>
-          `please check for hate policy violations ${utils_.get.noteTimestamp}\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for hate policy violations\n\nTimestamp: ${utils_.get.noteTimestamp}`,
       },
       {
         title: '🇺🇦 🐖 Dehuman',
         value: () =>
-          `please check for Ukrainian pig dehumanization ${utils_.get.noteTimestamp}\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for Ukrainian pig dehumanization\n\nTimestamp: ${utils_.get.noteTimestamp}`,
       },
       {
         title: '🇺🇦 Denazi',
         value: () =>
-          `please check for Denazification of Ukraine ${utils_.get.noteTimestamp}\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for Denazification of Ukraine\n\nTimestamp: ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Podolyak',
         value: () =>
-          `please check for Yury Podolyak circumvention ${utils_.get.noteTimestamp}\napprove for VE`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nReview for Yury Podolyak circumvention\n\nTimestamp: ${utils_.get.noteTimestamp}`,
       },
     ],
     t2: [
@@ -609,131 +609,137 @@ let recommendationNotes = {
       {
         title: '[3065] Depictive >50%',
         value: () =>
-          `${utils_.get.selectedVEGroup.text} depictive content >50% of video without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} depictive content >50% of video without 4C EDSA or criticism at ${utils_.get.noteTimestamp}`,
       },
       {
         title: '[3065] Upbeat Music',
         value: () =>
-          `${utils_.get.selectedVEGroup.text} depictive content with upbeat music without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} depictive content with upbeat music without 4C EDSA or criticism at ${utils_.get.noteTimestamp}`,
       },
       {
         title: '[3065] >2x',
         value: () =>
-          `${utils_.get.selectedVEGroup.text} produced content used 2x or more, without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} produced content used 2x or more, without 4C EDSA or criticism at ${utils_.get.noteTimestamp}`,
       },
       {
         title: '[3065] Glorifying Lyrics',
         value: () =>
-          `${utils_.get.selectedVEGroup.text} glorifying lyrics without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} glorifying lyrics without 4C EDSA or criticism at ${utils_.get.noteTimestamp}`,
       },
       {
         title: '[3065] Produced Song',
         value: () =>
-          `${utils_.get.selectedVEGroup.text} produced song without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} produced song without 4C EDSA or criticism at ${utils_.get.noteTimestamp}`,
       },
     ],
     3039: [
       {
         title: '[3039] Raw reupload',
         value: () =>
-          `${utils_.get.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA ${utils_.get.noteTimestamp}\nChannel not dedicated\nRussian (not agnostic)`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA at ${utils_.get.noteTimestamp}`,
       },
       {
         title: '[3039] Glorification',
         value: () =>
-          `Glorification of ${utils_.get.selectedVEGroup.text} ${utils_.get.noteTimestamp}\nChannel not dedicated\nRussian (not agnostic)`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: Glorification of ${utils_.get.selectedVEGroup.text} at ${utils_.get.noteTimestamp}`,
       },
       {
         title: '[3039] Glorifying Lyrics',
         value: () =>
-          `${utils_.get.selectedVEGroup.text} glorifying lyrics ${utils_.get.noteTimestamp}\nChannel not dedicated\nRussian (not agnostic)`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} glorifying lyrics at ${utils_.get.noteTimestamp}`,
       },
 
       {
         title: '[3039] Produced Song',
         value: () =>
-          `${utils_.get.selectedVEGroup.text} produced song ${utils_.get.noteTimestamp}\nChannel not dedicated\nRussian (not agnostic)`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} produced song at ${utils_.get.noteTimestamp}`,
       },
       {
         title: '[3039] Memorial',
         value: () =>
-          `${utils_.get.selectedVEGroup.text} memorial video ${utils_.get.noteTimestamp}\nChannel not dedicated\nRussian (not agnostic)`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} memorial video at ${utils_.get.noteTimestamp}`,
       },
     ],
     3044: [
       {
         title: '[3044] Raw reupload',
         value: () =>
-          `${utils_.get.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA ${utils_.get.noteTimestamp}\nChannel dedicated\n• _________\n• _________\nRussian (not agnostic)`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA ${utils_.get.noteTimestamp}
+          \n\n\nViolative video: [VideoID]\n\nViolation: ${utils_.get.selectedVEGroup.text} [Violation] @0:00:00
+          \n\n\nViolative video: [VideoID]\n\nViolation: ${utils_.get.selectedVEGroup.text} [Violation] @0:00:00`,
       },
       {
         title: '[3044] Glorification',
         value: () =>
-          `Glorification of ${utils_.get.selectedVEGroup.text} ${utils_.get.noteTimestamp}\nChannel dedicated\n• _________\n• _________\nRussian (not agnostic)`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} glorification without criticism or 4C EDSA ${utils_.get.noteTimestamp}
+          \n\n\nViolative video: [VideoID]\n\nViolation: ${utils_.get.selectedVEGroup.text} [Violation] @0:00:00
+          \n\n\nViolative video: [VideoID]\n\nViolation: ${utils_.get.selectedVEGroup.text} [Violation] @0:00:00`,
       },
       {
         title: '[3044] Glorifying Lyrics',
         value: () =>
-          `${utils_.get.selectedVEGroup.text} glorifying lyrics ${utils_.get.noteTimestamp}\nChannel dedicated\n• _________\n• _________\nRussian (not agnostic)`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} song with glorifying lyrics ${utils_.get.noteTimestamp}
+        \n\n\nViolative video: [VideoID]\n\nViolation: ${utils_.get.selectedVEGroup.text} [Violation] @0:00:00
+        \n\n\nViolative video: [VideoID]\n\nViolation: ${utils_.get.selectedVEGroup.text} [Violation] @0:00:00`,
       },
       {
         title: '[3044][1] Raw reupload',
         value: () =>
-          `${utils_.get.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA ${utils_.get.noteTimestamp}\nChannel dedicated (single video on channel)\nRussian (not agnostic)`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA ${utils_.get.noteTimestamp}`,
       },
       {
         title: '[3044][1] Glorification',
         value: () =>
-          `Glorification of ${utils_.get.selectedVEGroup.text} ${utils_.get.noteTimestamp}\nChannel dedicated (single video on channel)\nRussian (not agnostic)`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} glorification without criticism or 4C EDSA ${utils_.get.noteTimestamp}`,
       },
       {
         title: '[3044][1] Glorifying Lyrics',
         value: () =>
-          `${utils_.get.selectedVEGroup.text} glorifying lyrics ${utils_.get.noteTimestamp}\nChannel dedicated (single video on channel)\nRussian (not agnostic)`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} song with glorifying lyrics ${utils_.get.noteTimestamp}`,
       },
     ],
     3999: [
       {
         title: '[3999] Prigozhin',
         value: () =>
-          `Yevgeny Prigozhin footage without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: Yevgeny Prigozhin footage without 4C EDSA or criticism ${utils_.get.noteTimestamp}`,
       },
     ],
     3099: [
       {
         title: '[3099] School shooting + music',
         value: () =>
-          `School shooting attack in 4C paired with upbeat music #fullvideo\n`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: School shooting attack in 4C paired with upbeat music ${utils_.get.noteTimestamp}`,
       },
       {
         title: '[3099] Physical abuse',
         value: () =>
-          `Hostages are being beaten, slapped, shot, sprayed with liquids, left unattended despite visible wounds, burned, submerged in water, or any other form of violent physical contact, without 4C EDSA #fullvideo\n`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: Hostages are being beaten, slapped, shot, sprayed with liquids, left unattended despite visible wounds, burned, submerged in water, or any other form of violent physical contact, without 4C EDSA ${utils_.get.noteTimestamp}`,
       },
       {
         title: '[3099] Verbal abuse',
         value: () =>
-          `Hostages are being threatened, mocked, called names or insults, taunted, etc., without 4C EDSA #fullvideo\n`,
+          `Violative video: ${utils_.get.videoId}\n\nHostages are being threatened, mocked, called names or insults, taunted, etc., without 4C EDSA ${utils_.get.noteTimestamp}`,
       },
       {
         title: '[3099] Humiliation',
         value: () =>
-          `Hostages are stripped of their clothes, shown naked, paraded in front of crowds, forced to beg, etc., without 4C EDSA #fullvideo\n`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: Hostages are stripped of their clothes, shown naked, paraded in front of crowds, forced to beg, etc., without 4C EDSA  ${utils_.get.noteTimestamp}`,
       },
       {
         title: '[3099] Restrained',
         value: () =>
-          `Hostages are shown tied up, handcuffed, jailed, blindfolded, gagged, or otherwise confined, without 4C EDSA #fullvideo\n`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: Hostages are shown tied up, handcuffed, jailed, blindfolded, gagged, or otherwise confined, without 4C EDSA ${utils_.get.noteTimestamp}`,
       },
       {
         title: '[3099] Likely prepared or forced statements in captivity',
         value: () =>
-          `Hostages are shown reading scripted or prepared remarks while captive. If the individual is described in the 4-corners or metadata as a hostage, treat statements as though they are prepared or forced. E.g., confessions, appeals to military or civilian leadership, soliciting demands etc., without 4C EDSA #fullvideo\n`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: Hostages are shown reading scripted or prepared remarks while captive. If the individual is described in the 4-corners or metadata as a hostage, treat statements as though they are prepared or forced. E.g., confessions, appeals to military or civilian leadership, soliciting demands etc., without 4C EDSA  ${utils_.get.noteTimestamp}`,
       },
       {
         title: '[3099] Drive traffic',
         value: () =>
-          `Statements, legible or audible links in the 4-corners or metadata, directing viewers to footage that could contain hostage-taking content. Link validation is not necessary. Links are assessed based on surrounding context, without 4C EDSA #fullvideo\n`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: Statements, legible or audible links in the 4-corners or metadata, directing viewers to footage that could contain hostage-taking content. Link validation is not necessary. Links are assessed based on surrounding context, without 4C EDSA #fullvideo ${utils_.get.noteTimestamp}`,
       },
     ],
     3888: [
@@ -873,6 +879,12 @@ let utils_ = {
         .commentText;
     },
     get noteTimestamp() {
+      if (dom_.playerControls.player.getCurrentTime() === 0) {
+        return '#fullvideo';
+      }
+      return `@${this.currentTimeStr}`;
+    },
+    get DEPRECATED_noteTimestamp() {
       let t;
       if (dom_.playerControls.player.getCurrentTime() === 0) {
         t = '#fullvideo';
@@ -923,7 +935,7 @@ let utils_ = {
       }
       return result;
     },
-    videoId() {
+    get videoId() {
       return utils_.get.queue.info().entityID;
     },
     get videoTimestamp() {
