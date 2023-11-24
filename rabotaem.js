@@ -428,140 +428,140 @@ let recommendationNotes = {
       {
         title: 'Nasheed',
         value: () =>
-          `9008 for Russian VE\nTimestamp: #fullvideo\n\nReview for Arabic nasheed at ${utils_.get.noteTimestamp}`,
+          `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review for Arabic nasheed at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Religious',
         value: () =>
-          `9008 for Russian VE\nTimestamp: #fullvideo\n\nReview for religious content at ${utils_.get.noteTimestamp}`,
+          `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review for religious content at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Arabic Part',
         value: () =>
-          `9008 for Russian VE\nTimestamp: #fullvideo\n\nReview Arabic part at ${utils_.get.noteTimestamp}`,
+          `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review Arabic part at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Language support (ru)',
         value: () =>
-          `9008 for Russian VE\nTimestamp: #fullvideo\n\nReview lanugage part at ${utils_.get.noteTimestamp}`,
+          `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review language part at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Language support (agn)',
         value: () =>
-          `9008 for agnostic VE\nTimestamp: #fullvideo\n\nReview lanugage part at ${utils_.get.noteTimestamp}`,
+          `9008 for agnostic VE\nTimestamp: #fullvideo\n\nPlease review language part at ${utils_.get.noteTimestamp}`,
       },
     ],
     drugs: [
       {
         title: 'Drugs policy',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for drug policy violation at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for drug policy violation at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Illegal Sales',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for illegal sales at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for illegal sales at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Gambling',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for gamblingviolation at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for gambling violation at ${utils_.get.noteTimestamp}`,
       },
     ],
     gv: [
       {
         title: 'MOD',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for MOD at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for MOD at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'GV',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for graphic violence at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for graphic violence at ${utils_.get.noteTimestamp}`,
       },
     ],
     adult: [
       {
         title: 'Vulgar language',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for excessive vulgar language at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for excessive vulgar language at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Nudity',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for nudity at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for nudity at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Sexual act',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for implied sexual act at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for implied sexual act at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Adult',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for adult violation at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for adult violation at ${utils_.get.noteTimestamp}`,
       },
     ],
     spam: [
       {
         title: 'Spam',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for intent to drive traffic off-site at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for intent to drive traffic off-site at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Spam (link)',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for intent to drive traffic off-site (link in comments) at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for intent to drive traffic off-site (link in comments) at ${utils_.get.noteTimestamp}`,
       },
     ],
     hd: [
       {
         title: 'Dangerous Pranks',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for dangerous pranks at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for dangerous pranks at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Gambling',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for gambling at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for gambling at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'H&D violation',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for H&D acts at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for H&D acts at ${utils_.get.noteTimestamp}`,
       },
     ],
     haras: [
       {
         title: 'Doxxing',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for doxxing at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for doxxing at ${utils_.get.noteTimestamp}`,
       },
     ],
     ds: [
       {
         title: 'Terms of Service',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for TOS violations at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for TOS violations at ${utils_.get.noteTimestamp}`,
       },
     ],
     cs: [
       {
         title: 'Minors Sex',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for minors sexualization at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for minors sexualization at ${utils_.get.noteTimestamp}`,
       },
     ],
     hate: [
       {
         title: 'Slur',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for violative slur at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for violative slur at ${utils_.get.noteTimestamp}`,
       },
       {
         title: '{ Slur }',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for violative slur [${(() => {
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for violative slur [${(() => {
             const highlightedWord = getElement('.current-transcript')?.[0]
               .textContent;
 
@@ -571,22 +571,22 @@ let recommendationNotes = {
       {
         title: 'Hate',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for hate policy violations\n\nTimestamp: ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for hate policy violations\n\nTimestamp: ${utils_.get.noteTimestamp}`,
       },
       {
         title: '🇺🇦 🐖 Dehuman',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for Ukrainian pig dehumanization\n\nTimestamp: ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for Ukrainian pig dehumanization\n\nTimestamp: ${utils_.get.noteTimestamp}`,
       },
       {
         title: '🇺🇦 Denazi',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for Denazification of Ukraine\n\nTimestamp: ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for Denazification of Ukraine\n\nTimestamp: ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Podolyak',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nReview for Yury Podolyak circumvention\n\nTimestamp: ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for Yury Podolyak circumvention\n\nTimestamp: ${utils_.get.noteTimestamp}`,
       },
     ],
     t2: [
@@ -664,23 +664,17 @@ let recommendationNotes = {
       {
         title: '[3044] Raw reupload',
         value: () =>
-          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA ${utils_.get.noteTimestamp}
-          \n\n\nViolative video: [VideoID]\n\nViolation: ${utils_.get.selectedVEGroup.text} [Violation] @0:00:00
-          \n\n\nViolative video: [VideoID]\n\nViolation: ${utils_.get.selectedVEGroup.text} [Violation] @0:00:00`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA ${utils_.get.noteTimestamp}\n\nViolative video: ___________\n\nViolation: ${utils_.get.selectedVEGroup.text} __________ @0:00:00\n\nViolative video: ___________\n\nViolation: ${utils_.get.selectedVEGroup.text} __________ @0:00:00`,
       },
       {
         title: '[3044] Glorification',
         value: () =>
-          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} glorification without criticism or 4C EDSA ${utils_.get.noteTimestamp}
-          \n\n\nViolative video: [VideoID]\n\nViolation: ${utils_.get.selectedVEGroup.text} [Violation] @0:00:00
-          \n\n\nViolative video: [VideoID]\n\nViolation: ${utils_.get.selectedVEGroup.text} [Violation] @0:00:00`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} glorification without criticism or 4C EDSA ${utils_.get.noteTimestamp}\n\nViolative video: ___________\n\nViolation: ${utils_.get.selectedVEGroup.text} __________ @0:00:00\n\nViolative video: ___________\n\nViolation: ${utils_.get.selectedVEGroup.text} __________ @0:00:00`,
       },
       {
         title: '[3044] Glorifying Lyrics',
         value: () =>
-          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} song with glorifying lyrics ${utils_.get.noteTimestamp}
-        \n\n\nViolative video: [VideoID]\n\nViolation: ${utils_.get.selectedVEGroup.text} [Violation] @0:00:00
-        \n\n\nViolative video: [VideoID]\n\nViolation: ${utils_.get.selectedVEGroup.text} [Violation] @0:00:00`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} song with glorifying lyrics ${utils_.get.noteTimestamp}\n\nViolative video: ___________\n\nViolation: ${utils_.get.selectedVEGroup.text} __________ @0:00:00\n\nViolative video: ___________\n\nViolation: ${utils_.get.selectedVEGroup.text} __________ @0:00:00`,
       },
       {
         title: '[3044][1] Raw reupload',
