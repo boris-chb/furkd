@@ -3245,6 +3245,7 @@ let ui_ = {
     expandNotesArea(rows = store_.textAreaRows) {
       let notesTextArea;
       notesTextArea = getElement('.mdc-text-field__input')?.[0];
+      notesTextArea.style.resize = 'vertical';
 
       // increase size of note input box
       notesTextArea.rows = rows;
