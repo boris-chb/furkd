@@ -641,18 +641,18 @@ let recommendationNotes = {
       {
         title: '[3039] Glorification',
         value: () =>
-          `Violative video: ${utils_.get.videoId}\n\nViolation: Glorification of ${utils_.get.selectedVEGroup.text} at ${utils_.get.noteTimestamp}`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: Glorification of ${utils_.get.selectedVEGroup.text} without criticism or 4C EDSA at ${utils_.get.noteTimestamp}`,
       },
       {
         title: '[3039] Glorifying Lyrics',
         value: () =>
-          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} glorifying lyrics at ${utils_.get.noteTimestamp}`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} glorifying lyrics without criticism or 4C EDSA at ${utils_.get.noteTimestamp}`,
       },
 
       {
         title: '[3039] Produced Song',
         value: () =>
-          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} produced song at ${utils_.get.noteTimestamp}`,
+          `Violative video: ${utils_.get.videoId}\n\nViolation: ${utils_.get.selectedVEGroup.text} raw reupload of produced song without criticism or 4C EDSA at ${utils_.get.noteTimestamp}`,
       },
       {
         title: '[3039] Memorial',
