@@ -448,7 +448,7 @@ let recommendationNotes = {
       {
         title: 'Language support (agn)',
         value: () =>
-          `9008 for agnostic VE\nTimestamp: #fullvideo\n\nPlease review language part at ${utils_.get.noteTimestamp}`,
+          `Agnostic review\nTimestamp: #fullvideo\n\nPlease review language part at ${utils_.get.noteTimestamp}`,
       },
     ],
     drugs: [
@@ -3266,6 +3266,29 @@ let ui_ = {
 
       videosCount.appendChild(link);
     },
+    cinemaMode() {
+      // remove useless thumbnail signals
+      getElement('yurt-video-thumbnails-v2')[0].remove();
+
+      // resize + move transcript container
+      getElement('.main-content > .main-column')[0].style.width = '100%';
+      const videoContainerLayout = getElement('.main-content > .main-column')[0]
+        .children[0];
+      videoContainerLayout.spec = 'column';
+      const transcriptContainer = getElement('yurt-video-context-panel')[0];
+      transcriptContainer.style.width = '100%';
+      transcriptContainer.style.height = '450px';
+
+      // resize player
+      getElement('.video-section')[0].style.width = '100%';
+      getElement('.yurt-core-player-container')[0].style.width = '100%';
+      getElement('yurt-core-player-v2')[0].style.width = '100%';
+      const playerContainer = getElement('.yurt-core-player-container')[0];
+      playerContainer.style.maxWidth = '100%';
+      playerContainer.style.width = '100%';
+      getElement('.player-content')[0].style.width = '100%';
+      getElement('.player-content')[0].style.height = '1000px';
+    },
   },
 };
 
@@ -4037,6 +4060,8 @@ let on_ = {
         ui_.draw();
         ui_.mutations.moveChannelLink();
         ui_.showTimers();
+        // EXPERIMENTAL
+        ui_.mutations.cinemaMode();
       } catch (e) {
         console.log(e);
         throw new Error('initUI');
