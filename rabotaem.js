@@ -4061,7 +4061,7 @@ let on_ = {
         ui_.mutations.moveChannelLink();
         ui_.showTimers();
         // EXPERIMENTAL
-        ui_.mutations.cinemaMode();
+        // ui_.mutations.cinemaMode();
       } catch (e) {
         console.log(e);
         throw new Error('initUI');
