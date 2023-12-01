@@ -312,15 +312,17 @@ let store_ = {
   },
   frequentlyUsedPolicies: [
     {
-      id: '3044',
-      description: 'Account solely dedicated to FTO/extremism',
-      tags: [
-        'FTO',
-        'ISIS',
-        'Al-Qaeda',
-        'recruiting, incitement, fund raising, hostage channel dedicated',
-        'professional',
-      ],
+      id: '9008',
+      description: 'Approve',
+      tags: ['approve'],
+      policyVertical: 'APPROVE',
+      actionCategorySummary: 'ACTION_APPROVE',
+    },
+    {
+      id: '3065',
+      description:
+        'Content produced by or glorifying known Violent Extremist Organizations',
+      tags: ['ISIS', 'Al-Qaeda', 'gaming', 'song', 'VE group', 'violence'],
       policyVertical: 'VIOLENT_EXTREMISM',
       actionCategorySummary: 'ACTION_REMOVE',
     },
@@ -342,10 +344,15 @@ let store_ = {
       actionCategorySummary: 'ACTION_REMOVE',
     },
     {
-      id: '3065',
-      description:
-        'Content produced by or glorifying known Violent Extremist Organizations',
-      tags: ['ISIS', 'Al-Qaeda', 'gaming', 'song', 'VE group', 'violence'],
+      id: '3044',
+      description: 'Account solely dedicated to FTO/extremism',
+      tags: [
+        'FTO',
+        'ISIS',
+        'Al-Qaeda',
+        'recruiting, incitement, fund raising, hostage channel dedicated',
+        'professional',
+      ],
       policyVertical: 'VIOLENT_EXTREMISM',
       actionCategorySummary: 'ACTION_REMOVE',
     },
@@ -399,11 +406,11 @@ let store_ = {
       actionCategorySummary: 'ACTION_REMOVE',
     },
     {
-      id: '9008',
-      description: 'Approve',
-      tags: ['approve'],
-      policyVertical: 'APPROVE',
-      actionCategorySummary: 'ACTION_APPROVE',
+      id: '3048',
+      description: 'Footage produced by VE actor, low-EDSA',
+      tags: ['Violent extremism reject'],
+      policyVertical: 'VIOLENT_EXTREMISM',
+      actionCategorySummary: 'ACTION_REMOVE',
     },
   ],
 };
@@ -690,6 +697,13 @@ let recommendationNotes = {
         title: '[3044][1] Glorifying Lyrics',
         value: () =>
           `Violation: ${utils_.get.selectedVEGroup.text} song with glorifying lyrics ${utils_.get.noteTimestamp}`,
+      },
+    ],
+    3048: [
+      {
+        title: '[3048] Hamas hostages',
+        value: () =>
+          `Violation: Hamas hostages without criticism in 4C at ${utils_.get.noteTimestamp}`,
       },
     ],
     3999: [
@@ -2488,6 +2502,44 @@ let transcript_ = {
       elem.classList.add('highlight');
     }
   },
+  checkForLewd(
+    wordsArray = transcript_.getViolativeWords().adult,
+    maxIntervalSeconds = 60,
+    wordCount = 10
+  ) {
+    let sequenceStart = 0;
+    let sequenceLength = 0;
+
+    if (!wordsArray) return;
+
+    for (let i = 1; i < wordsArray.length; i++) {
+      if (
+        wordsArray[i].seconds - wordsArray[sequenceStart].seconds <=
+        maxIntervalSeconds
+      ) {
+        sequenceLength++;
+        if (sequenceLength >= wordCount) {
+          const firstWord = wordsArray[sequenceStart];
+          const lastWord = wordsArray[i];
+
+          const chip = getElement(`tcs-chip[text="${firstWord.value}"]`)?.[0];
+
+          chip.shadowRoot.children[0].style.backgroundColor =
+            'var(--google-red-500)';
+
+          return {
+            firstWord,
+            lastWord,
+          };
+        }
+      } else {
+        sequenceStart = i;
+        sequenceLength = 0;
+      }
+    }
+
+    return null;
+  },
 };
 
 let ui_ = {
@@ -2836,7 +2888,7 @@ let ui_ = {
           'filter_alt',
           async () => {
             await lib_.retry(ui_.renderWordsTable);
-            checkForLewd();
+            transcript_.checkForLewd();
           },
           'filter-transcript-table'
         ),
@@ -3183,7 +3235,7 @@ let ui_ = {
     container.replaceChildren(...wordsListTablesByCategory);
     dom_.metadataPanel.appendChild(container);
 
-    setTimeout(checkForLewd, 3000);
+    setTimeout(transcript_.checkForLewd, 3000);
 
     return container;
   },
@@ -4008,28 +4060,28 @@ let questionnaire_ = {
       ],
     };
 
-    let newAnswers = {
-      3039: [
-        {
-          questionId: `violent_extremism/question/video_${policyId}_tvc/applicable_ve_group`,
-          answers: [store_.selectedVEGroup],
-        },
-        {
-          questionId: `violent_extremism/question/video_${policyId}_tvc/act_type`,
-          answers: [
-            {
-              id: 'glorification_terrorism',
-              label: 'Glorification of terrorism or terrorist acts',
-              value: {},
-            },
-          ],
-        },
-      ],
-    };
+    const newAnswers = {};
 
-    // 3065 has one extra question (produced/depictive/bystander)
-    if (policyId === '3065') {
-      newAnswers['3039'].push({
+    newAnswers['3039'] = [
+      {
+        questionId: `violent_extremism/question/video_${policyId}_tvc/applicable_ve_group`,
+        answers: [store_.selectedVEGroup],
+      },
+      {
+        questionId: `violent_extremism/question/video_${policyId}_tvc/act_type`,
+        answers: [
+          {
+            id: 'glorification_terrorism',
+            label: 'Glorification of terrorism or terrorist acts',
+            value: {},
+          },
+        ],
+      },
+    ];
+
+    newAnswers['3065'] = [
+      ...newAnswers['3039'],
+      {
         questionId: `violent_extremism/question/video_${policyId}_tvc/violation_reason`,
         answers: [
           {
@@ -4038,10 +4090,45 @@ let questionnaire_ = {
             value: {},
           },
         ],
-      });
-    }
+      },
+    ];
 
-    return newAnswers['3039'];
+    newAnswers['3044'] = [
+      {
+        key: 'violent_extremism/question/video_3044_tvc/select_applicable_violation_type',
+        value: [
+          {
+            id: 've_actor_based_violation',
+            label: 'VE Actor based violation',
+            value: {},
+          },
+        ],
+      },
+      ...newAnswers['3039'],
+    ];
+
+    newAnswers['3048'] = [
+      {
+        questionId: `violent_extremism/question/video_${policyId}_tvc/applicable_ve_group`,
+        answers: [store_.selectedVEGroup],
+      },
+    ];
+
+    // 3065 has one extra question (produced/depictive/bystander)
+    // if (policyId === '3065') {
+    //   newAnswers['3039'].push({
+    //     questionId: `violent_extremism/question/video_${policyId}_tvc/violation_reason`,
+    //     answers: [
+    //       {
+    //         id: 'produced_content',
+    //         label: 'Produced Content',
+    //         value: {},
+    //       },
+    //     ],
+    //   });
+    // }
+
+    return newAnswers[policyId];
   },
 };
 
@@ -4134,46 +4221,5 @@ function $main() {
   });
 }
 
-function checkForLewd(
-  wordsArray = transcript_.getViolativeWords().adult,
-  maxIntervalSeconds = 60,
-  wordCount = 10
-) {
-  let sequenceStart = 0;
-  let sequenceLength = 0;
-
-  if (!wordsArray) return;
-
-  for (let i = 1; i < wordsArray.length; i++) {
-    if (
-      wordsArray[i].seconds - wordsArray[sequenceStart].seconds <=
-      maxIntervalSeconds
-    ) {
-      sequenceLength++;
-      if (sequenceLength >= wordCount) {
-        const firstWord = wordsArray[sequenceStart];
-        const lastWord = wordsArray[i];
-
-        const chip = getElement(`tcs-chip[text="${firstWord.value}"]`)?.[0];
-
-        chip.shadowRoot.children[0].style.backgroundColor =
-          'var(--google-red-500)';
-
-        return {
-          firstWord,
-          lastWord,
-        };
-      }
-    } else {
-      sequenceStart = i;
-      sequenceLength = 0;
-    }
-  }
-
-  return null;
-}
-
 $main();
-
-// 22.11.2023
 // [✅] radu pidar
