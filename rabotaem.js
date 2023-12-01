@@ -3294,15 +3294,15 @@ let ui_ = {
 
 let questionnaire_ = {
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.eh
+    // BUG TEMPORARY FIX labellingGraph.fh
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
     answers.forEach((answer) => dom_.questionnaire.setAnswers(answer));
 
     if (
-      !dom_.questionnaire.labellingGraph.eh ||
-      dom_.questionnaire.labellingGraph.eh.size === 0
+      !dom_.questionnaire.labellingGraph.fh ||
+      dom_.questionnaire.labellingGraph.fh.size === 0
     ) {
       throw new Error(
         'Questions not Answered!',
@@ -3314,7 +3314,7 @@ let questionnaire_ = {
 
     dom_.questionnaire.onSave();
 
-    return dom_.questionnaire.labellingGraph.eh;
+    return dom_.questionnaire.labellingGraph.fh;
   },
   generateAnswers(policyId = '3039', contentType = 'video') {
     abuseLocationMapper = {
