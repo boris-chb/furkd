@@ -1,4 +1,4 @@
-// 22.11.2023
+// 01.12.2023
 
 try {
   utils_.clearTimers();
@@ -1518,14 +1518,7 @@ let action_ = {
       if (store_.is.queue('xsource') || store_.is.queue('User Appeals')) {
         await retry(
           function answerQuestionnaireAndSave() {
-            // for 3044 select 3039 to avoid duplicates since they have same structure
-            const selectedPolicyId =
-              policyId === '3044'
-                ? '3039'
-                : policyId === '3888'
-                ? '3999'
-                : policyId;
-            return setAnswers(generateAnswers(selectedPolicyId, contentType));
+            return setAnswers(generateAnswers(policyId));
           },
           800,
           4000
@@ -1718,9 +1711,19 @@ let action_ = {
 };
 
 let props_ = {
+  button: {
+    approve: [
+      { text: '🇷🇺 RU', onClick: () => action_.video.approve('russian') },
+      { text: '🇺🇦 UA', onClick: () => action_.video.approve('ukrainian') },
+      { text: '🇬🇧 ENG', onClick: () => action_.video.approve('english') },
+      {
+        text: '❔ AGN',
+        onClick: () => action_.video.approve('Language agnostic'),
+      },
+      { text: '🔳 N/A', onClick: () => action_.video.approve() },
+    ],
+  },
   dropdown: {
-    approve: {},
-    route: {},
     strike: {
       label: 'Select VE Group',
       value: 'strike_ve_group_dropdown',
@@ -1768,223 +1771,21 @@ let props_ = {
       ],
     },
   },
-  button: {
-    approve: [
-      { text: '🇷🇺 RU', onClick: () => action_.video.approve('russian') },
-      { text: '🇺🇦 UA', onClick: () => action_.video.approve('ukrainian') },
-      { text: '🇬🇧 ENG', onClick: () => action_.video.approve('english') },
-      {
-        text: '❔ AGN',
-        onClick: () => action_.video.approve('Language agnostic'),
-      },
-      { text: '🔳 N/A', onClick: () => action_.video.approve() },
-    ],
-    strike: [
-      {
-        text: '3065 :: Produced Content 📽',
-        onClick: () => action_.video.strike('3065', 'video'),
-      },
-      {
-        text: '3065 :: Song 🎻',
-        onClick: () => action_.video.strike('3065', 'song'),
-      },
-      {
-        text: '3065 :: Speech 🎤',
-        onClick: () => action_.video.strike('3065', 'speech'),
-      },
-
-      {
-        text: '3039 :: Produced Content 📽',
-        onClick: () => action_.video.strike('3039', 'video'),
-      },
-      {
-        text: '3039 :: Song 🎻',
-        onClick: () => action_.video.strike('3039', 'song'),
-      },
-      {
-        text: '3039 :: Speech 🎤',
-        onClick: () => action_.video.strike('3039', 'speech'),
-      },
-
-      {
-        text: '3044 :: Produced Content 📽',
-        onClick: () => action_.video.strike('3044', 'video'),
-      },
-      {
-        text: '3044 :: Song 🎻',
-        onClick: () => action_.video.strike('3044', 'song'),
-      },
-      {
-        text: '3044 :: Speech 🎤',
-        onClick: () => action_.video.strike('3044', 'speech'),
-      },
-
-      {
-        text: '3044 :: Speech 🎤',
-        onClick: () => action_.video.strike('3044', 'speech'),
-      },
-    ],
-    route: [
-      {
-        text: '🇸🇦 Arabic',
-        onClick: () =>
-          action_.video.route(
-            `ve ${utils_.get.queue.type() ?? ''} arabic`,
-            'arabic',
-            'routing for language'
-          ),
-      },
-      {
-        text: '💉💲 Drugs',
-        onClick: () =>
-          action_.video.route(`drugs ${utils_.get.queue.type()}`, 'drugs'),
-      },
-      {
-        text: '🧨 H&D ',
-        onClick: () => action_.video.route('Harmful Dangerous Acts', 'hd'),
-      },
-      {
-        text: '🥩 Graphic',
-        onClick: () =>
-          action_.video.route(`graphic violence enforcement`, 'gv'),
-      },
-      {
-        text: '⚡ Hate',
-        onClick: () => action_.video.route('hate russian', 'hate'),
-      },
-      {
-        text: '🏹 Harass',
-        onClick: () =>
-          action_.video.route(
-            `harassment ${utils_.get.queue.type()} russian`,
-            'harass'
-          ),
-      },
-      {
-        text: '🔞 Adult',
-        onClick: () => action_.video.route('adult', 'adult'),
-      },
-      { text: '📬 SPAM', onClick: () => action_.video.route('spam', 'spam') },
-      {
-        text: '💽 DS',
-        onClick: () => action_.video.route('digital security video', 'ds'),
-      },
-      {
-        text: '🧒 Child',
-        onClick: () => action_.video.route('child minors', 'cs'),
-      },
-      {
-        text: '🗞 Misinfo',
-        onClick: () => action_.video.route('misinfo'),
-      },
-      {
-        text: '🔐 T2/FTE',
-        onClick: () =>
-          action_.video.route(
-            store_.is.queue('t2') ? 'fte' : 't2',
-            't2',
-            'protections'
-          ),
-      },
-    ],
-    comments: [
-      {
-        text: 'Al Qaeda',
-        onClick: () =>
-          action_.comment.strikeComment('alq', config_.COMMENTS_TIMER_MIN),
-      },
-      {
-        text: ' BLA',
-        onClick: () =>
-          action_.comment.strikeComment('bla', config_.COMMENTS_TIMER_MIN),
-      },
-      {
-        text: '🇵🇸 Hamas',
-        onClick: () =>
-          action_.comment.strikeComment('hamas', config_.COMMENTS_TIMER_MIN),
-      },
-      {
-        text: '🇱🇧 Hezbollah',
-        onClick: () =>
-          action_.comment.strikeComment(
-            'hezbollah',
-            config_.COMMENTS_TIMER_MIN
-          ),
-      },
-      {
-        text: '🇮🇪 IRA',
-        onClick: () =>
-          action_.comment.strikeComment('ira', config_.COMMENTS_TIMER_MIN),
-      },
-      {
-        text: '🏴‍☠ ISIS',
-        onClick: () =>
-          action_.comment.strikeComment('isis', config_.COMMENTS_TIMER_MIN),
-      },
-      {
-        text: '🇱🇰 LTTE',
-        onClick: () =>
-          action_.comment.strikeComment('lte', config_.COMMENTS_TIMER_MIN),
-      },
-      {
-        text: '🟥 PKK',
-        onClick: () =>
-          action_.comment.strikeComment('pkk', config_.COMMENTS_TIMER_MIN),
-      },
-      {
-        text: '🇵🇰 TTP',
-        onClick: () =>
-          action_.comment.strikeComment('taliban', config_.COMMENTS_TIMER_MIN),
-      },
-      {
-        text: ' VNSA',
-        onClick: () =>
-          action_.comment.strikeComment('vnsa', config_.COMMENTS_TIMER_MIN),
-      },
-      {
-        text: 'OSAMA',
-        onClick: () =>
-          action_.comment.strikeComment(
-            'osama',
-            config_.COMMENTS_TIMER_MIN,
-            'gdp_speaker_type'
-          ),
-      },
-      {
-        text: 'Unknown',
-        onClick: () =>
-          action_.comment.strikeComment('unknown', config_.COMMENTS_TIMER_MIN),
-      },
-      {
-        text: '❔ Custom',
-        onClick: () =>
-          action_.comment.strikeComment('', config_.COMMENTS_TIMER_MIN),
-      },
-      {
-        text: 'Custom GDP',
-        onClick: () =>
-          action_.comment.strikeComment(
-            '',
-            config_.COMMENTS_TIMER_MIN,
-            'isGDP'
-          ),
-      },
-      { text: '⏭ Hate', onClick: () => action_.video.route('hate') },
-      { text: 'X L A N G', onClick: () => action_.video.route('xlang') },
-    ],
-  },
   dropdownList: {
     9008: {
       label: '9008',
       children: [
-        { key: '🇷🇺 RU', onClick: () => action_.video.approve('russian') },
-        { key: '🇺🇦 UA', onClick: () => action_.video.approve('ukrainian') },
-        { key: '🇬🇧 ENG', onClick: () => action_.video.approve('english') },
+        { key: '🇷🇺 Russian', onClick: () => action_.video.approve('russian') },
         {
-          key: '❔ AGN',
+          key: '🇺🇦 Ukrainian',
+          onClick: () => action_.video.approve('ukrainian'),
+        },
+        { key: '🇬🇧 English', onClick: () => action_.video.approve('english') },
+        {
+          key: '❔ Agnostic',
           onClick: () => action_.video.approve('Language agnostic'),
         },
-        { key: '🔳 N/A', onClick: () => action_.video.approve() },
+        { key: '🔳 No Language', onClick: () => action_.video.approve() },
       ],
     },
     route: {
@@ -2000,7 +1801,7 @@ let props_ = {
             ),
         },
         {
-          key: '💉💲 Drugs',
+          key: '💉💲 Drugs & Illegal Sales',
           onClick: () =>
             action_.video.route(`drugs ${utils_.get.queue.type()}`, 'drugs'),
         },
@@ -2009,7 +1810,7 @@ let props_ = {
           onClick: () => action_.video.route('Harmful Dangerous Acts', 'hd'),
         },
         {
-          key: '🥩 Graphic',
+          key: '🥩 GV',
           onClick: () =>
             action_.video.route(`graphic violence enforcement`, 'gv'),
         },
@@ -2018,7 +1819,7 @@ let props_ = {
           onClick: () => action_.video.route('hate russian', 'hate'),
         },
         {
-          key: '🏹 Harass',
+          key: '🏹 Harassment',
           onClick: () =>
             action_.video.route(
               `harassment ${utils_.get.queue.type()} russian`,
@@ -2029,17 +1830,17 @@ let props_ = {
           key: '🔞 Adult',
           onClick: () => action_.video.route('adult', 'adult'),
         },
-        { key: '📬 SPAM', onClick: () => action_.video.route('spam', 'spam') },
+        { key: '📬 Spam', onClick: () => action_.video.route('spam', 'spam') },
         {
-          key: '💽 DS',
+          key: '💽 Digital Security',
           onClick: () => action_.video.route('digital security video', 'ds'),
         },
         {
-          key: '🧒 Child',
+          key: '🧒 Child Safety',
           onClick: () => action_.video.route('child minors', 'cs'),
         },
         {
-          key: '🗞 Misinfo',
+          key: '🗞 Misinformation',
           onClick: () => action_.video.route('misinfo'),
         },
         {
@@ -2053,130 +1854,22 @@ let props_ = {
         },
       ],
     },
-    3065: {
-      label: '3065',
+    strike: {
+      label: 'Strike',
       children: [
-        {
-          key: '📽 Video',
-          value: 'video',
-          onClick: () => action_.video.strike('3065', 'video'),
-        },
-        {
-          key: '🎻 Song',
-          value: 'song',
-          onClick: () => action_.video.strike('3065', 'song'),
-        },
-        {
-          key: '🎤 Speech',
-          value: 'speech',
-          onClick: () => action_.video.strike('3065', 'speech'),
-        },
-        {
-          key: '📎 Metadata',
-          value: 'metadata',
-          onClick: () => action_.video.strike('3065', 'metadata'),
-        },
-      ],
-    },
-    3039: {
-      label: '3039',
-      children: [
-        {
-          key: '📽 Video',
-          value: 'video',
-          onClick: () => action_.video.strike('3039', 'video'),
-        },
-        {
-          key: '🎻 Song',
-          value: 'song',
-          onClick: () => action_.video.strike('3039', 'song'),
-        },
-        {
-          key: '🎤 Speech',
-          value: 'speech',
-          onClick: () => action_.video.strike('3039', 'speech'),
-        },
-        {
-          key: '📎 Metadata',
-          value: 'metadata',
-          onClick: () => action_.video.strike('3039', 'metadata'),
-        },
-      ],
-    },
-    3044: {
-      label: '3044',
-      children: [
-        {
-          key: '📽 Video',
-          value: 'video',
-          onClick: () => action_.video.strike('3044', 'video'),
-        },
-        {
-          key: '🎻 Song',
-          value: 'song',
-          onClick: () => action_.video.strike('3044', 'song'),
-        },
-        {
-          key: '🎤 Speech',
-          value: 'speech',
-          onClick: () => action_.video.strike('3044', 'speech'),
-        },
-        {
-          key: '📎 Metadata',
-          value: 'metadata',
-          onClick: () => action_.video.strike('3044', 'metadata'),
-        },
-      ],
-    },
-    3099: {
-      label: '3099',
-      children: [
-        {
-          key: 'Demo',
-          value: 'video',
-          onClick: () => action_.video.strike('3099'),
-        },
-      ],
-    },
-    3999: {
-      label: '3999',
-      children: [
-        {
-          key: '📽 Prigozhin Video',
-          value: 'video',
-          onClick: () => action_.video.strike('3999', 'video'),
-        },
-        {
-          key: '🎤 Prigozhin Speech',
-          value: 'speech',
-          onClick: () => action_.video.strike('3999', 'speech'),
-        },
-        {
-          key: '📎 Prigozhin Metadata',
-          value: 'metadata',
-          onClick: () => action_.video.strike('3999', 'metadata'),
-        },
-      ],
-    },
-    3888: {
-      label: '3888',
-      children: [
-        {
-          key: '📽 Prigozhin Video',
-          value: 'video',
-          onClick: () => action_.video.strike('3888', 'video'),
-        },
-        {
-          key: '🎤 Prigozhin Speech',
-          value: 'speech',
-          onClick: () => action_.video.strike('3888', 'speech'),
-        },
-        {
-          key: '📎 Prigozhin Metadata',
-          value: 'metadata',
-          onClick: () => action_.video.strike('3888', 'metadata'),
-        },
-      ],
+        '3065',
+        '3039',
+        '3044',
+        '3048',
+        '3099',
+        '3999',
+        '3888',
+        '5013',
+        '6120',
+      ].map((policyId) => ({
+        key: policyId,
+        onClick: () => action_.video.strike(policyId),
+      })),
     },
   },
 };
@@ -2543,57 +2236,6 @@ let transcript_ = {
 };
 
 let ui_ = {
-  draw() {
-    try {
-      // stopwatch in header
-      // !getElement('.stopwatch') &&
-      //   dom_.header.appendChild(ui_.components.stopwatchPanel.stopwatch);
-
-      // panel with policies
-      if (!getElement('.action-panel')) {
-        dom_.metadataPanel.appendChild(dom_.strikePanel);
-      }
-      // autosubmit switch
-      if (!getElement('.autosubmit-switch'))
-        dom_.metadataPanel.appendChild(dom_.autosubmitSwitch);
-
-      // trigger notes
-      !getElement('.player-controls-btns') &&
-        dom_.playerControls.drawControlButtons();
-
-      // filter transcript and append words table below metadata
-      if (!getElement('.config-panel-btn')) {
-        dom_.filterControlsPanel.appendChild(
-          ui_.createIconButton(
-            'chevron_right',
-            toggleConfigPanel,
-            'config-panel-btn'
-          )
-        );
-
-        const configPanel = ui_.components.configPanel;
-        dom_.filterControlsPanel.appendChild(configPanel);
-        configPanel.style.display = 'none';
-        configPanel.style.opacity = '0.2';
-
-        [...configPanel.children].forEach((child) =>
-          child.addEventListener('click', toggleConfigPanel)
-        );
-        function toggleConfigPanel() {
-          configPanel.style.display === 'none'
-            ? (configPanel.style.display = 'flex')
-            : (configPanel.style.display = 'none');
-        }
-      }
-
-      if (!getElement('.approve-panel__header')) {
-        dom_.header.appendChild(ui_.components.approvePanelHeader);
-      }
-    } catch (e) {
-      console.log(e);
-      throw new Error('Could not draw UI');
-    }
-  },
   atoms: {
     card({ children }) {
       let elem = utils_.strToNode(`<yurt-core-card></yurt-core-card>`);
@@ -2636,10 +2278,283 @@ let ui_ = {
 
       return node;
     },
-  },
+    createGrid(cols = 3, elementSize = '170px') {
+      const grid = ui_.strToNode(
+        `<div style="display: grid; grid-template-columns: repeat(${cols}, ${elementSize}); gap: 10px; margin: 10px;"></div>`
+      );
 
+      return grid;
+    },
+  },
   components: {
     // Ready UI Components
+
+    get btns() {
+      const { button: createButton } = ui_.atoms;
+      const { button: btnProps } = props_;
+
+      return {
+        approve: btnProps.approve.map(({ text, onClick }) =>
+          createButton({ text, onClick })
+        ),
+        strike: btnProps.strike.map(({ text, onClick }) =>
+          createButton({ text, onClick })
+        ),
+        route: btnProps.route.map(({ text, onClick }) =>
+          createButton({ text, onClick })
+        ),
+        comments: btnProps.comments.map(({ text, onClick }) =>
+          createButton({ text, onClick })
+        ),
+      };
+    },
+    get approvePanelHeader() {
+      const container = utils_.strToNode(
+        '<div style="opacity: 0; margin-left:auto; margin-right: 50px; transition: opacity 300ms;" class="approve-panel__header"></div>'
+      );
+      const btns = props_.button.approve.map(({ text, onClick }) =>
+        ui_.createButton(text, onClick)
+      );
+      container.replaceChildren(...btns);
+
+      // Function to handle mouseenter event
+      function handleMouseEnter() {
+        container.style.opacity = 1;
+      }
+
+      // Function to handle mouseleave event
+      function handleMouseLeave() {
+        container.style.opacity = 0;
+      }
+
+      // Add event listeners
+      container.addEventListener('mouseenter', handleMouseEnter);
+      container.addEventListener('mouseleave', handleMouseLeave);
+
+      return container;
+    },
+    get stopwatchPanel() {
+      const getTimeStr = () => `${utils_.formatTime(utils_.get.timeElapsed)}`;
+
+      const stopwatch = utils_.strToNode(
+        `<tcs-chip spec="tag" text=${getTimeStr()} class="stopwatch container"></tcs-chip>`
+      );
+
+      let parentNode = store_.is.queue('comments')
+        ? getElement('tcs-text[spec=title-2]')?.[0]?.shadowRoot
+        : getElement('yurt-core-plugin-header > div > tcs-view')?.[0];
+
+      parentNode.spacing = 'small';
+
+      // MULTIPLE TABS
+      if (config_.SU) {
+        function showTimers() {
+          const { setTimer, strToNode } = utils_;
+          let existingTimers = getElement('.timers')?.[0];
+
+          if (existingTimers) {
+            existingTimers.remove();
+            return;
+          }
+
+          const timersWrapper = strToNode(
+            `<tcs-view class="timers container" align="center" spec="row"></tcs-view>`
+          );
+          const autoreloadCheckbox = strToNode(
+            `<mwc-checkbox value="autoreload-page"></mwc-checkbox>`
+          );
+
+          timersWrapper.replaceChildren(...timersArr);
+          timersWrapper.appendChild(autoreloadCheckbox);
+          parentNode.appendChild(timersWrapper);
+        }
+
+        stopwatch.onclick = () => {
+          utils_.removeLock();
+          showTimers();
+        };
+      }
+
+      // tick
+      store_.stopwatchId = setInterval(() => {
+        stopwatch.text = getTimeStr();
+      }, 1000);
+
+      return {
+        stopwatch,
+      };
+    },
+    get newActionPanel() {
+      const approveBtns = ui_.atoms.createGrid(4);
+      const routeBtns = ui_.atoms.createGrid(4);
+      const strikeBtns = ui_.atoms.createGrid(4);
+
+      const veGroupDropdownSelector = createDropdownSelector(
+        props_.dropdown.strike
+      );
+      veGroupDropdownSelector.onclick = (e) => e.stopPropagation();
+      veGroupDropdownSelector.onchange = () => {
+        store_.selectedVEGroup =
+          store_.newVeGroups[veGroupDropdownSelector.selected.value];
+      };
+    },
+    get actionPanel() {
+      const {
+        createDropdownMenu,
+        atoms: { card: createCard, dropdown: createDropdownSelector },
+        components: {
+          stopwatchPanel: { stopwatch },
+        },
+      } = ui_;
+
+      const container = utils_.strToNode(
+        `<div style="display: flex; flex-direction: column; gap: 20px; align-items: center;" class="strike-panel container"></div>`
+      );
+
+      const veGroupDropdownSelector = createDropdownSelector(
+        props_.dropdown.strike
+      );
+
+      veGroupDropdownSelector.style.width = '80%';
+      stopwatch.style.alignSelf = 'flex-start';
+      stopwatch.style.paddingLeft = '10px';
+      stopwatch.style.paddingTop = '10px';
+
+      veGroupDropdownSelector.onclick = (e) => e.stopPropagation();
+
+      veGroupDropdownSelector.onchange = () => {
+        store_.selectedVEGroup =
+          store_.newVeGroups[veGroupDropdownSelector.selected.value];
+      };
+
+      const [approveMenu, routeMenu, strikeMenu] = Object.keys(
+        props_.dropdownList
+      ).map((policy) => createDropdownMenu(props_.dropdownList[policy]));
+
+      container.replaceChildren(
+        stopwatch,
+        approveMenu,
+        strikeMenu,
+        routeMenu,
+        veGroupDropdownSelector
+      );
+
+      const element = createCard({
+        children: container,
+      });
+
+      return element;
+    },
+
+    get configPanel() {
+      // the panel under player with tools like transcript filtering
+      // or triggering notes templates
+      const container = ui_.strToNode(
+        `<div style="display: flex;" class="config-panel"></div>`
+      );
+
+      const buttons = [
+        ui_.createIconButton(
+          'filter_alt',
+          async () => {
+            await lib_.retry(ui_.renderWordsTable);
+            transcript_.checkForLewd();
+          },
+          'filter-transcript-table'
+        ),
+        ui_.createIconButton(
+          'troubleshoot',
+          async function filterCurrentChannelTranscripts() {
+            transcript_.renderChannelViolativeWordsTable();
+          },
+          'filter-ids-btn'
+        ),
+        ui_.createIconButton(
+          'note_add',
+          () => utils_.showNotes(),
+          'show-notes-btn'
+        ),
+        ui_.createIconButton(
+          'delete',
+          () => {
+            clearTimeout(store_.submitId);
+            store_.submitId = 0;
+          },
+          'clear-timers-btn'
+        ),
+      ];
+
+      container.replaceChildren(...buttons);
+
+      return container;
+    },
+    recommendationPanel({ notesArr }) {
+      // TODO comments recommendations
+      if (store_.is.queue('comments')) return;
+
+      let recommendationList = utils_.strToNode(
+        `<mwc-list id="recommendation-notes" style="margin: 30px 0px; opacity: 0; transition: opacity 300ms;">${notesArr
+          ?.map(
+            (note) =>
+              `<mwc-list-item class="recommendation-item" graphic="avatar" value="${note.value()}"><span>${
+                note.title
+              }</span><mwc-icon slot="graphic">note_add</mwc-icon></mwc-list-item>`
+          )
+          .join('')}</mwc-list>`
+      );
+
+      // Function to handle mouseenter event
+      function handleMouseEnter() {
+        recommendationList.style.opacity = 1;
+      }
+
+      // Function to handle mouseleave event
+      function handleMouseLeave() {
+        recommendationList.style.opacity = 0;
+      }
+
+      // Add event listeners
+      recommendationList.addEventListener('mouseenter', handleMouseEnter);
+      recommendationList.addEventListener('mouseleave', handleMouseLeave);
+
+      [...recommendationList.childNodes].forEach(
+        (recommendation) =>
+          (recommendation.onclick = () => {
+            action_.video.steps.addNote(recommendation.value);
+          })
+      );
+
+      return {
+        element: recommendationList,
+        render() {
+          // find parent
+          const parent =
+            getElement('yurt-core-decision-route')?.[0]?.shadowRoot ||
+            getElement('yurt-core-decision-annotation-edit')?.[0]?.shadowRoot;
+
+          parent.appendChild(recommendationList);
+        },
+      };
+    },
+    get commentsPanel() {
+      commentsPanelWrapper = utils_.strToNode(
+        `<tcs-view wrap="wrap" class="action-panel__comments" spacing="small"></tcs-view>`
+      );
+
+      commentsPanelWrapper.replaceChildren(...ui_.components.btns.comments);
+
+      let element = atoms.card({ children: commentsPanelWrapper });
+
+      return {
+        element,
+        render() {
+          // return if there is a panel already
+          if (getElement('.action-panel__comments')?.[0]) return;
+
+          utils_.appendNode(element);
+        },
+      };
+    },
     createWordsList(listItemsArr) {
       const { strToNode } = ui_;
 
@@ -2712,334 +2627,67 @@ let ui_ = {
 
       return container;
     },
-    get btns() {
-      const { button: createButton } = ui_.atoms;
-      const { button: btnProps } = props_;
+  },
 
-      return {
-        approve: btnProps.approve.map(({ text, onClick }) =>
-          createButton({ text, onClick })
-        ),
-        strike: btnProps.strike.map(({ text, onClick }) =>
-          createButton({ text, onClick })
-        ),
-        route: btnProps.route.map(({ text, onClick }) =>
-          createButton({ text, onClick })
-        ),
-        comments: btnProps.comments.map(({ text, onClick }) =>
-          createButton({ text, onClick })
-        ),
-      };
-    },
-    get approvePanel() {
-      const { strToNode: $ } = utils_;
-      let wrapperDiv = $(
-        `<div class="action-panel" style="display: grid; grid-template-columns: repeat(2, 2fr)"></div>`
-      );
+  // methods
+  draw() {
+    try {
+      // stopwatch in header
+      // !getElement('.stopwatch') &&
+      //   dom_.header.appendChild(ui_.components.stopwatchPanel.stopwatch);
 
-      let routeDiv = $(
-        `<div style="display:grid; grid-template-columns: 1fr 1fr 1fr;" class="action-panel__route"></div>`
-      );
-      let approveDiv = $(`<div class="action-panel__action"></div>`);
-
-      [routeDiv, approveDiv].forEach((div) => {
-        div.style.display = 'flex';
-        div.style.flexDirection = 'column';
-      });
-
-      approveDiv.replaceChildren(...this.btns.approve);
-      routeDiv.replaceChildren(...this.btns.route);
-
-      wrapperDiv.replaceChildren(routeDiv, approveDiv);
-
-      let element = ui_.atoms.card({ children: wrapperDiv });
-
-      // element.style.marginTop = '300px';
-
-      return element;
-    },
-    get approvePanelHeader() {
-      const container = utils_.strToNode(
-        '<div style="opacity: 0; margin-left:auto; margin-right: 50px; transition: opacity 300ms;" class="approve-panel__header"></div>'
-      );
-      const btns = props_.button.approve.map(({ text, onClick }) =>
-        ui_.createButton(text, onClick)
-      );
-      container.replaceChildren(...btns);
-
-      // Function to handle mouseenter event
-      function handleMouseEnter() {
-        container.style.opacity = 1;
+      // panel with policies
+      if (!getElement('.action-panel')) {
+        dom_.metadataPanel.appendChild(dom_.strikePanel);
       }
+      // autosubmit switch
+      if (!getElement('.autosubmit-switch'))
+        dom_.metadataPanel.appendChild(dom_.autosubmitSwitch);
 
-      // Function to handle mouseleave event
-      function handleMouseLeave() {
-        container.style.opacity = 0;
-      }
+      // trigger notes
+      !getElement('.player-controls-btns') &&
+        dom_.playerControls.drawControlButtons();
 
-      // Add event listeners
-      container.addEventListener('mouseenter', handleMouseEnter);
-      container.addEventListener('mouseleave', handleMouseLeave);
+      // filter transcript and append words table below metadata
+      if (!getElement('.config-panel-btn')) {
+        dom_.filterControlsPanel.appendChild(
+          ui_.createIconButton(
+            'chevron_right',
+            toggleConfigPanel,
+            'config-panel-btn'
+          )
+        );
 
-      return container;
-    },
-    get actionPanel() {
-      const {
-        createDropdownMenu,
-        atoms: { card: createCard, dropdown: createDropdownSelector },
-        components: {
-          stopwatchPanel: { stopwatch },
-        },
-      } = ui_;
+        const configPanel = ui_.components.configPanel;
+        dom_.filterControlsPanel.appendChild(configPanel);
+        configPanel.style.display = 'none';
+        configPanel.style.opacity = '0.2';
 
-      const container = utils_.strToNode(
-        `<div style="margin-bottom: 20px;" class="strike-panel container"></div>`
-      );
-
-      const veGroupDropdownSelector = createDropdownSelector(
-        props_.dropdown.strike
-      );
-
-      veGroupDropdownSelector.onclick = (e) => e.stopPropagation();
-
-      veGroupDropdownSelector.onchange = () => {
-        store_.selectedVEGroup =
-          store_.newVeGroups[veGroupDropdownSelector.selected.value];
-      };
-
-      const strikeDropdownMenus = Object.keys(props_.dropdownList).map(
-        (policy) => createDropdownMenu(props_.dropdownList[policy])
-      );
-
-      const [approveMenu, routeMenu] = strikeDropdownMenus.splice(-2);
-      container.replaceChildren(
-        stopwatch,
-        approveMenu,
-        routeMenu,
-        ...strikeDropdownMenus,
-        veGroupDropdownSelector
-      );
-
-      const element = createCard({
-        children: container,
-      });
-
-      return element;
-    },
-    get stopwatchPanel() {
-      const getTimeStr = () => `${utils_.formatTime(utils_.get.timeElapsed)}`;
-
-      const stopwatch = utils_.strToNode(
-        `<tcs-chip spec="tag" text=${getTimeStr()} class="stopwatch container"></tcs-chip>`
-      );
-
-      let parentNode = store_.is.queue('comments')
-        ? getElement('tcs-text[spec=title-2]')?.[0]?.shadowRoot
-        : getElement('yurt-core-plugin-header > div > tcs-view')?.[0];
-
-      parentNode.spacing = 'small';
-
-      // MULTIPLE TABS
-      if (config_.SU) {
-        function showTimers() {
-          const { setTimer, strToNode } = utils_;
-          let existingTimers = getElement('.timers')?.[0];
-
-          if (existingTimers) {
-            existingTimers.remove();
-            return;
-          }
-
-          const timersWrapper = strToNode(
-            `<tcs-view class="timers container" align="center" spec="row"></tcs-view>`
-          );
-          const autoreloadCheckbox = strToNode(
-            `<mwc-checkbox value="autoreload-page"></mwc-checkbox>`
-          );
-
-          timersWrapper.replaceChildren(...timersArr);
-          timersWrapper.appendChild(autoreloadCheckbox);
-          parentNode.appendChild(timersWrapper);
+        [...configPanel.children].forEach((child) =>
+          child.addEventListener('click', toggleConfigPanel)
+        );
+        function toggleConfigPanel() {
+          configPanel.style.display === 'none'
+            ? (configPanel.style.display = 'flex')
+            : (configPanel.style.display = 'none');
         }
-
-        stopwatch.onclick = () => {
-          utils_.removeLock();
-          showTimers();
-        };
       }
 
-      // tick
-      store_.stopwatchId = setInterval(() => {
-        stopwatch.text = getTimeStr();
-      }, 1000);
-
-      return {
-        stopwatch,
-      };
-    },
-
-    get configPanel() {
-      const container = ui_.strToNode(
-        `<div style="display: flex;" class="config-panel"></div>`
-      );
-
-      const buttons = [
-        ui_.createIconButton(
-          'filter_alt',
-          async () => {
-            await lib_.retry(ui_.renderWordsTable);
-            transcript_.checkForLewd();
-          },
-          'filter-transcript-table'
-        ),
-        ui_.createIconButton(
-          'troubleshoot',
-          async function filterCurrentChannelTranscripts() {
-            transcript_.renderChannelViolativeWordsTable();
-          },
-          'filter-ids-btn'
-        ),
-        ui_.createIconButton(
-          'note_add',
-          () => utils_.showNotes(),
-          'show-notes-btn'
-        ),
-        ui_.createIconButton(
-          'delete',
-          () => {
-            clearTimeout(store_.submitId);
-            store_.submitId = 0;
-          },
-          'clear-timers-btn'
-        ),
-      ];
-
-      container.replaceChildren(...buttons);
-
-      return container;
-    },
-    approveNotesPanel() {
-      const container = utils_.strToNode(
-        `<div class="approve-notes container"></div>`
-      );
-
-      let panel = utils_.strToNode(
-        `<mwc-list>${recommendationNotes.approve
-          .map(
-            (note) =>
-              `<mwc-list-item class="recommendation-item" graphic="avatar" value="${note.value()}"><tcs-text>${
-                note.title
-              }</tcs-text><mwc-icon slot="graphic">note_add</mwc-icon></mwc-list-item>`
-          )
-          .join('')}</mwc-list>`
-      );
-
-      // add onclicks
-      [...panel.childNodes].forEach(
-        (noteItem) =>
-          (noteItem.onclick = () => {
-            // APPROVE NOTE RECOMMENDATION
-            utils_.setNote(noteItem.value);
-            console.log('note', noteItem.value);
-            getElement('tcs-icon-button#create')?.[0]?.click();
-            utils_.clickSave();
-          })
-      );
-
-      container.appendChild(panel);
-
-      return {
-        element: container,
-        render() {
-          if (getElement('.approve-notes')) return;
-          utils_.appendNode(container);
-        },
-      };
-    },
-    recommendationPanel({ notesArr }) {
-      // TODO comments recommendations
-      if (store_.is.queue('comments')) return;
-
-      let recommendationList = utils_.strToNode(
-        `<mwc-list id="recommendation-notes" style="margin: 30px 0px; opacity: 0; transition: opacity 300ms;">${notesArr
-          ?.map(
-            (note) =>
-              `<mwc-list-item class="recommendation-item" graphic="avatar" value="${note.value()}"><span>${
-                note.title
-              }</span><mwc-icon slot="graphic">note_add</mwc-icon></mwc-list-item>`
-          )
-          .join('')}</mwc-list>`
-      );
-
-      // Function to handle mouseenter event
-      function handleMouseEnter() {
-        recommendationList.style.opacity = 1;
+      if (!getElement('.approve-panel__header')) {
+        dom_.header.appendChild(ui_.components.approvePanelHeader);
       }
-
-      // Function to handle mouseleave event
-      function handleMouseLeave() {
-        recommendationList.style.opacity = 0;
-      }
-
-      // Add event listeners
-      recommendationList.addEventListener('mouseenter', handleMouseEnter);
-      recommendationList.addEventListener('mouseleave', handleMouseLeave);
-
-      [...recommendationList.childNodes].forEach(
-        (recommendation) =>
-          (recommendation.onclick = () => {
-            action_.video.steps.addNote(recommendation.value);
-          })
-      );
-
-      return {
-        element: recommendationList,
-        render() {
-          // find parent
-          const parent =
-            getElement('yurt-core-decision-route')?.[0]?.shadowRoot ||
-            getElement('yurt-core-decision-annotation-edit')?.[0]?.shadowRoot;
-
-          parent.appendChild(recommendationList);
-        },
-      };
-    },
-    get commentsPanel() {
-      commentsPanelWrapper = utils_.strToNode(
-        `<tcs-view wrap="wrap" class="action-panel__comments" spacing="small"></tcs-view>`
-      );
-
-      commentsPanelWrapper.replaceChildren(...ui_.components.btns.comments);
-
-      let element = atoms.card({ children: commentsPanelWrapper });
-
-      return {
-        element,
-        render() {
-          // return if there is a panel already
-          if (getElement('.action-panel__comments')?.[0]) return;
-
-          utils_.appendNode(element);
-        },
-      };
-    },
-    get DEPRECATED_actionPanel() {
-      const { approvePanel, actionPanel } = this;
-
-      let container = utils_.strToNode(
-        `<div class="action-panel" style="display: flex; flex-direction: column; justify-content: start; gap: 1rem; padding: 3rem 0 10rem 0;"></div>`
-      );
-
-      const elemsArr = [
-        // approvePanel,
-        actionPanel,
-        // approveNotesPanel,
-      ];
-
-      container.replaceChildren(...elemsArr);
-
-      return container;
-    },
+    } catch (e) {
+      console.log(e);
+      throw new Error('Could not draw UI');
+    }
+  },
+  strToNode(str) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = str;
+    if (tmp.childNodes.length < 2) {
+      return tmp.childNodes[0];
+    }
+    return tmp.childNodes;
   },
   toggleMediaLibrary() {
     let myframe = utils_.strToNode(
@@ -3075,36 +2723,37 @@ let ui_ = {
     const { strToNode } = ui_;
     const { label, children, style } = props;
 
-    const parentList =
-      strToNode(`<mwc-list><mwc-list-item hasmeta="" value="video" mwc-list-item="" tabindex="0" aria-disabled="false">
-    <!--?lit$658385021$-->
-    <span class="option-label"><tcs-text>${label ?? ''}</tcs-text></span>
-    <tcs-icon data-test-id="label-questionnaire-list-category-icon" slot="meta" class="category-icon" family="material" spec="default">
-    <!--?lit$658385021$-->expand_more
-    </tcs-icon>
-    </mwc-list-item>
-    </mwc-list>`);
+    // const parentList =
+    //   strToNode(`<mwc-list><mwc-list-item hasmeta="" value="video" mwc-list-item="" tabindex="0" aria-disabled="false">
+    // <span class="option-label"><tcs-text>${label ?? ''}</tcs-text></span>
+    // <tcs-icon data-test-id="label-questionnaire-list-category-icon" slot="meta" class="category-icon" family="material" spec="default">expand_more
+    // </tcs-icon>
+    // </mwc-list-item>
+    // </mwc-list>`);
 
     // const childList = strToNode(`<mwc-list></mwc-list>`);
 
-    const childList = strToNode(
-      `<div style="display: grid; grid-template-columns: 1fr 1fr ${
-        label?.toLowerCase()?.includes('route') ? '1fr' : ''
-      };"></div>`
-    );
-    childList.style.display = 'none';
+    const container = ui_.atoms.createGrid(3);
 
-    function toggleShowList() {
-      childList.style.display === 'none'
-        ? (childList.style.display = 'grid')
-        : (childList.style.display = 'none');
-    }
+    // container.style.display = 'none';
+
+    // function toggleShowList() {
+    //   container.style.display === 'none'
+    //     ? (container.style.display = 'grid')
+    //     : (container.style.display = 'none');
+    // }
 
     const childListItems = children.map((item) => {
       const listItem = strToNode(`<mwc-list-item value="${
         item?.value ?? ''
       }" graphic="control" aria-disabled="false">
-      <span class="option-label"><tcs-text>${item?.key ?? ''}</tcs-text></span>
+      <span class="option-label"><tcs-text ${
+        item.key.startsWith('3') ||
+        item.key.startsWith('5') ||
+        item.key.startsWith('6')
+          ? 'style="letter-spacing: 2px;"'
+          : ''
+      }>${item?.key ?? ''}</tcs-text></span>
       </mwc-list-item>`);
 
       function handleClick(e) {
@@ -3118,13 +2767,13 @@ let ui_ = {
       return listItem;
     });
 
-    childList.replaceChildren(...childListItems);
-    parentList.appendChild(childList);
-    parentList.addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleShowList();
-    });
-    return parentList;
+    container.replaceChildren(...childListItems);
+    // parentList.appendChild(childList);
+    // parentList.addEventListener('click', (e) => {
+    //   e.stopPropagation();
+    //   toggleShowList();
+    // });
+    return container;
   },
   typography(str) {
     const textElement = ui_.strToNode(
@@ -3132,15 +2781,6 @@ let ui_ = {
     );
     return textElement;
   },
-  strToNode(str) {
-    const tmp = document.createElement('div');
-    tmp.innerHTML = str;
-    if (tmp.childNodes.length < 2) {
-      return tmp.childNodes[0];
-    }
-    return tmp.childNodes;
-  },
-
   toggleRecommendations(policyId) {
     const existing = getElement('#recommendation-notes')?.[0];
     if (existing) {
@@ -3239,7 +2879,6 @@ let ui_ = {
 
     return container;
   },
-
   showTimers() {
     if (getElement('.submit-timers')?.[0]) return;
     const { setTimer, strToNode } = utils_;
@@ -3266,9 +2905,6 @@ let ui_ = {
     mwcMenu.replaceChildren(...[...mwcMenu.children, timersWrapper]);
     // stopwatch.parentNode.appendChild(timersWrapper);
   },
-
-  create: {},
-
   mutations: {
     expandTranscriptContainer() {
       try {
@@ -3363,706 +2999,13 @@ let questionnaire_ = {
     }
 
     console.log('💾 Saving questionnaire. Answers:');
-
     dom_.questionnaire.onSave();
-
     return dom_.questionnaire.labellingGraph.fh;
   },
-  generateAnswers(policyId = '3039', contentType = 'video') {
-    abuseLocationMapper = {
-      video: [
-        {
-          id: 'video_abusive',
-          label: 'Abusive',
-          parentId: 'video',
-        },
-      ],
-      song: [
-        {
-          id: 'audio_abusive',
-          label: 'Abusive',
-          parentId: 'audio',
-        },
-      ],
-      speech: [
-        {
-          id: 'audio_abusive',
-          label: 'Abusive',
-          parentId: 'audio',
-        },
-      ],
-      metadata: [
-        {
-          id: 'metadata_abusive',
-          label: 'Abusive',
-          parentId: 'metadata',
-        },
-      ],
-    };
-    answersById = {
-      3039: {
-        song: [
-          {
-            questionId: 'violent_extremism/question/abuse_location',
-            answers: [
-              {
-                id: 'audio_abusive',
-                label: 'Abusive',
-                parentId: 'audio',
-              },
-            ],
-          },
-          {
-            questionId: 'violent_extremism/question/applicable_ve_group',
-            answers: [store_.selectedVEGroup],
-          },
-          {
-            questionId: 'violent_extremism/question/act_type',
-            answers: [
-              {
-                id: 'glorification_terrorism',
-                label: 'Glorification of terrorism or terrorist acts',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId: 'violent_extremism/question/audio_features',
-            answers: [
-              {
-                id: 'song',
-                label: 'Song',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId: 'violent_extremism/question/audio_segment',
-            answers: [
-              {
-                id: 'audio_time_interval',
-                value: {
-                  timeValue: {
-                    intervals: [
-                      {
-                        startTime: `${Math.floor(
-                          dom_?.playerControls?.player?.getCurrentTime() ?? 0
-                        )}s`,
-                        endTime: `${Math.floor(
-                          dom_?.playerControls?.player?.getDuration() ?? 0
-                        )}s`,
-                      },
-                    ],
-                  },
-                },
-              },
-            ],
-          },
-          {
-            questionId: 'violent_extremism/question/confidence_level',
-            answers: [
-              {
-                id: 'very_confident',
-                label: 'Very confident',
-                value: {},
-              },
-            ],
-          },
-        ],
-        video: [
-          {
-            questionId: 'violent_extremism/question/abuse_location',
-            answers: [
-              {
-                id: 'video_abusive',
-                label: 'Abusive',
-                parentId: 'video',
-              },
-            ],
-          },
-          {
-            questionId: 'violent_extremism/question/applicable_ve_group',
-            answers: [store_.selectedVEGroup],
-          },
-          {
-            questionId: 'violent_extremism/question/act_type',
-            answers: [
-              {
-                id: 'glorification_terrorism',
-                label: 'Glorification of terrorism or terrorist acts',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId: 'violent_extremism/question/video_contents',
-            answers: [
-              {
-                id: 'other',
-                label: 'Other',
-              },
-            ],
-          },
-          {
-            questionId: 'violent_extremism/question/video_features',
-            answers: [
-              {
-                id: 've_logo',
-                label: 'Logo of VE actor',
-                value: {},
-              },
-              {
-                id: 'featured_person',
-                label: 'Featured person',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId: 'violent_extremism/question/video_type',
-            answers: [
-              {
-                id: 'single_take',
-                label: 'Single take / no changes of scene',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId: 'violent_extremism/question/video_segment',
-            answers: [
-              {
-                id: 'video_time_interval',
-                value: {
-                  timeValue: {
-                    intervals: [
-                      {
-                        startTime: `${Math.floor(
-                          dom_?.playerControls?.player?.getCurrentTime() ?? 0
-                        )}s`,
-                        endTime: `${Math.floor(
-                          dom_?.playerControls?.player?.getDuration() ?? 0
-                        )}s`,
-                      },
-                    ],
-                  },
-                },
-              },
-            ],
-          },
-          {
-            questionId: 'violent_extremism/question/confidence_level',
-            answers: [
-              {
-                id: 'very_confident',
-                label: 'Very confident',
-                value: {},
-              },
-            ],
-          },
-        ],
-        speech: [
-          {
-            questionId: 'violent_extremism/question/abuse_location',
-            answers: [
-              {
-                id: 'audio_abusive',
-                label: 'Abusive',
-                parentId: 'audio',
-              },
-            ],
-          },
-          {
-            questionId: 'violent_extremism/question/applicable_ve_group',
-            answers: [store_.selectedVEGroup],
-          },
-          {
-            questionId: 'violent_extremism/question/act_type',
-            answers: [
-              {
-                id: 'glorification_terrorism',
-                label: 'Glorification of terrorism or terrorist acts',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId: 'violent_extremism/question/audio_features',
-            answers: [
-              {
-                id: 'speech',
-                label: 'Speech',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId: 'violent_extremism/question/audio_segment',
-            answers: [
-              {
-                id: 'audio_time_interval',
-                value: {
-                  timeValue: {
-                    intervals: [
-                      {
-                        startTime: `${Math.floor(
-                          dom_?.playerControls?.player?.getCurrentTime() ?? 0
-                        )}s`,
-                        endTime: `${Math.floor(
-                          dom_?.playerControls?.player?.getDuration() ?? 0
-                        )}s`,
-                      },
-                    ],
-                  },
-                },
-              },
-            ],
-          },
-          {
-            questionId: 'violent_extremism/question/confidence_level',
-            answers: [
-              {
-                id: 'very_confident',
-                label: 'Very confident',
-                value: {},
-              },
-            ],
-          },
-        ],
-        metadata: [
-          {
-            questionId: 'violent_extremism/question/abuse_location',
-            answers: [
-              {
-                id: 'metadata_abusive',
-                label: 'Abusive',
-                parentId: 'metadata',
-              },
-            ],
-          },
-          {
-            questionId: 'violent_extremism/question/applicable_ve_group',
-            answers: [store_.selectedVEGroup],
-          },
-          {
-            questionId: 'violent_extremism/question/act_type',
-            answers: [
-              {
-                id: 'glorification_terrorism',
-                label: 'Glorification of terrorism or terrorist acts',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId: 'violent_extremism/question/metadata_features',
-            answers: [
-              {
-                id: 'video_title',
-                label: 'Video Title',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId: 'violent_extremism/question/metadata_abuse_type',
-            answers: [
-              {
-                id: 'abusive_meaning',
-                label: 'Metadata has relevant/abusive meaning',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId: 'violent_extremism/question/confidence_level',
-            answers: [
-              {
-                id: 'very_confident',
-                label: 'Very confident',
-                value: {},
-              },
-            ],
-          },
-        ],
-      },
-      3065: {
-        song: [
-          {
-            questionId:
-              'violent_extremism/question/video_3065_tvc/applicable_ve_group',
-            answers: [store_.selectedVEGroup],
-          },
-          {
-            questionId: 'violent_extremism/question/video_3065_tvc/act_type',
-            answers: [
-              {
-                id: 'glorification_terrorism',
-                label: 'Glorification of terrorism or terrorist acts',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId:
-              'violent_extremism/question/video_3065_tvc/violation_reason',
-            answers: [
-              {
-                id: 'produced_content',
-                label: 'Produced Content',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId:
-              'violent_extremism/question/video_3065_tvc/abuse_location',
-            answers: [
-              {
-                id: 'audio_abusive',
-                label: 'Audio: Abusive',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId:
-              'violent_extremism/question/video_3065_tvc/audio_features',
-            answers: [
-              {
-                id: 'song',
-                label: 'Song',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId:
-              'violent_extremism/question/video_3065_tvc/audio_segment',
-            answers: [
-              {
-                id: 'time_interval',
-                value: {
-                  timeValue: {
-                    intervals: [
-                      {
-                        startTime: `${Math.floor(
-                          dom_?.playerControls?.player?.getCurrentTime() ?? 0
-                        )}s`,
-                        endTime: `${Math.floor(
-                          dom_?.playerControls?.player?.getDuration() ?? 0
-                        )}s`,
-                      },
-                    ],
-                  },
-                },
-              },
-            ],
-          },
-          {
-            questionId:
-              'violent_extremism/question/video_3065_tvc/confidence_level',
-            answers: [
-              {
-                id: 'very_confident',
-                label: 'Very confident',
-                value: {},
-              },
-            ],
-          },
-        ],
-        video: [
-          {
-            questionId:
-              'violent_extremism/question/video_3065_tvc/applicable_ve_group',
-            answers: [store_.selectedVEGroup],
-          },
-          {
-            questionId: 'violent_extremism/question/video_3065_tvc/act_type',
-            answers: [
-              {
-                id: 'glorification_terrorism',
-                label: 'Glorification of terrorism or terrorist acts',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId:
-              'violent_extremism/question/video_3065_tvc/violation_reason',
-            answers: [
-              {
-                id: 'produced_content',
-                label: 'Produced Content',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId:
-              'violent_extremism/question/video_3065_tvc/abuse_location',
-            answers: [
-              {
-                id: 'abusive',
-                label: 'Video: Abusive',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId:
-              'violent_extremism/question/video_3065_tvc/video_features',
-            answers: [
-              {
-                id: 've_logo',
-                label: 'Logo of VE actor',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId: 'violent_extremism/question/video_3065_tvc/video_type',
-            answers: [
-              {
-                id: 'compilation',
-                label: 'Compliation of videos',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId:
-              'violent_extremism/question/video_3065_tvc/video_contents',
-            answers: [
-              {
-                id: 'other',
-                label: 'Other',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId:
-              'violent_extremism/question/video_3065_tvc/visual_segment',
-            answers: [
-              {
-                id: 'time_interval',
-                value: {
-                  timeValue: {
-                    intervals: [
-                      {
-                        startTime: `${Math.floor(
-                          dom_?.playerControls?.player?.getCurrentTime() ?? 0
-                        )}s`,
-                        endTime: `${Math.floor(
-                          dom_?.playerControls?.player?.getDuration() ?? 0
-                        )}s`,
-                      },
-                    ],
-                  },
-                },
-              },
-            ],
-          },
-          {
-            questionId:
-              'violent_extremism/question/video_3065_tvc/confidence_level',
-            answers: [
-              {
-                id: 'very_confident',
-                label: 'Very confident',
-                value: {},
-              },
-            ],
-          },
-        ],
-        speech: [
-          {
-            questionId:
-              'violent_extremism/question/video_3065_tvc/applicable_ve_group',
-            answers: [store_.selectedVEGroup],
-          },
-          {
-            questionId: 'violent_extremism/question/video_3065_tvc/act_type',
-            answers: [
-              {
-                id: 'glorification_terrorism',
-                label: 'Glorification of terrorism or terrorist acts',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId:
-              'violent_extremism/question/video_3065_tvc/violation_reason',
-            answers: [
-              {
-                id: 'produced_content',
-                label: 'Produced Content',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId:
-              'violent_extremism/question/video_3065_tvc/abuse_location',
-            answers: [
-              {
-                id: 'audio_abusive',
-                label: 'Audio: Abusive',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId:
-              'violent_extremism/question/video_3065_tvc/audio_features',
-            answers: [
-              {
-                id: 'speech',
-                label: 'Speech',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId:
-              'violent_extremism/question/video_3065_tvc/audio_segment',
-            answers: [
-              {
-                id: 'time_interval',
-                value: {
-                  timeValue: {
-                    intervals: [
-                      {
-                        startTime: `${Math.floor(
-                          dom_?.playerControls?.player?.getCurrentTime() ?? 0
-                        )}s`,
-                        endTime: `${Math.floor(
-                          dom_?.playerControls?.player?.getDuration() ?? 0
-                        )}s`,
-                      },
-                    ],
-                  },
-                },
-              },
-            ],
-          },
-          {
-            questionId:
-              'violent_extremism/question/video_3065_tvc/confidence_level',
-            answers: [
-              {
-                id: 'very_confident',
-                label: 'Very confident',
-                value: {},
-              },
-            ],
-          },
-        ],
-        metadata: [],
-      },
-      3999: {
-        video: [
-          {
-            questionId:
-              'violent_extremism/question/video_3999_3888_tvc_fte/applicable_individual_name_beats1',
-            answers: [
-              {
-                id: 'yevgeny_prigozhin',
-                label: 'Yevgeny Prigozhin',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId:
-              'violent_extremism/question/video_3999_3888_tvc_fte/abuse_location',
-            answers: [
-              {
-                id: 'video',
-                label: 'Video',
-                value: {},
-              },
-            ],
-          },
-        ],
-        speech: [
-          {
-            questionId:
-              'violent_extremism/question/video_3999_3888_tvc_fte/applicable_individual_name_beats1',
-            answers: [
-              {
-                id: 'yevgeny_prigozhin',
-                label: 'Yevgeny Prigozhin',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId:
-              'violent_extremism/question/video_3999_3888_tvc_fte/abuse_location',
-            answers: [
-              {
-                id: 'audio',
-                label: 'Audio',
-                value: {},
-              },
-            ],
-          },
-        ],
-        metadata: [
-          {
-            questionId:
-              'violent_extremism/question/video_3999_3888_tvc_fte/applicable_individual_name_beats1',
-            answers: [
-              {
-                id: 'yevgeny_prigozhin',
-                label: 'Yevgeny Prigozhin',
-                value: {},
-              },
-            ],
-          },
-          {
-            questionId:
-              'violent_extremism/question/video_3999_3888_tvc_fte/abuse_location',
-            answers: [
-              {
-                id: 'metadata_title',
-                label: 'Metadata - Video title',
-                value: {},
-              },
-              {
-                id: 'metadata_description',
-                label: 'Metadata - Video description',
-                value: {},
-              },
-              {
-                id: 'metadata_video_tags',
-                label: 'Metadata - Video tags',
-                value: {},
-              },
-            ],
-          },
-        ],
-      },
-      9008: [
-        {
-          questionId:
-            'violent_extremism/question/borderline_video/borderline_decision',
-          answers: [
-            {
-              id: 'no',
-              label: 'No, unrelated to VE',
-            },
-          ],
-        },
-      ],
-    };
+  generateAnswers(policyId = '3039') {
+    const answers = {};
 
-    const newAnswers = {};
-
-    newAnswers['3039'] = [
+    answers['3039'] = [
       {
         questionId: `violent_extremism/question/video_${policyId}_tvc/applicable_ve_group`,
         answers: [store_.selectedVEGroup],
@@ -4079,8 +3022,8 @@ let questionnaire_ = {
       },
     ];
 
-    newAnswers['3065'] = [
-      ...newAnswers['3039'],
+    answers['3065'] = [
+      ...answers['3039'],
       {
         questionId: `violent_extremism/question/video_${policyId}_tvc/violation_reason`,
         answers: [
@@ -4093,7 +3036,7 @@ let questionnaire_ = {
       },
     ];
 
-    newAnswers['3044'] = [
+    answers['3044'] = [
       {
         key: 'violent_extremism/question/video_3044_tvc/select_applicable_violation_type',
         value: [
@@ -4104,31 +3047,17 @@ let questionnaire_ = {
           },
         ],
       },
-      ...newAnswers['3039'],
+      ...answers['3039'],
     ];
 
-    newAnswers['3048'] = [
+    answers['3048'] = [
       {
         questionId: `violent_extremism/question/video_${policyId}_tvc/applicable_ve_group`,
         answers: [store_.selectedVEGroup],
       },
     ];
 
-    // 3065 has one extra question (produced/depictive/bystander)
-    // if (policyId === '3065') {
-    //   newAnswers['3039'].push({
-    //     questionId: `violent_extremism/question/video_${policyId}_tvc/violation_reason`,
-    //     answers: [
-    //       {
-    //         id: 'produced_content',
-    //         label: 'Produced Content',
-    //         value: {},
-    //       },
-    //     ],
-    //   });
-    // }
-
-    return newAnswers[policyId];
+    return answers[policyId];
   },
 };
 
