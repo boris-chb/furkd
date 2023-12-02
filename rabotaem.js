@@ -1801,7 +1801,7 @@ let props_ = {
             ),
         },
         {
-          key: '💉💲 Drugs & Illegal Sales',
+          key: '💉💲 Drugs & Sales',
           onClick: () =>
             action_.video.route(`drugs ${utils_.get.queue.type()}`, 'drugs'),
         },
@@ -1901,7 +1901,7 @@ let dom_ = {
       : getElement('yurt-core-plugin-header > div > tcs-view')?.[0];
   },
   get metadataPanel() {
-    return getElement('yurt-video-metadata-panel')?.[0].shadowRoot;
+    return getElement('yurt-video-metadata')?.[0].shadowRoot;
   },
   get submitBtn() {
     return getElement('.mdc-button--unelevated')?.[0];
@@ -2280,7 +2280,7 @@ let ui_ = {
     },
     createGrid(cols = 3, elementSize = '170px') {
       const grid = ui_.strToNode(
-        `<div style="display: grid; grid-template-columns: repeat(${cols}, ${elementSize}); gap: 10px; margin: 10px;"></div>`
+        `<div style="display: grid; grid-template-columns: repeat(${cols}, ${elementSize}); gap: 8px; margin: 12px;"></div>`
       );
 
       return grid;
@@ -2310,12 +2310,12 @@ let ui_ = {
     },
     get approvePanelHeader() {
       const container = utils_.strToNode(
-        '<div style="opacity: 0; margin-left:auto; margin-right: 50px; transition: opacity 300ms;" class="approve-panel__header"></div>'
+        '<div style="display: flex; opacity: 0; margin-left:auto; margin-right: 50px; transition: opacity 300ms;" class="approve-panel__header"></div>'
       );
       const btns = props_.button.approve.map(({ text, onClick }) =>
         ui_.createButton(text, onClick)
       );
-      container.replaceChildren(...btns);
+      container.replaceChildren(...[dom_.autosubmitSwitch, ...btns]);
 
       // Function to handle mouseenter event
       function handleMouseEnter() {
@@ -2408,7 +2408,7 @@ let ui_ = {
       } = ui_;
 
       const container = utils_.strToNode(
-        `<div style="display: flex; flex-direction: column; gap: 20px; align-items: center;" class="strike-panel container"></div>`
+        `<div style="display: flex; flex-direction: column; gap: 8px; align-items: center;" class="strike-panel container"></div>`
       );
 
       const veGroupDropdownSelector = createDropdownSelector(
@@ -2640,10 +2640,6 @@ let ui_ = {
       if (!getElement('.action-panel')) {
         dom_.metadataPanel.appendChild(dom_.strikePanel);
       }
-      // autosubmit switch
-      if (!getElement('.autosubmit-switch'))
-        dom_.metadataPanel.appendChild(dom_.autosubmitSwitch);
-
       // trigger notes
       !getElement('.player-controls-btns') &&
         dom_.playerControls.drawControlButtons();
@@ -2747,13 +2743,13 @@ let ui_ = {
       const listItem = strToNode(`<mwc-list-item value="${
         item?.value ?? ''
       }" graphic="control" aria-disabled="false">
-      <span class="option-label"><tcs-text ${
+      <span class="option-label"><tcs-text style="border-radius: 8px; ${
         item.key.startsWith('3') ||
         item.key.startsWith('5') ||
         item.key.startsWith('6')
-          ? 'style="letter-spacing: 2px;"'
+          ? 'letter-spacing: 2px;'
           : ''
-      }>${item?.key ?? ''}</tcs-text></span>
+      }">${item?.key ?? ''}</tcs-text></span>
       </mwc-list-item>`);
 
       function handleClick(e) {
