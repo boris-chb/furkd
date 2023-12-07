@@ -1810,7 +1810,7 @@ let props_ = {
           onClick: () => action_.video.route('Harmful Dangerous Acts', 'hd'),
         },
         {
-          key: '🥩 GV',
+          key: '🥩 Graphic',
           onClick: () =>
             action_.video.route(`graphic violence enforcement`, 'gv'),
         },
@@ -2310,12 +2310,23 @@ let ui_ = {
     },
     get approvePanelHeader() {
       const container = utils_.strToNode(
-        '<div style="display: flex; opacity: 0; margin-left:auto; margin-right: 50px; transition: opacity 300ms;" class="approve-panel__header"></div>'
+        '<div style="display: flex; gap: 8px; opacity: 0; margin-left:auto; margin-right: 64px; transition: opacity 300ms;" class="approve-panel__header"></div>'
       );
       const btns = props_.button.approve.map(({ text, onClick }) =>
         ui_.createButton(text, onClick)
       );
-      container.replaceChildren(...[dom_.autosubmitSwitch, ...btns]);
+
+      const routeToArabic = ui_.createButton('🇸🇦 Arabic', () =>
+        action_.video.route(
+          `ve ${utils_.get.queue.type() ?? ''} arabic`,
+          'arabic',
+          'routing for language'
+        )
+      );
+
+      container.replaceChildren(
+        ...[dom_.autosubmitSwitch, ...btns, routeToArabic]
+      );
 
       // Function to handle mouseenter event
       function handleMouseEnter() {
@@ -2382,20 +2393,6 @@ let ui_ = {
 
       return {
         stopwatch,
-      };
-    },
-    get newActionPanel() {
-      const approveBtns = ui_.atoms.createGrid(4);
-      const routeBtns = ui_.atoms.createGrid(4);
-      const strikeBtns = ui_.atoms.createGrid(4);
-
-      const veGroupDropdownSelector = createDropdownSelector(
-        props_.dropdown.strike
-      );
-      veGroupDropdownSelector.onclick = (e) => e.stopPropagation();
-      veGroupDropdownSelector.onchange = () => {
-        store_.selectedVEGroup =
-          store_.newVeGroups[veGroupDropdownSelector.selected.value];
       };
     },
     get actionPanel() {
@@ -2740,6 +2737,8 @@ let ui_ = {
     // }
 
     const childListItems = children.map((item) => {
+      // item.key.startWith is to add letter spacing to buttons that have only policy number, e.g. '3065', as opposed to "Russian" which is approve russian
+      // it's done to make the button look nicer :)
       const listItem = strToNode(`<mwc-list-item value="${
         item?.value ?? ''
       }" graphic="control" aria-disabled="false">
@@ -2978,15 +2977,15 @@ let ui_ = {
 
 let questionnaire_ = {
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.fh
+    // BUG TEMPORARY FIX labellingGraph.eh
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
     answers.forEach((answer) => dom_.questionnaire.setAnswers(answer));
 
     if (
-      !dom_.questionnaire.labellingGraph.fh ||
-      dom_.questionnaire.labellingGraph.fh.size === 0
+      !dom_.questionnaire.labellingGraph.eh ||
+      dom_.questionnaire.labellingGraph.eh.size === 0
     ) {
       throw new Error(
         'Questions not Answered!',
@@ -2996,7 +2995,7 @@ let questionnaire_ = {
 
     console.log('💾 Saving questionnaire. Answers:');
     dom_.questionnaire.onSave();
-    return dom_.questionnaire.labellingGraph.fh;
+    return dom_.questionnaire.labellingGraph.eh;
   },
   generateAnswers(policyId = '3039') {
     const answers = {};
@@ -3034,8 +3033,9 @@ let questionnaire_ = {
 
     answers['3044'] = [
       {
-        key: 'violent_extremism/question/video_3044_tvc/select_applicable_violation_type',
-        value: [
+        questionId:
+          'violent_extremism/question/video_3044_tvc/select_applicable_violation_type',
+        answers: [
           {
             id: 've_actor_based_violation',
             label: 'VE Actor based violation',
@@ -3050,6 +3050,20 @@ let questionnaire_ = {
       {
         questionId: `violent_extremism/question/video_${policyId}_tvc/applicable_ve_group`,
         answers: [store_.selectedVEGroup],
+      },
+    ];
+
+    answers['3999'] = [
+      {
+        questionId:
+          'violent_extremism/question/video_3999_3888_tvc_fte/applicable_individual_name_beats1',
+        answers: [
+          {
+            id: 'yevgeny_prigozhin',
+            label: 'Yevgeny Prigozhin',
+            value: {},
+          },
+        ],
       },
     ];
 
