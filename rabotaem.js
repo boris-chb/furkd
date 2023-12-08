@@ -568,12 +568,12 @@ let recommendationNotes = {
       {
         title: '{ Slur }',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for violative slur [${(() => {
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for violative slur ${(() => {
             const highlightedWord = getElement('.current-transcript')?.[0]
               .textContent;
 
             return highlightedWord ? highlightedWord : '';
-          })()}] at ${utils_.get.noteTimestamp}`,
+          })()} at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Hate',
@@ -2591,7 +2591,9 @@ let ui_ = {
         components: { createWordsList },
       } = ui_;
 
-      const container = strToNode(`<div class="${tableId}-container"></div>`);
+      const container = strToNode(
+        `<div class="${tableId}-container" style="padding: 24px;"></div>`
+      );
 
       // const { seconds: timeVulgarLanguageSeconds } = findWordSequence(
       //   getViolativeWords().adult
@@ -2977,15 +2979,15 @@ let ui_ = {
 
 let questionnaire_ = {
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.eh
+    // BUG TEMPORARY FIX labellingGraph.dh
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
     answers.forEach((answer) => dom_.questionnaire.setAnswers(answer));
 
     if (
-      !dom_.questionnaire.labellingGraph.eh ||
-      dom_.questionnaire.labellingGraph.eh.size === 0
+      !dom_.questionnaire.labellingGraph.dh ||
+      dom_.questionnaire.labellingGraph.dh.size === 0
     ) {
       throw new Error(
         'Questions not Answered!',
@@ -2995,7 +2997,7 @@ let questionnaire_ = {
 
     console.log('💾 Saving questionnaire. Answers:');
     dom_.questionnaire.onSave();
-    return dom_.questionnaire.labellingGraph.eh;
+    return dom_.questionnaire.labellingGraph.dh;
   },
   generateAnswers(policyId = '3039') {
     const answers = {};
