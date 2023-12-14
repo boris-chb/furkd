@@ -230,6 +230,9 @@ let store_ = {
       'wagner',
       'pmc',
       'валькир',
+      // nasheed lyrics:
+      'اموت لاحيا مع الخالدين مع',
+      'نكون مجاهدينا وعقدنا العزم انا فجرنا',
     ],
     hate: [
       ' сво ',
@@ -1514,16 +1517,13 @@ let action_ = {
         selectLanguageDropdrown(language);
       });
 
-      // answer strike questionnaire only in xsource and appeals
-      if (store_.is.queue('xsource') || store_.is.queue('User Appeals')) {
-        await retry(
-          function answerQuestionnaireAndSave() {
-            return setAnswers(generateAnswers(policyId));
-          },
-          800,
-          4000
-        );
-      }
+      await retry(
+        function answerQuestionnaireAndSave() {
+          return setAnswers(generateAnswers(policyId));
+        },
+        800,
+        3000
+      );
 
       expandNotesArea();
       setTimeout(() => utils_.showNotes(policyId), 500);
@@ -2685,10 +2685,12 @@ let ui_ = {
     return tmp.childNodes;
   },
   toggleMediaLibrary() {
-    let myframe = utils_.strToNode(
+    let frame = utils_.strToNode(
       `<iframe src="https://dashboards.corp.google.com/embed/_c2a46c2c_a513_4f1a_8add_135ffc560fe8" height="100%" width="100%" frameborder="0"></iframe>`
     );
-    getElement('.view-overflow')?.[0].shadowRoot.appendChild(myframe);
+    const container = ui_.strToNode(`<div style="height: 1500px;"></div>`);
+    container.appendChild(frame);
+    getElement('.view-overflow')?.[0].shadowRoot.appendChild(container);
   },
   createButton(label = 'My Button', onClick = () => {}, className) {
     let btn = this.strToNode(
@@ -2979,15 +2981,15 @@ let ui_ = {
 
 let questionnaire_ = {
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.dh
+    // BUG TEMPORARY FIX labellingGraph.eh
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
     answers.forEach((answer) => dom_.questionnaire.setAnswers(answer));
 
     if (
-      !dom_.questionnaire.labellingGraph.dh ||
-      dom_.questionnaire.labellingGraph.dh.size === 0
+      !dom_.questionnaire.labellingGraph.eh ||
+      dom_.questionnaire.labellingGraph.eh.size === 0
     ) {
       throw new Error(
         'Questions not Answered!',
@@ -2997,7 +2999,7 @@ let questionnaire_ = {
 
     console.log('💾 Saving questionnaire. Answers:');
     dom_.questionnaire.onSave();
-    return dom_.questionnaire.labellingGraph.dh;
+    return dom_.questionnaire.labellingGraph.eh;
   },
   generateAnswers(policyId = '3039') {
     const answers = {};
