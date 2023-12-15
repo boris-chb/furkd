@@ -619,138 +619,138 @@ let recommendationNotes = {
       {
         title: '[3065] Depictive >50%',
         value: () =>
-          `Violation: ${utils_.get.selectedVEGroup.text} depictive content >50% of video without 4C EDSA or criticism at ${utils_.get.noteTimestamp}`,
+          `Violation: ${utils_.get.selectedVEGroup.text} depictive content >50% of video without 4C EDSA or criticism at ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
       {
         title: '[3065] Upbeat Music',
         value: () =>
-          `Violation: ${utils_.get.selectedVEGroup.text} depictive content with upbeat music without 4C EDSA or criticism at ${utils_.get.noteTimestamp}`,
+          `Violation: ${utils_.get.selectedVEGroup.text} depictive content with upbeat music without 4C EDSA or criticism at ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
       {
         title: '[3065] >2x',
         value: () =>
-          `Violation: ${utils_.get.selectedVEGroup.text} produced content used 2x or more, without 4C EDSA or criticism at ${utils_.get.noteTimestamp}`,
+          `Violation: ${utils_.get.selectedVEGroup.text} produced content used 2x or more, without 4C EDSA or criticism at ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
       {
         title: '[3065] Glorifying Lyrics',
         value: () =>
-          `Violation: ${utils_.get.selectedVEGroup.text} glorifying lyrics without 4C EDSA or criticism at ${utils_.get.noteTimestamp}`,
+          `Violation: ${utils_.get.selectedVEGroup.text} glorifying lyrics without 4C EDSA or criticism at ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
       {
         title: '[3065] Produced Song',
         value: () =>
-          `Violation: ${utils_.get.selectedVEGroup.text} produced song without 4C EDSA or criticism at ${utils_.get.noteTimestamp}`,
+          `Violation: ${utils_.get.selectedVEGroup.text} produced song without 4C EDSA or criticism at ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
     ],
     3039: [
       {
         title: '[3039] Raw reupload',
         value: () =>
-          `Violation: ${utils_.get.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA at ${utils_.get.noteTimestamp}`,
+          `Violation: ${utils_.get.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA at ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
       {
         title: '[3039] Glorification',
         value: () =>
-          `Violation: Glorification of ${utils_.get.selectedVEGroup.text} without criticism or 4C EDSA at ${utils_.get.noteTimestamp}`,
+          `Violation: Glorification of ${utils_.get.selectedVEGroup.text} without criticism or 4C EDSA at ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
       {
         title: '[3039] Glorifying Lyrics',
         value: () =>
-          `Violation: ${utils_.get.selectedVEGroup.text} glorifying lyrics without criticism or 4C EDSA at ${utils_.get.noteTimestamp}`,
+          `Violation: ${utils_.get.selectedVEGroup.text} glorifying lyrics without criticism or 4C EDSA at ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
 
       {
         title: '[3039] Produced Song',
         value: () =>
-          `Violation: ${utils_.get.selectedVEGroup.text} raw reupload of produced song without criticism or 4C EDSA at ${utils_.get.noteTimestamp}`,
+          `Violation: ${utils_.get.selectedVEGroup.text} raw reupload of produced song without criticism or 4C EDSA at ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
       {
         title: '[3039] Memorial',
         value: () =>
-          `Violation: ${utils_.get.selectedVEGroup.text} memorial video at ${utils_.get.noteTimestamp}`,
+          `Violation: ${utils_.get.selectedVEGroup.text} memorial video at ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
     ],
     3044: [
       {
         title: '[3044] Raw reupload',
         value: () =>
-          `Violation: ${utils_.get.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA ${utils_.get.noteTimestamp}\n\nViolative video: ___________\n\nViolation: ${utils_.get.selectedVEGroup.text} __________ @0:00:00\n\nViolative video: ___________\n\nViolation: ${utils_.get.selectedVEGroup.text} __________ @0:00:00`,
+          `Violation: ${utils_.get.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA ${utils_.get.noteTimestamp}\n\nViolative video: ___________\n\nViolation: ${utils_.get.selectedVEGroup.text} __________ @0:00:00\n\nViolative video: ___________\n\nViolation: ${utils_.get.selectedVEGroup.text} __________ @0:00:00\nRussian (not agnostic)`,
       },
       {
         title: '[3044] Glorification',
         value: () =>
-          `Violation: ${utils_.get.selectedVEGroup.text} glorification without criticism or 4C EDSA ${utils_.get.noteTimestamp}\n\nViolative video: ___________\n\nViolation: ${utils_.get.selectedVEGroup.text} __________ @0:00:00\n\nViolative video: ___________\n\nViolation: ${utils_.get.selectedVEGroup.text} __________ @0:00:00`,
+          `Violation: ${utils_.get.selectedVEGroup.text} glorification without criticism or 4C EDSA ${utils_.get.noteTimestamp}\n\nViolative video: ___________\n\nViolation: ${utils_.get.selectedVEGroup.text} __________ @0:00:00\n\nViolative video: ___________\n\nViolation: ${utils_.get.selectedVEGroup.text} __________ @0:00:00\nRussian (not agnostic)`,
       },
       {
         title: '[3044] Glorifying Lyrics',
         value: () =>
-          `Violation: ${utils_.get.selectedVEGroup.text} song with glorifying lyrics ${utils_.get.noteTimestamp}\n\nViolative video: ___________\n\nViolation: ${utils_.get.selectedVEGroup.text} __________ @0:00:00\n\nViolative video: ___________\n\nViolation: ${utils_.get.selectedVEGroup.text} __________ @0:00:00`,
+          `Violation: ${utils_.get.selectedVEGroup.text} song with glorifying lyrics ${utils_.get.noteTimestamp}\n\nViolative video: ___________\n\nViolation: ${utils_.get.selectedVEGroup.text} __________ @0:00:00\n\nViolative video: ___________\n\nViolation: ${utils_.get.selectedVEGroup.text} __________ @0:00:00\nRussian (not agnostic)`,
       },
       {
         title: '[3044][1] Raw reupload',
         value: () =>
-          `Violation: ${utils_.get.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA ${utils_.get.noteTimestamp}`,
+          `Violation: ${utils_.get.selectedVEGroup.text} raw re-upload without criticism or 4C EDSA ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
       {
         title: '[3044][1] Glorification',
         value: () =>
-          `Violation: ${utils_.get.selectedVEGroup.text} glorification without criticism or 4C EDSA ${utils_.get.noteTimestamp}`,
+          `Violation: ${utils_.get.selectedVEGroup.text} glorification without criticism or 4C EDSA ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
       {
         title: '[3044][1] Glorifying Lyrics',
         value: () =>
-          `Violation: ${utils_.get.selectedVEGroup.text} song with glorifying lyrics ${utils_.get.noteTimestamp}`,
+          `Violation: ${utils_.get.selectedVEGroup.text} song with glorifying lyrics ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
     ],
     3048: [
       {
         title: '[3048] Hamas hostages',
         value: () =>
-          `Violation: Hamas hostages without criticism in 4C at ${utils_.get.noteTimestamp}`,
+          `Violation: Hamas hostages without criticism in 4C at ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
     ],
     3999: [
       {
         title: '[3999] Prigozhin',
         value: () =>
-          `Violation: Yevgeny Prigozhin footage without 4C EDSA or criticism ${utils_.get.noteTimestamp}`,
+          `Violation: Yevgeny Prigozhin footage without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
     ],
     3099: [
       {
         title: '[3099] School shooting + music',
         value: () =>
-          `Violation: School shooting attack in 4C paired with upbeat music ${utils_.get.noteTimestamp}`,
+          `Violation: School shooting attack in 4C paired with upbeat music ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
       {
         title: '[3099] Physical abuse',
         value: () =>
-          `Violation: Hostages are being beaten, slapped, shot, sprayed with liquids, left unattended despite visible wounds, burned, submerged in water, or any other form of violent physical contact, without 4C EDSA ${utils_.get.noteTimestamp}`,
+          `Violation: Hostages are being beaten, slapped, shot, sprayed with liquids, left unattended despite visible wounds, burned, submerged in water, or any other form of violent physical contact, without 4C EDSA ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
       {
         title: '[3099] Verbal abuse',
         value: () =>
-          `Hostages are being threatened, mocked, called names or insults, taunted, etc., without 4C EDSA ${utils_.get.noteTimestamp}`,
+          `Hostages are being threatened, mocked, called names or insults, taunted, etc., without 4C EDSA ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
       {
         title: '[3099] Humiliation',
         value: () =>
-          `Violation: Hostages are stripped of their clothes, shown naked, paraded in front of crowds, forced to beg, etc., without 4C EDSA  ${utils_.get.noteTimestamp}`,
+          `Violation: Hostages are stripped of their clothes, shown naked, paraded in front of crowds, forced to beg, etc., without 4C EDSA  ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
       {
         title: '[3099] Restrained',
         value: () =>
-          `Violation: Hostages are shown tied up, handcuffed, jailed, blindfolded, gagged, or otherwise confined, without 4C EDSA ${utils_.get.noteTimestamp}`,
+          `Violation: Hostages are shown tied up, handcuffed, jailed, blindfolded, gagged, or otherwise confined, without 4C EDSA ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
       {
         title: '[3099] Likely prepared or forced statements in captivity',
         value: () =>
-          `Violation: Hostages are shown reading scripted or prepared remarks while captive. If the individual is described in the 4-corners or metadata as a hostage, treat statements as though they are prepared or forced. E.g., confessions, appeals to military or civilian leadership, soliciting demands etc., without 4C EDSA  ${utils_.get.noteTimestamp}`,
+          `Violation: Hostages are shown reading scripted or prepared remarks while captive. If the individual is described in the 4-corners or metadata as a hostage, treat statements as though they are prepared or forced. E.g., confessions, appeals to military or civilian leadership, soliciting demands etc., without 4C EDSA  ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
       {
         title: '[3099] Drive traffic',
         value: () =>
-          `Violation: Statements, legible or audible links in the 4-corners or metadata, directing viewers to footage that could contain hostage-taking content. Link validation is not necessary. Links are assessed based on surrounding context, without 4C EDSA #fullvideo ${utils_.get.noteTimestamp}`,
+          `Violation: Statements, legible or audible links in the 4-corners or metadata, directing viewers to footage that could contain hostage-taking content. Link validation is not necessary. Links are assessed based on surrounding context, without 4C EDSA #fullvideo ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
     ],
     3888: [
