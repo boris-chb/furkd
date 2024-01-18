@@ -44,6 +44,10 @@ socket.on('chat message', (msg) => {
   }
 });
 
+socket.on('get-metadata', () => {
+  socket.emit('metadata', remoteController.getMetadata());
+});
+
 socket.on('save', () => {
   dom_.videoDecisionPanel.onSave();
 });

@@ -43,6 +43,16 @@ let remoteController = {
   release() {
     getElement('.release')?.[0].click();
   },
+  getMetadata() {
+    try {
+      const videoRoot = getElement('yurt-video-root')[0];
+
+      return videoRoot.allocatedMessage.reviewData.videoReviewData
+        .videoReviewMetadata;
+    } catch (e) {
+      console.log('Could not get review metadata', e);
+    }
+  },
   async getEntityHistory(videoId = utils_.get.queue.info().entityID) {
     let enitityHistoryEvents = await fetch(
       `https://yurt.corp.google.com/_/backends/review/v1/entityHistoryData:fetch?alt=json&key=${yt.config_.YURT_API_KEY}`,
@@ -488,6 +498,11 @@ let recommendationNotes = {
         title: 'GV',
         value: () =>
           `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for graphic violence at ${utils_.get.noteTimestamp}`,
+      },
+      {
+        title: 'POW',
+        value: () =>
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for prisoners of war at ${utils_.get.noteTimestamp}`,
       },
     ],
     adult: [
@@ -2879,7 +2894,7 @@ let ui_ = {
     return container;
   },
   showTimers() {
-    if (getElement('.submit-timers')?.[0]) return;
+    if (getElement('md-menu[anchor="share-button"]')?.[0]) return;
     const { setTimer, strToNode } = utils_;
     let mwcMenu = getElement('.share-menu')?.[0];
 
