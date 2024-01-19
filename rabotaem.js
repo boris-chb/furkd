@@ -728,7 +728,7 @@ let recommendationNotes = {
       {
         title: '[3999] Prigozhin',
         value: () =>
-          `Violation: Yevgeny Prigozhin footage without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
+          `Violation: Yevgeny Prigozhin (GDP) expressing views, without 4C EDSA or criticism ${utils_.get.noteTimestamp}\nRussian (not agnostic)`,
       },
     ],
     3099: [
@@ -1573,7 +1573,6 @@ let action_ = {
         $selectTarget(queue, reason);
         selectTextArea();
         ui_.mutations.expandRouteNotesArea();
-        ui_.showTimers();
         ui_.components
           .recommendationPanel({
             notesArr: recommendationNotes.route[noteType],
@@ -2894,30 +2893,34 @@ let ui_ = {
     return container;
   },
   showTimers() {
-    if (getElement('md-menu[anchor="share-button"]')?.[0]) return;
-    const { setTimer, strToNode } = utils_;
-    let mwcMenu = getElement('.share-menu')?.[0];
+    try {
+      if (getElement('.submit-timers')) return;
+      const { setTimer, strToNode } = utils_;
+      let mwcMenu = getElement('md-menu[anchor="share-button"]')[0];
 
-    if (!mwcMenu)
-      throw new Error('Nowhere to append buttons (mwcMenu not rendered)');
+      if (!mwcMenu)
+        throw new Error('Nowhere to append buttons (mwcMenu not rendered)');
 
-    const timersArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((timerMin) =>
-      ui_.createButton(timerMin, () => {
-        setTimer(timerMin);
-        mwcMenu.open = false;
-      })
-    );
+      const timersArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((timerMin) =>
+        ui_.createButton(timerMin, () => {
+          setTimer(timerMin);
+          mwcMenu.open = false;
+        })
+      );
 
-    const timersWrapper = strToNode(
-      `<div class="submit-timers" style="display: grid; grid-template-columns: 1fr 1fr 1fr;"></div>`
-    );
-    const endReviewCheckbox = strToNode(
-      `<mwc-checkbox class="endreview-checkbox"></mwc-checkbox>`
-    );
+      const timersWrapper = strToNode(
+        `<div class="submit-timers" style="display: grid; grid-template-columns: 1fr 1fr 1fr;"></div>`
+      );
+      const endReviewCheckbox = strToNode(
+        `<mwc-checkbox class="endreview-checkbox"></mwc-checkbox>`
+      );
 
-    timersWrapper.replaceChildren(...[...timersArr, endReviewCheckbox]);
-    mwcMenu.replaceChildren(...[...mwcMenu.children, timersWrapper]);
-    // stopwatch.parentNode.appendChild(timersWrapper);
+      timersWrapper.replaceChildren(...[...timersArr, endReviewCheckbox]);
+      mwcMenu.replaceChildren(...[...mwcMenu.children, timersWrapper]);
+      // stopwatch.parentNode.appendChild(timersWrapper);
+    } catch (e) {
+      console.log('Could not show timers', e);
+    }
   },
   mutations: {
     expandTranscriptContainer() {
@@ -3178,6 +3181,53 @@ function $main() {
     }
   });
 }
+
+function seekVideoLength() {
+  dom_.playerControls.player.seekTo(
+    Math.floor(dom_.playerControls.player.getDuration())
+  );
+}
+
+const dummyData = {
+  // APP_REVIEW_COMPLETED
+  'event.data': {
+    name: 'APP_REVIEW_COMPLETED',
+    message: {
+      sessionId: 'yn87g2xo7d3o',
+      result: {
+        type: 'COMPLETE',
+        payload: {
+          applyPolicy: {
+            policyOutputs: [
+              {
+                entityId: {
+                  externalVideoId: 'SyZVvekevxk',
+                },
+                policyId: '3065',
+                primary: true,
+                reviewerNote:
+                  'Violation: Wagner PMC depictive content with upbeat music without 4C EDSA or criticism at @0:00:04\nRussian (not agnostic) ',
+                policyDescription:
+                  'Content produced by or glorifying known Violent Extremist Organizations',
+                dynamicParameters: {
+                  passthroughPolicyParameters: {},
+                },
+                language: 'ru',
+                videoReviewInfo: {
+                  seekTimeMs: '4044',
+                },
+              },
+            ],
+          },
+          graphOutputs: [],
+        },
+      },
+      entityId: {
+        externalVideoId: 'SyZVvekevxk',
+      },
+    },
+  },
+};
 
 $main();
 // [✅] radu pidar
