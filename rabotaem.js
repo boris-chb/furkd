@@ -32,7 +32,7 @@ function getElement(query) {
   return myElement;
 }
 
-let remoteController = {
+let rc = {
   addNote(noteStr) {
     let decisionCard = getElement('yurt-core-decision-policy-card')?.[0];
     decisionCard.annotation.notes = noteStr;
@@ -52,6 +52,20 @@ let remoteController = {
     } catch (e) {
       console.log('Could not get review metadata', e);
     }
+  },
+  setSeekTime() {
+    dom_.playerControls.player.seekTo(
+      Math.floor(dom_.playerControls.player.getDuration())
+    );
+    setTimeout(() => {
+      dom_.playerControls.player.seekTo(0);
+      dom_.playerControls.player.pauseVideo();
+    }, 0);
+  },
+  getReview() {
+    let decisionCard = getElement('yurt-core-decision-policy-card')?.[0];
+
+    return decisionCard.annotation;
   },
   async getEntityHistory(videoId = utils_.get.queue.info().entityID) {
     let enitityHistoryEvents = await fetch(
@@ -534,9 +548,14 @@ let recommendationNotes = {
           `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for intent to drive traffic off-site at ${utils_.get.noteTimestamp}`,
       },
       {
-        title: 'Spam (link)',
+        title: 'Spam (link in comments)',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for intent to drive traffic off-site (link in comments) at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for intent to drive traffic off-site (link in comments)`,
+      },
+      {
+        title: 'Spam (link in channel)',
+        value: () =>
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for intent to drive traffic off-site (link in channel description) #metadata`,
       },
     ],
     hd: [
@@ -1134,28 +1153,30 @@ let utils_ = {
   },
 
   // Channel
-  async getChannelVideos(id) {
-    const url = `https://yurt.corp.google.com/_/backends/account/v1/videos:fetch?alt=json&key=${yt.config_.YURT_API_KEY}`;
+  async getChannelVideos(
+    channelId = dom_.reviewRoot.hostAllocatedMessage.reviewData.videoReviewData
+      .videoReviewMetadata.externalChannelId
+  ) {
+    try {
+      const url = `https://yurt.corp.google.com/_/backends/account/v1/videos:fetch?alt=json&key=${yt.config_.YURT_API_KEY}`;
 
-    const channelId =
-      id ??
-      dom_.reviewRoot.hostAllocatedMessage.reviewData.videoReviewData
-        .videoReviewMetadata.externalChannelId;
+      let videosArr = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          externalChannelId: channelId,
+          fetchLatestPolicy: true,
+          maxNumVideosByRecency: 50,
+          viewEnums: ['VIEW_INCLUDE_PINNED_COMMENT'],
+        }),
+      }).then((response) => response.json());
 
-    let videosArr = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        externalChannelId: channelId,
-        fetchLatestPolicy: true,
-        maxNumVideosByRecency: 50,
-        viewEnums: ['VIEW_INCLUDE_PINNED_COMMENT'],
-      }),
-    }).then((response) => response.json());
-
-    return videosArr;
+      return videosArr;
+    } catch (e) {
+      console.log('\n\n\t\tCould not fetch channel videos\n\n', e);
+    }
   },
   async filterVideoByKeywords(keywordsArr = store_.wordsByCategory.ve) {
     const { videos } = await this.getChannelVideos();
@@ -1442,8 +1463,8 @@ let action_ = {
             getElement('#decision-panel-language-select > mwc-list-item')
           );
 
-          const foundLanguageOption = langOptions.filter(
-            (option) => option.value.toLowerCase() === language.toLowerCase()
+          const foundLanguageOption = langOptions.filter((option) =>
+            option.value.toLowerCase().includes(language.toLowerCase())
           )?.[0];
 
           foundLanguageOption.click();
@@ -1553,11 +1574,29 @@ let action_ = {
         return dom_.videoDecisionPanel.viewMode === 1;
       }
 
-      function $selectTarget(queue, reason) {
+      function selectTarget(queue) {
         const { listItemByInnerText } = utils_.click;
 
         listItemByInnerText(...queue.split(' '));
-        listItemByInnerText(reason);
+      }
+
+      function selectReason(reasonStr) {
+        try {
+          if (queue === 'T2' || queue === 'FTE' || queue === 'T2/FTE') {
+            routeStr = 'protections';
+          }
+          const reasons = Array.from(
+            getElement('mwc-select[label="Routing reason"] > mwc-list-item')
+          );
+
+          const reason = reasons.filter((r) =>
+            r.innerText.toLowerCase().includes(reasonStr)
+          );
+
+          reason[0].click();
+        } catch (e) {
+          console.log('Could not select routing reason\n\n', e);
+        }
       }
 
       function selectTextArea() {
@@ -1570,7 +1609,8 @@ let action_ = {
       clickRoute();
       // show recommendations for routing to target queue
       setTimeout(() => {
-        $selectTarget(queue, reason);
+        selectTarget(queue);
+        selectReason(reason);
         selectTextArea();
         ui_.mutations.expandRouteNotesArea();
         ui_.components
@@ -2102,7 +2142,7 @@ let transcript_ = {
       })
       .filter(Boolean);
 
-    return result;
+    return result || [];
   },
   async renderChannelViolativeWordsTable(
     channelId = dom_.reviewRoot.hostAllocatedMessage.reviewData.videoReviewData
@@ -2246,6 +2286,34 @@ let transcript_ = {
     }
 
     return null;
+  },
+};
+
+let api = {
+  KEY: '',
+  get: {
+    async strikeHistory(
+      channelId = dom_.reviewRoot.hostAllocatedMessage.reviewData
+        .videoReviewData.videoReviewMetadata.externalChannelId
+    ) {
+      try {
+        const url = `https://yurt.corp.google.com/_/backends/review/v1/strikeHistory:fetch?alt=json&key=${yt.config_.YURT_API_KEY}`;
+
+        let history = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            externalChannelId: channelId,
+          }),
+        }).then((response) => response.json());
+
+        return history;
+      } catch (e) {
+        console.log('\n\n\t\t[STRIKE HISTORY] Could not fetch:\n\n', e);
+      }
+    },
   },
 };
 
@@ -3182,12 +3250,6 @@ function $main() {
   });
 }
 
-function seekVideoLength() {
-  dom_.playerControls.player.seekTo(
-    Math.floor(dom_.playerControls.player.getDuration())
-  );
-}
-
 const dummyData = {
   // APP_REVIEW_COMPLETED
   'event.data': {
@@ -3225,6 +3287,44 @@ const dummyData = {
       entityId: {
         externalVideoId: 'SyZVvekevxk',
       },
+    },
+  },
+  strikeSummary: {
+    strikeSummary: {
+      totalStrikeCount: 1,
+      activeStrikeCount: 1,
+      activeWarningStrikeCount: 1,
+    },
+    channelStrikeTable: {
+      rows: [
+        {
+          status: 'ACTIVE',
+          strikeFlagAndType: {
+            flag: 'WARNING',
+            strikeType: 'UNIFIED',
+          },
+          createTime: '2023-06-24T13:59:29Z',
+          acknowledgeTime: '2023-06-25T20:57:11Z',
+          expirationTime: '1970-01-01T00:00:00Z',
+          channelPolicyTrainingSession: {
+            trainingCompletionTime: '2023-06-24T13:59:29Z',
+          },
+          strikeEntity: {
+            entityType: 'VIDEO',
+            entity: {
+              video: {
+                externalVideoId: 'sTxvhD_q9ZE',
+                videoTitle: 'Срочно! ПРИГОЖИН взял ШТАБ в Ростове',
+              },
+            },
+            policyDescription:
+              'Video produced by or glorifying known Violent Extremist group/actor',
+            policyId: 3039,
+            createTime: '2023-06-24T06:23:27Z',
+            channelTouStrikeId: '184884119',
+          },
+        },
+      ],
     },
   },
 };
