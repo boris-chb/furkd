@@ -40,8 +40,22 @@ let rc = {
   startReview() {
     getElement('#start-review-button')?.[0]?.click();
   },
+  stopReview() {
+    try {
+      const endReviewBtn = getElement('tcs-button[id="stop-review-button"]')[0];
+      endReviewBtn.click();
+    } catch (e) {
+      console.log('Could not end review', e);
+    }
+  },
   release() {
-    getElement('.release')?.[0].click();
+    try {
+      const releaseBtn = getElement('.release')[0];
+
+      releaseBtn.click();
+    } catch (e) {
+      console.log('Could not end review', e);
+    }
   },
   getMetadata() {
     try {
@@ -140,10 +154,6 @@ let config_ = {
 };
 
 let store_ = {
-  applicableVEgroup: {
-    id: '',
-    label: '',
-  },
   selectedVEGroup: {
     id: 'wagner_pmc',
     label: 'Wagner PMC - VNSA',
@@ -3087,13 +3097,13 @@ let questionnaire_ = {
     dom_.questionnaire.onSave();
     return dom_.questionnaire.labellingGraph.eh;
   },
-  generateAnswers(policyId = '3039') {
+  generateAnswers(policyId = '3039', veGroup = store_.selectedVEGroup) {
     const answers = {};
 
     answers['3039'] = [
       {
         questionId: `violent_extremism/question/video_${policyId}_tvc/applicable_ve_group`,
-        answers: [store_.selectedVEGroup],
+        answers: [veGroup],
       },
       {
         questionId: `violent_extremism/question/video_${policyId}_tvc/act_type`,

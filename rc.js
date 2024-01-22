@@ -71,15 +71,56 @@ socket.on('submit', () => {
   dom_.submitBtn.click();
 });
 
-socket.on('set-review', (review) => {
-  console.log(review);
-  if (review.policyId === '9008') {
-    rc.setSeekTime();
-    action_.video.approve(review.language);
-    return;
+socket.on(
+  'set-review',
+  async ({ policyId, language, veGroup, note, timestamp }) => {
+    try {
+      if (policyId === '9008') {
+        rc.setSeekTime();
+        action_.video.approve(language);
+        return;
+      }
+      dom_.playerControls.player.seekTo(timestamp);
+      getElement('mwc-select[value="strike_ve_group_dropdown"]')[0].value =
+        veGroup;
+      action_.video.strike(policyId, undefined, language);
+      setTimeout(
+        () => getElement('yurt-core-decision-annotation-edit')[0].onSave(),
+        3200
+      );
+      setTimeout(() => {
+        rc.addNote(note);
+      }, 3400);
+    } catch (e) {
+      console.log('[RC] Could not set review', e);
+    }
   }
-});
+);
 
 socket.on('get-review', () => {
   socket.emit('get-review', rc.getReview());
+});
+
+socket.on('get-metadata', () => {
+  socket.emit('new-item', rc.getMetadata());
+});
+
+socket.on('set-route', ({ target, routeNote, timestamp }) => {
+  action_.video.route(
+    target,
+    target,
+    target.includes('arabic') ? 'language' : 'policy vertical'
+  );
+});
+
+socket.on('route', () => {
+  dom_.routeBtn.click();
+});
+
+socket.on('start-review', () => {
+  rc.startReview();
+});
+
+socket.on('stop-review', () => {
+  rc.stopReview();
 });
