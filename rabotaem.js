@@ -1165,7 +1165,8 @@ let utils_ = {
   // Channel
   async getChannelVideos(
     channelId = dom_.reviewRoot.hostAllocatedMessage.reviewData.videoReviewData
-      .videoReviewMetadata.externalChannelId
+      .videoReviewMetadata.externalChannelId ??
+      dom_.videoRoot.channel.externalChannelId
   ) {
     try {
       const url = `https://yurt.corp.google.com/_/backends/account/v1/videos:fetch?alt=json&key=${yt.config_.YURT_API_KEY}`;
@@ -1942,6 +1943,7 @@ let dom_ = {
   get filterControlsPanel() {
     return getElement('.filter-controls-on')?.[0];
   },
+  get channelId() {},
   get decisionCard() {
     return getElement('yurt-core-decision-policy-card')?.[0];
   },
@@ -2001,6 +2003,9 @@ let dom_ = {
   },
   get reviewRoot() {
     return getElement('yurt-review-root')?.[0];
+  },
+  get videoRoot() {
+    return getElement('yurt-video-root')?.[0];
   },
   playerControls: {
     get player() {
@@ -2299,8 +2304,8 @@ let transcript_ = {
   },
 };
 
-let api = {
-  KEY: '',
+let api_ = {
+  KEY: yt.config_.YURT_API_KEY,
   get: {
     async strikeHistory(
       channelId = dom_.reviewRoot.hostAllocatedMessage.reviewData
@@ -2322,6 +2327,32 @@ let api = {
         return history;
       } catch (e) {
         console.log('\n\n\t\t[STRIKE HISTORY] Could not fetch:\n\n', e);
+      }
+    },
+    async channelVideos(
+      channelId = dom_?.reviewRoot?.hostAllocatedMessage?.reviewData
+        ?.videoReviewData?.videoReviewMetadata?.externalChannelId ??
+        dom_?.videoRoot?.channel?.externalChannelId
+    ) {
+      try {
+        const url = `https://yurt.corp.google.com/_/backends/account/v1/videos:fetch?alt=json&key=${yt.config_.YURT_API_KEY}`;
+
+        let videosArr = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            externalChannelId: channelId,
+            fetchLatestPolicy: true,
+            maxNumVideosByRecency: 50,
+            viewEnums: ['VIEW_INCLUDE_PINNED_COMMENT'],
+          }),
+        }).then((response) => response.json());
+
+        return videosArr;
+      } catch (e) {
+        console.log('\n\n\t\tCould not fetch channel videos\n\n', e);
       }
     },
   },
