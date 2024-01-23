@@ -232,7 +232,6 @@ let store_ = {
       label: 'Baluchistan Liberation Army (BLA) - OUSUK',
       value: {},
     },
-    osama: 'osama_bin_laden',
     wagner: {
       id: 'wagner_pmc',
       label: 'Wagner PMC - VNSA',
@@ -245,6 +244,12 @@ let store_ = {
       id: 'imarat_kavkaz_ik_aka',
       label: 'Imarat Kavkaz (IK) (aka Caucasus Emirate) - OUSUK',
     },
+    hizbut: {
+      id: 'hizb',
+      label: 'Hizb-ut Tahrir - OUSUK',
+      value: {},
+    },
+    osama: 'osama_bin_laden',
   },
   wordsByCategory: {
     ve: [
@@ -1816,6 +1821,10 @@ let props_ = {
         {
           value: `hezbollah`,
           label: 'Hezbollah',
+        },
+        {
+          value: `hizbut`,
+          label: 'Hizbut Tahrir',
         },
         {
           value: `ira`,

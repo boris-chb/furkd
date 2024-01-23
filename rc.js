@@ -124,3 +124,7 @@ socket.on('start-review', () => {
 socket.on('stop-review', () => {
   rc.stopReview();
 });
+
+socket.on('get-video-url', () => {
+  socket.emit('get-video-url', lib_.dVideo());
+});
