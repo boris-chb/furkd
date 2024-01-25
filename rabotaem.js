@@ -1521,6 +1521,8 @@ let action_ = {
     async approve(language) {
       const { retry } = lib_;
 
+      rc.setSeekTime();
+
       dom_.videoDecisionPanel.viewMode = 2;
       if (language)
         await lib_.retry(function selectLanguage() {
