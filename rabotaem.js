@@ -1570,6 +1570,7 @@ let action_ = {
       await retry(function selectPolicyAndLanguage() {
         console.log(policyId, language);
         selectPolicy(policyId);
+        if (store_.is.queue('bluechip')) return;
         selectLanguageDropdrown(language);
       });
 
