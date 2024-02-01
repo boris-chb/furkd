@@ -1387,6 +1387,10 @@ let lib_ = {
       return result;
     };
   },
+  historyPushState() {
+    history.pushState({}, '', '#yort');
+    window.open('https://yurt.corp.google.com/#review');
+  },
 
   // function tools
   _debounce(func, delay) {
@@ -3117,15 +3121,15 @@ let ui_ = {
 
 let questionnaire_ = {
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.eh
+    // BUG TEMPORARY FIX labellingGraph.gh
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
     answers.forEach((answer) => dom_.questionnaire.setAnswers(answer));
 
     if (
-      !dom_.questionnaire.labellingGraph.eh ||
-      dom_.questionnaire.labellingGraph.eh.size === 0
+      !dom_.questionnaire.labellingGraph.gh ||
+      dom_.questionnaire.labellingGraph.gh.size === 0
     ) {
       throw new Error(
         'Questions not Answered!',
@@ -3135,7 +3139,7 @@ let questionnaire_ = {
 
     console.log('💾 Saving questionnaire. Answers:');
     dom_.questionnaire.onSave();
-    return dom_.questionnaire.labellingGraph.eh;
+    return dom_.questionnaire.labellingGraph.gh;
   },
   generateAnswers(policyId = '3039', veGroup = store_.selectedVEGroup) {
     const answers = {};
@@ -3226,6 +3230,12 @@ let on_ = {
         ui_.draw();
         ui_.mutations.moveChannelLink();
         ui_.showTimers();
+
+        if (store_.is.queue('bluechip')) {
+          let queueNameHeader = getElement('.review-dimension-info')[0];
+          queueNameHeader.style.color = 'darkred';
+        }
+
         // EXPERIMENTAL
         // ui_.mutations.cinemaMode();
       } catch (e) {
