@@ -352,6 +352,7 @@ let store_ = {
       return dom_.videoDecisionPanel.viewMode === 1;
     },
   },
+  ignoreQuestionnairePolicies: ['3099'],
   frequentlyUsedPolicies: [
     {
       id: '9008',
@@ -1600,7 +1601,7 @@ let action_ = {
           return foundLanguageOption.value;
         } catch (e) {
           console.log(e);
-          throw new Error('Could not select language', policyId);
+          throw new Error('Could not select language', language);
         }
       },
       addNote(note) {
@@ -1667,28 +1668,20 @@ let action_ = {
     ) {
       const { expandNotesArea } = ui_.mutations;
       const { setAnswers, generateAnswers } = questionnaire_;
-      const {
-        selectLanguage: selectLanguageDropdrown,
-        selectPolicy,
-        addReview,
-      } = action_.video.steps;
+      const { selectLanguage, selectPolicy, addReview } = action_.video.steps;
       const { retry } = lib_;
 
       await retry(addReview);
       await retry(function selectPolicyAndLanguage() {
         console.log(policyId, language);
+        if (!store_.is.queue('bluechip')) selectLanguage(language);
         selectPolicy(policyId);
-        if (store_.is.queue('bluechip')) return;
-        selectLanguageDropdrown(language);
       });
 
-      await retry(
-        function answerQuestionnaireAndSave() {
-          return setAnswers(generateAnswers(policyId));
-        },
-        800,
-        3000
-      );
+      await retry(function answerQuestionnaireAndSave() {
+        if (store_.ignoreQuestionnairePolicies.includes(policyId)) return;
+        return setAnswers(generateAnswers(policyId));
+      });
 
       expandNotesArea();
       setTimeout(() => utils_.showNotes(policyId), 500);
@@ -3230,15 +3223,15 @@ let ui_ = {
 
 let questionnaire_ = {
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.gh
+    // BUG TEMPORARY FIX labellingGraph.fh
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
     answers.forEach((answer) => dom_.questionnaire.setAnswers(answer));
 
     if (
-      !dom_.questionnaire.labellingGraph.gh ||
-      dom_.questionnaire.labellingGraph.gh.size === 0
+      !dom_.questionnaire.labellingGraph.fh ||
+      dom_.questionnaire.labellingGraph.fh.size === 0
     ) {
       throw new Error(
         'Questions not Answered!',
@@ -3248,7 +3241,7 @@ let questionnaire_ = {
 
     console.log('💾 Saving questionnaire. Answers:');
     dom_.questionnaire.onSave();
-    return dom_.questionnaire.labellingGraph.gh;
+    return dom_.questionnaire.labellingGraph.fh;
   },
   generateAnswers(policyId = '3039', veGroup = store_.selectedVEGroup) {
     const answers = {};
