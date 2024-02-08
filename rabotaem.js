@@ -1679,6 +1679,7 @@ let action_ = {
       });
 
       await retry(function answerQuestionnaireAndSave() {
+        if (store_.is.queue('bluechip')) return true;
         if (store_.ignoreQuestionnairePolicies.includes(policyId)) return;
         return setAnswers(generateAnswers(policyId));
       });
@@ -3223,15 +3224,15 @@ let ui_ = {
 
 let questionnaire_ = {
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.fh
+    // BUG TEMPORARY FIX labellingGraph.eh
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
     answers.forEach((answer) => dom_.questionnaire.setAnswers(answer));
 
     if (
-      !dom_.questionnaire.labellingGraph.fh ||
-      dom_.questionnaire.labellingGraph.fh.size === 0
+      !dom_.questionnaire.labellingGraph.eh ||
+      dom_.questionnaire.labellingGraph.eh.size === 0
     ) {
       throw new Error(
         'Questions not Answered!',
@@ -3241,7 +3242,7 @@ let questionnaire_ = {
 
     console.log('💾 Saving questionnaire. Answers:');
     dom_.questionnaire.onSave();
-    return dom_.questionnaire.labellingGraph.fh;
+    return dom_.questionnaire.labellingGraph.eh;
   },
   generateAnswers(policyId = '3039', veGroup = store_.selectedVEGroup) {
     const answers = {};
