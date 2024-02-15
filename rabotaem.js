@@ -1560,14 +1560,38 @@ let action_ = {
     // click add review, select policy, select language etc...
     steps: {
       addReview() {
-        dom_.videoDecisionPanel.viewMode = 2;
-        return dom_.videoDecisionPanel.viewMode === 2;
+        try {
+          // make 'add review' button visible
+          let decisionTab = getElement('yurt-core-decision-capture')[0];
+          decisionTab.tabMode = 0;
+
+          // click add review after 200ms
+          setTimeout(() => {
+            const addReviewBtn = getElement(
+              'tcs-button[data-test-id="start-review-button"]'
+            )[0];
+            addReviewBtn.click();
+          }, 200);
+        } catch (e) {
+          throw new Error('Could not set Add Review');
+        }
       },
       selectPolicy(policyId) {
         try {
+          let decisionPolicy = getElement('yurt-core-decision-policy')[0];
+          decisionPolicy.policyIds = [
+            '9008',
+            '3039',
+            '3044',
+            '3065',
+            '5013',
+            '3099',
+            '3999',
+            '3888',
+          ];
           const foundPolicy = [
-            ...(getElement('yurt-core-policy-selector-item') ?? []),
-          ].filter((policyItem) => policyItem.policy.id === policyId)?.[0];
+            ...(getElement('yurt-core-decision-policy-item') ?? []),
+          ].filter((policyItem) => policyItem.policyId === policyId)?.[0];
 
           if (!foundPolicy) {
             //console.log('[recursion] looking for 9008 tag');
@@ -1586,6 +1610,8 @@ let action_ = {
         }
       },
       selectLanguage(language) {
+        // DEPRECATED since 15.02.2024
+        return;
         try {
           if (!language) return;
           let langOptions = Array.from(
@@ -1634,13 +1660,11 @@ let action_ = {
     async approve(language) {
       const { retry } = lib_;
 
-      dom_.videoDecisionPanel.viewMode = 2;
-      if (language)
-        await lib_.retry(function selectLanguage() {
-          action_.video.steps.selectLanguage(language);
-        });
+      await retry(action_.video.steps.addReview);
+      await retry(() => action_.video.steps.selectPolicy('9008'));
+      // await retry(dom_.saveReview);
 
-      action_.video.steps.selectPolicy('9008');
+      // setTimeout(() => action_.video.steps.selectPolicy('9008'), 100);
 
       // if (store_.is.queue('xsource')) {
       //   // approve questionnaire only in xsource
@@ -1649,10 +1673,10 @@ let action_ = {
       //   });
       // }
 
-      await retry(function saveReview() {
-        dom_.videoDecisionPanel.onSave();
-        if (!dom_.decisionCard) throw new Error('Could not save review');
-      });
+      // await retry(function saveReview() {
+      //   dom_.saveReview();
+      //   if (!dom_.decisionCard) throw new Error('Could not save review');
+      // });
 
       if (store_.is.autosubmit) {
         await retry(function submitVideo() {
@@ -2122,6 +2146,15 @@ let dom_ = {
   },
   get videoRoot() {
     return getElement('yurt-video-root')?.[0];
+  },
+  saveReview() {
+    try {
+      let decisionView = getElement('yurt-core-decision-view-policy')[0];
+      // TEMPORARY FIX: built-in function to save questionnaire
+      decisionView.wZa();
+    } catch (e) {
+      throw new Error('Could not Save Review');
+    }
   },
   playerControls: {
     get player() {
