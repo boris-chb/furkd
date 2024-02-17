@@ -1733,9 +1733,29 @@ let action_ = {
       }
 
       function selectTarget(queue) {
-        const { listItemByInnerText } = utils_.click;
+        try {
+          // TODO: finish
+          let targetDropdown = getElement('tcs-searchable-dropdown')[0];
+          let foundTargetIndex = targetDropdown.entries.findIndex((entry) =>
+            queue
+              .split(' ')
+              .every((word) =>
+                entry.uniqueId.toLowerCase().split(' - ').includes(word)
+              )
+          );
 
-        listItemByInnerText(...queue.split(' '));
+          if (foundTargetIndex.length > 1) {
+            // if more options, look for the one that includes VE
+            foundTargetIndex = foundTargetIndex.findIndex((element) =>
+              element.uniqueId.includes('VE')
+            );
+          }
+
+          targetDropdown.selectedEntryIndex = foundTargetIndex;
+        } catch (e) {
+          console.error(e);
+          throw new Error('Could not select target for routing');
+        }
       }
 
       function selectReason(reasonStr) {
