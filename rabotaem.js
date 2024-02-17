@@ -349,7 +349,14 @@ let store_ = {
       return utils_.get.queue.name()?.includes(qName.toLowerCase());
     },
     get routing() {
-      return dom_.videoDecisionPanel.viewMode === 1;
+      // return dom_.videoDecisionPanel.viewMode === 1; DEPRECATED
+      let decisionViewRoute;
+      try {
+        decisionViewRoute = getElement('yurt-core-decision-view-route')[0];
+      } catch (e) {
+        console.log(e);
+      }
+      return !!decisionViewRoute;
     },
   },
   ignoreQuestionnairePolicies: ['3099'],
@@ -1571,7 +1578,7 @@ let action_ = {
               'tcs-button[data-test-id="start-review-button"]'
             )[0];
             addReviewBtn.click();
-          }, 200);
+          }, 100);
         } catch (e) {
           throw new Error('Could not set Add Review');
         }
@@ -1593,15 +1600,6 @@ let action_ = {
             ...(getElement('yurt-core-decision-policy-item') ?? []),
           ].filter((policyItem) => policyItem.policyId === policyId)?.[0];
 
-          if (!foundPolicy) {
-            //console.log('[recursion] looking for 9008 tag');
-            // FIX
-            setTimeout(
-              () => action_.video.steps.selectPolicy(policyId),
-              config_.FUNCTION_CALL_RETRY_MS
-            );
-            return;
-          }
           foundPolicy.click();
           return foundPolicy.policy;
         } catch (e) {
@@ -1662,7 +1660,7 @@ let action_ = {
 
       await retry(action_.video.steps.addReview);
       await retry(() => action_.video.steps.selectPolicy('9008'));
-      // await retry(dom_.saveReview);
+      setTimeout(dom_.saveReview, 1000);
 
       // setTimeout(() => action_.video.steps.selectPolicy('9008'), 100);
 
@@ -1696,20 +1694,33 @@ let action_ = {
       const { retry } = lib_;
 
       await retry(addReview);
-      await retry(function selectPolicyAndLanguage() {
-        console.log(policyId, language);
-        if (!store_.is.queue('bluechip')) selectLanguage(language);
-        selectPolicy(policyId);
-      });
+      await retry(() => selectPolicy(policyId));
 
-      await retry(function answerQuestionnaireAndSave() {
+      await retry(function answerQuestionnaire() {
         if (store_.is.queue('bluechip')) return true;
         if (store_.ignoreQuestionnairePolicies.includes(policyId)) return;
         return setAnswers(generateAnswers(policyId));
       });
+      await retry(function next() {
+        try {
+          let nextBtn = getElement('.next-button')[0];
 
-      expandNotesArea();
-      setTimeout(() => utils_.showNotes(policyId), 500);
+          nextBtn.click();
+        } catch (e) {
+          throw new Error('Could not Next');
+        }
+      });
+      await retry(function done() {
+        try {
+          let doneBtn = getElement('tcs-button[name="label-submit"]')[0];
+          doneBtn.click();
+        } catch (e) {
+          throw new Error('Could not click Done');
+        }
+      });
+
+      await retry(expandNotesArea);
+      await retry(() => utils_.showNotes(policyId));
     },
     route(queue, noteType, reason = 'policy vertical') {
       // TODO
@@ -1717,8 +1728,8 @@ let action_ = {
 
       // helper functions
       function clickRoute() {
-        dom_.videoDecisionPanel.viewMode = 1;
-        return dom_.videoDecisionPanel.viewMode === 1;
+        let decisionCapture = getElement('yurt-core-decision-capture')[0];
+        decisionCapture.setRouteView();
       }
 
       function selectTarget(queue) {
@@ -2797,11 +2808,8 @@ let ui_ = {
         element: recommendationList,
         render() {
           // find parent
-          const parent =
-            getElement('yurt-core-decision-route')?.[0]?.shadowRoot ||
-            getElement('yurt-core-decision-annotation-edit')?.[0]?.shadowRoot;
-
-          parent.appendChild(recommendationList);
+          const decisionContainer = getElement('.decision-container')[0];
+          decisionContainer.appendChild(recommendationList);
         },
       };
     },
@@ -3257,15 +3265,15 @@ let ui_ = {
 
 let questionnaire_ = {
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.eh
+    // BUG TEMPORARY FIX labellingGraph.fh
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
     answers.forEach((answer) => dom_.questionnaire.setAnswers(answer));
 
     if (
-      !dom_.questionnaire.labellingGraph.eh ||
-      dom_.questionnaire.labellingGraph.eh.size === 0
+      !dom_.questionnaire.labellingGraph.fh ||
+      dom_.questionnaire.labellingGraph.fh.size === 0
     ) {
       throw new Error(
         'Questions not Answered!',
@@ -3274,12 +3282,11 @@ let questionnaire_ = {
     }
 
     console.log('💾 Saving questionnaire. Answers:');
-    dom_.questionnaire.onSave();
-    return dom_.questionnaire.labellingGraph.eh;
+    return dom_.questionnaire.labellingGraph.fh;
   },
   generateAnswers(policyId = '3039', veGroup = store_.selectedVEGroup) {
     const answers = {};
-
+    // format expected by setAnswers build-in function
     answers['3039'] = [
       {
         questionId: `violent_extremism/question/video_${policyId}_tvc/applicable_ve_group`,
@@ -3297,19 +3304,7 @@ let questionnaire_ = {
       },
     ];
 
-    answers['3065'] = [
-      ...answers['3039'],
-      {
-        questionId: `violent_extremism/question/video_${policyId}_tvc/violation_reason`,
-        answers: [
-          {
-            id: 'produced_content',
-            label: 'Produced Content',
-            value: {},
-          },
-        ],
-      },
-    ];
+    answers['3065'] = [answers['3039'][0]];
 
     answers['3044'] = [
       {
