@@ -1542,7 +1542,7 @@ let lib_ = {
       }
     };
   },
-  async retry(fn, interval = 500, totalDuration = 3000) {
+  async retry(fn, interval = 50, totalDuration = 2000) {
     const startTime = Date.now();
     let endTime = startTime + totalDuration;
 
@@ -1586,7 +1586,7 @@ let action_ = {
       selectPolicy(policyId) {
         try {
           let decisionPolicy = getElement('yurt-core-decision-policy')[0];
-          decisionPolicy.policyIds = [
+          let policies = [
             '9008',
             '3039',
             '3044',
@@ -1596,6 +1596,13 @@ let action_ = {
             '3999',
             '3888',
           ];
+
+          decisionPolicy.policyIds = policies;
+
+          // need to set the policies list in two places
+          let litVirtualizer = getElement('lit-virtualizer')[0];
+          litVirtualizer.items = policies;
+
           const foundPolicy = [
             ...(getElement('yurt-core-decision-policy-item') ?? []),
           ].filter((policyItem) => policyItem.policyId === policyId)?.[0];
@@ -1660,7 +1667,7 @@ let action_ = {
 
       await retry(action_.video.steps.addReview);
       await retry(() => action_.video.steps.selectPolicy('9008'));
-      setTimeout(dom_.saveReview, 1000);
+      // setTimeout(dom_.saveReview, 1000);
 
       // setTimeout(() => action_.video.steps.selectPolicy('9008'), 100);
 
@@ -1690,7 +1697,7 @@ let action_ = {
     ) {
       const { expandNotesArea } = ui_.mutations;
       const { setAnswers, generateAnswers } = questionnaire_;
-      const { selectLanguage, selectPolicy, addReview } = action_.video.steps;
+      const { selectPolicy, addReview } = action_.video.steps;
       const { retry } = lib_;
 
       await retry(addReview);
@@ -3256,6 +3263,16 @@ let ui_ = {
         .children[0];
 
       videosCount.appendChild(link);
+    },
+    expandTimeline() {
+      try {
+        let mainColumn = getElement('.main-column')[0];
+        mainColumn.style.width = '100%';
+        let timelinePanel = getElement('.timeline-panel')[0];
+        timelinePanel.style.width = '98%';
+      } catch (e) {
+        console.log('could not extend timeline');
+      }
     },
     cinemaMode() {
       // remove useless thumbnail signals
