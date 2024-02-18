@@ -1,4 +1,4 @@
-// 01.12.2023
+// 28.02.2024
 
 try {
   utils_.clearTimers();
@@ -546,7 +546,7 @@ let recommendationNotes = {
       {
         title: 'Vulgar language',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for excessive vulgar language at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for excessive use of vulgar language at ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Nudity',
@@ -1205,7 +1205,16 @@ let utils_ = {
   },
 
   clickNext() {
-    utils_.click.element('.next-button', { class: 'next-button' });
+    try {
+      let nextBtn = getElement('.next-button')[0];
+      if (nextBtn.innerText.toLowerCase() !== 'next') {
+        throw new Error('Button innerText !== next');
+      }
+      nextBtn.click();
+    } catch (e) {
+      console.log(e);
+      throw new Error('Could not click Next');
+    }
   },
   clickSubmit(delay) {
     if (delay) {
@@ -1224,12 +1233,29 @@ let utils_ = {
     dom_.submitBtn?.click();
   },
   clickDone() {
-    utils_.click.element('tcs-button', { name: 'label-submit' });
+    try {
+      let doneBtn = getElement('tcs-button[name="label-submit"]')[0];
+      if (doneBtn.innerText.toLowerCase() !== 'done') {
+        throw new Error('Button innerText !== done');
+      }
+      doneBtn.click();
+    } catch (e) {
+      console.log(e);
+      throw new Error('Could not click Done');
+    }
   },
   clickSave() {
-    utils_.click.element('tcs-button', {
-      'data-test-id': 'decision-annotation-save-button',
-    });
+    try {
+      let filled = getElement('tcs-button[spec="filled"]')[0];
+      if (filled.innerText.toLowerCase() !== 'save') {
+        throw new Error('Button innerText !== save');
+      }
+
+      filled.click();
+    } catch (e) {
+      console.log(e);
+      throw new Error('Could not click Save');
+    }
   },
   formatTime(input) {
     let hoursString = 0;
@@ -1382,6 +1408,13 @@ let utils_ = {
       console.log(arguments.callee.name, e.stack);
     }
   },
+  generateNotes(policyId, isRouting = store_.is.routing) {
+    if (!policyId) return;
+
+    return isRouting
+      ? recommendationNotes.route[policyId]
+      : recommendationNotes.strike[policyId];
+  },
   showNotes(policyId = utils_.get.selectedPolicyId) {
     // remove old notes
     const existingNotes = getElement('#recommendation-notes')?.[0];
@@ -1390,8 +1423,7 @@ let utils_ = {
       existingNotes.parentNode.removeChild(existingNotes);
     }
 
-    const isRouting = store_.is.routing;
-    let notesArr = isRouting ? [] : recommendationNotes.strike[policyId];
+    let notesArr = utils_.generateNotes(policyId);
 
     // render new ones
     ui_.components
@@ -1542,7 +1574,7 @@ let lib_ = {
       }
     };
   },
-  async retry(fn, interval = 50, totalDuration = 2000) {
+  async retry(fn, interval = 100, totalDuration = 2000) {
     const startTime = Date.now();
     let endTime = startTime + totalDuration;
 
@@ -1552,8 +1584,8 @@ let lib_ = {
         console.log(`✅ ${fn?.name}()`, result);
         return result;
       } catch (error) {
-        console.log(`[ℹ] ${fn?.name}:`, error.message);
         console.log(error);
+        console.log('\n\n\t\tRetrying...');
       }
       await new Promise((resolve) => setTimeout(resolve, interval));
     }
@@ -1564,109 +1596,13 @@ let lib_ = {
 
 let action_ = {
   video: {
-    // click add review, select policy, select language etc...
-    steps: {
-      addReview() {
-        try {
-          // make 'add review' button visible
-          let decisionTab = getElement('yurt-core-decision-capture')[0];
-          decisionTab.tabMode = 0;
-
-          // click add review after 200ms
-          setTimeout(() => {
-            const addReviewBtn = getElement(
-              'tcs-button[data-test-id="start-review-button"]'
-            )[0];
-            addReviewBtn.click();
-          }, 100);
-        } catch (e) {
-          throw new Error('Could not set Add Review');
-        }
-      },
-      selectPolicy(policyId) {
-        try {
-          let decisionPolicy = getElement('yurt-core-decision-policy')[0];
-          let policies = [
-            '9008',
-            '3039',
-            '3044',
-            '3065',
-            '5013',
-            '3099',
-            '3999',
-            '3888',
-          ];
-
-          decisionPolicy.policyIds = policies;
-
-          // need to set the policies list in two places
-          let litVirtualizer = getElement('lit-virtualizer')[0];
-          litVirtualizer.items = policies;
-
-          const foundPolicy = [
-            ...(getElement('yurt-core-decision-policy-item') ?? []),
-          ].filter((policyItem) => policyItem.policyId === policyId)?.[0];
-
-          foundPolicy.click();
-          return foundPolicy.policy;
-        } catch (e) {
-          console.log(e);
-          throw new Error('Could not select policy', policyId);
-        }
-      },
-      selectLanguage(language) {
-        // DEPRECATED since 15.02.2024
-        return;
-        try {
-          if (!language) return;
-          let langOptions = Array.from(
-            getElement('#decision-panel-language-select > mwc-list-item')
-          );
-
-          const foundLanguageOption = langOptions.filter((option) =>
-            option.value.toLowerCase().includes(language.toLowerCase())
-          )?.[0];
-
-          foundLanguageOption.click();
-
-          return foundLanguageOption.value;
-        } catch (e) {
-          console.log(e);
-          throw new Error('Could not select language', language);
-        }
-      },
-      addNote(note) {
-        try {
-          let noteInputBox =
-            getElement('.notes-input')?.[0] ||
-            getElement(
-              'mwc-textarea[data-test-id=core-decision-policy-edit-notes]'
-            )?.[0];
-
-          noteInputBox.value = note;
-          action_.video.steps.selectTextArea();
-        } catch (e) {
-          console.log(arguments.callee.name, e.stack);
-        }
-      },
-      selectTextArea() {
-        let link;
-        link = getElement('.mdc-text-field__input')?.[0];
-
-        //console.log('text area');
-        link && link.select();
-      },
-    },
-    addNote(noteStr) {
-      let decisionCard = getElement('yurt-core-decision-policy-card')?.[0];
-      decisionCard.annotation.notes = noteStr;
-    },
     // actual complete actions
-    async approve(language) {
+    async approve() {
       const { retry } = lib_;
 
       await retry(action_.video.steps.addReview);
       await retry(() => action_.video.steps.selectPolicy('9008'));
+      await retry(utils_.clickSave);
       // setTimeout(dom_.saveReview, 1000);
 
       // setTimeout(() => action_.video.steps.selectPolicy('9008'), 100);
@@ -1690,40 +1626,25 @@ let action_ = {
         return true;
       }
     },
-    async strike(
-      policyId = '3039',
-      contentType = 'video',
-      language = 'russian'
-    ) {
+    async strike(policyId = '3039') {
       const { expandNotesArea } = ui_.mutations;
       const { setAnswers, generateAnswers } = questionnaire_;
-      const { selectPolicy, addReview } = action_.video.steps;
+      const { selectPolicy: choosePolicy, addReview } = action_.video.steps;
       const { retry } = lib_;
 
+      // strike steps:
       await retry(addReview);
-      await retry(() => selectPolicy(policyId));
-
-      await retry(function answerQuestionnaire() {
+      await retry(function selectPolicy() {
+        choosePolicy(policyId);
+      });
+      await retry(async function answerQuestionnaire() {
         if (store_.is.queue('bluechip')) return true;
         if (store_.ignoreQuestionnairePolicies.includes(policyId)) return;
-        return setAnswers(generateAnswers(policyId));
-      });
-      await retry(function next() {
-        try {
-          let nextBtn = getElement('.next-button')[0];
-
-          nextBtn.click();
-        } catch (e) {
-          throw new Error('Could not Next');
-        }
-      });
-      await retry(function done() {
-        try {
-          let doneBtn = getElement('tcs-button[name="label-submit"]')[0];
-          doneBtn.click();
-        } catch (e) {
-          throw new Error('Could not click Done');
-        }
+        const answers = generateAnswers(policyId);
+        setAnswers(answers);
+        await retry(utils_.clickNext);
+        await retry(utils_.clickNext);
+        await retry(utils_.clickDone);
       });
 
       await retry(expandNotesArea);
@@ -1804,6 +1725,103 @@ let action_ = {
           })
           .render();
       }, 1);
+    },
+    // click add review, select policy, select language etc...
+    steps: {
+      addReview() {
+        try {
+          // make 'add review' button visible
+          let decisionTab = getElement('yurt-core-decision-capture')[0];
+          decisionTab.tabMode = 0;
+
+          // click add review after 200ms
+          const t = setTimeout(function clickAddReview() {
+            const addReviewBtn = getElement(
+              'tcs-button[data-test-id="start-review-button"]'
+            )[0];
+            addReviewBtn.click();
+          }, 100);
+        } catch (e) {
+          clearTimeout(t);
+          throw new Error('Could not set Add Review');
+        }
+      },
+      selectPolicy(policyId) {
+        try {
+          let decisionPolicy = getElement('yurt-core-decision-policy')[0];
+          let policies = [
+            '9008',
+            '3039',
+            '3044',
+            '3065',
+            '5013',
+            '3099',
+            '3999',
+            '3888',
+          ];
+
+          decisionPolicy.policyIds = policies;
+
+          // need to set the policies list in two places
+          let litVirtualizer = getElement('lit-virtualizer')[0];
+          litVirtualizer.items = policies;
+
+          const foundPolicy = [
+            ...(getElement('yurt-core-decision-policy-item') ?? []),
+          ].filter((policyItem) => policyItem.policyId === policyId)?.[0];
+
+          foundPolicy.click();
+          return foundPolicy.policy;
+        } catch (e) {
+          throw new Error('Could not select policy', policyId);
+        }
+      },
+      selectLanguage(language) {
+        // DEPRECATED since 15.02.2024
+        return;
+        try {
+          if (!language) return;
+          let langOptions = Array.from(
+            getElement('#decision-panel-language-select > mwc-list-item')
+          );
+
+          const foundLanguageOption = langOptions.filter((option) =>
+            option.value.toLowerCase().includes(language.toLowerCase())
+          )?.[0];
+
+          foundLanguageOption.click();
+
+          return foundLanguageOption.value;
+        } catch (e) {
+          console.log(e);
+          throw new Error('Could not select language', language);
+        }
+      },
+      addNote(note) {
+        try {
+          let noteInputBox =
+            getElement('.notes-input')?.[0] ||
+            getElement(
+              'mwc-textarea[data-test-id=core-decision-policy-edit-notes]'
+            )?.[0];
+
+          noteInputBox.value = note;
+          action_.video.steps.selectTextArea();
+        } catch (e) {
+          console.log(arguments.callee.name, e.stack);
+        }
+      },
+      selectTextArea() {
+        let link;
+        link = getElement('.mdc-text-field__input')?.[0];
+
+        //console.log('text area');
+        link && link.select();
+      },
+    },
+    addNote(noteStr) {
+      let decisionCard = getElement('yurt-core-decision-policy-card')?.[0];
+      decisionCard.annotation.notes = noteStr;
     },
   },
   comment: {
@@ -1949,18 +1967,94 @@ let action_ = {
   },
 };
 
+let questionnaire_ = {
+  setAnswers(answers) {
+    // BUG TEMPORARY FIX labellingGraph.fh
+    if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
+
+    // questionnaire answering logic
+    answers.forEach((answer) => {
+      dom_.questionnaire.setAnswers(answer);
+    });
+
+    if (
+      !dom_.questionnaire.labellingGraph.fh ||
+      dom_.questionnaire.labellingGraph.fh.size === 0
+    ) {
+      throw new Error(
+        'Questions not Answered!',
+        dom_.questionnaire.labellingGraph
+      );
+    }
+
+    console.log('💾 Saving questionnaire. Answers:');
+    return dom_.questionnaire.labellingGraph.fh;
+  },
+  generateAnswers(policyId = '3039', veGroup = store_.selectedVEGroup) {
+    const answers = {};
+    // format expected by setAnswers build-in function
+    answers['3039'] = [
+      {
+        questionId: `violent_extremism/question/video_${policyId}_tvc/applicable_ve_group`,
+        answers: [veGroup],
+      },
+      {
+        questionId: `violent_extremism/question/video_${policyId}_tvc/act_type`,
+        answers: [
+          {
+            id: 'glorification_terrorism',
+            label: 'Glorification of terrorism or terrorist acts',
+            value: {},
+          },
+        ],
+      },
+    ];
+
+    answers['3065'] = [answers['3039'][0]];
+
+    answers['3044'] = [
+      {
+        questionId:
+          'violent_extremism/question/video_3044_tvc/select_applicable_violation_type',
+        answers: [
+          {
+            id: 've_actor_based_violation',
+            label: 'VE Actor based violation',
+            value: {},
+          },
+        ],
+      },
+      ...answers['3039'],
+    ];
+
+    answers['3048'] = [
+      {
+        questionId: `violent_extremism/question/video_${policyId}_tvc/applicable_ve_group`,
+        answers: [store_.selectedVEGroup],
+      },
+    ];
+
+    answers['3999'] = [
+      {
+        questionId:
+          'violent_extremism/question/video_3999_3888_tvc_fte/applicable_individual_name_beats1',
+        answers: [
+          {
+            id: 'yevgeny_prigozhin',
+            label: 'Yevgeny Prigozhin',
+            value: {},
+          },
+        ],
+      },
+    ];
+
+    return answers[policyId];
+  },
+};
+
 let props_ = {
   button: {
-    approve: [
-      { text: '🇷🇺 RU', onClick: () => action_.video.approve('russian') },
-      { text: '🇺🇦 UA', onClick: () => action_.video.approve('ukrainian') },
-      { text: '🇬🇧 ENG', onClick: () => action_.video.approve('english') },
-      {
-        text: '❔ AGN',
-        onClick: () => action_.video.approve('Language agnostic'),
-      },
-      { text: '🔳 N/A', onClick: () => action_.video.approve() },
-    ],
+    approve: [{ text: 'Approve', onClick: action_.video.approve }],
   },
   dropdown: {
     strike: {
@@ -2015,25 +2109,10 @@ let props_ = {
     },
   },
   dropdownList: {
-    9008: {
-      label: '9008',
-      children: [
-        { key: '🇷🇺 Russian', onClick: () => action_.video.approve('russian') },
-        {
-          key: '🇺🇦 Ukrainian',
-          onClick: () => action_.video.approve('ukrainian'),
-        },
-        { key: '🇬🇧 English', onClick: () => action_.video.approve('english') },
-        {
-          key: '❔ Agnostic',
-          onClick: () => action_.video.approve('Language agnostic'),
-        },
-        { key: '🔳 No Language', onClick: () => action_.video.approve() },
-      ],
-    },
     route: {
-      label: 'Route ⤴',
+      label: 'Actions',
       children: [
+        { key: 'Approve', onClick: action_.video.approve },
         {
           key: '🇸🇦 Arabic',
           onClick: () =>
@@ -2734,15 +2813,14 @@ let ui_ = {
           store_.newVeGroups[veGroupDropdownSelector.selected.value];
       };
 
-      const [approveMenu, routeMenu, strikeMenu] = Object.keys(
-        props_.dropdownList
-      ).map((policy) => createDropdownMenu(props_.dropdownList[policy]));
+      const [approveMenu, strikeMenu] = Object.keys(props_.dropdownList).map(
+        (policy) => createDropdownMenu(props_.dropdownList[policy])
+      );
 
       container.replaceChildren(
         stopwatch,
         approveMenu,
         strikeMenu,
-        routeMenu,
         veGroupDropdownSelector
       );
 
@@ -2824,12 +2902,14 @@ let ui_ = {
       recommendationList.addEventListener('mouseenter', handleMouseEnter);
       recommendationList.addEventListener('mouseleave', handleMouseLeave);
 
-      [...recommendationList.childNodes].forEach(
-        (recommendation) =>
-          (recommendation.onclick = () => {
-            action_.video.steps.addNote(recommendation.value);
-          })
-      );
+      [...recommendationList.childNodes].forEach((recommendation) => {
+        recommendation.onclick = () => {
+          action_.video.steps.addNote(recommendation.value);
+        };
+        recommendation.onkeydown = () => {
+          action_.video.steps.addNote(recommendation.value);
+        };
+      });
 
       return {
         element: recommendationList,
@@ -3025,41 +3105,17 @@ let ui_ = {
   },
   createDropdownMenu(props) {
     const { strToNode } = ui_;
-    const { label, children, style } = props;
-
-    // const parentList =
-    //   strToNode(`<mwc-list><mwc-list-item hasmeta="" value="video" mwc-list-item="" tabindex="0" aria-disabled="false">
-    // <span class="option-label"><tcs-text>${label ?? ''}</tcs-text></span>
-    // <tcs-icon data-test-id="label-questionnaire-list-category-icon" slot="meta" class="category-icon" family="material" spec="default">expand_more
-    // </tcs-icon>
-    // </mwc-list-item>
-    // </mwc-list>`);
-
-    // const childList = strToNode(`<mwc-list></mwc-list>`);
+    const { children } = props;
 
     const container = ui_.atoms.createGrid(3);
 
-    // container.style.display = 'none';
-
-    // function toggleShowList() {
-    //   container.style.display === 'none'
-    //     ? (container.style.display = 'grid')
-    //     : (container.style.display = 'none');
-    // }
-
     const childListItems = children.map((item) => {
-      // item.key.startWith is to add letter spacing to buttons that have only policy number, e.g. '3065', as opposed to "Russian" which is approve russian
-      // it's done to make the button look nicer :)
       const listItem = strToNode(`<mwc-list-item value="${
         item?.value ?? ''
       }" graphic="control" aria-disabled="false">
-      <span class="option-label"><tcs-text style="border-radius: 8px; ${
-        item.key.startsWith('3') ||
-        item.key.startsWith('5') ||
-        item.key.startsWith('6')
-          ? 'letter-spacing: 2px;'
-          : ''
-      }">${item?.key ?? ''}</tcs-text></span>
+      <span class="option-label"><tcs-text style="border-radius: 8px;">${
+        item?.key ?? ''
+      }</tcs-text></span>
       </mwc-list-item>`);
 
       function handleClick(e) {
@@ -3300,89 +3356,6 @@ let ui_ = {
   },
 };
 
-let questionnaire_ = {
-  setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.fh
-    if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
-
-    // questionnaire answering logic
-    answers.forEach((answer) => dom_.questionnaire.setAnswers(answer));
-
-    if (
-      !dom_.questionnaire.labellingGraph.fh ||
-      dom_.questionnaire.labellingGraph.fh.size === 0
-    ) {
-      throw new Error(
-        'Questions not Answered!',
-        dom_.questionnaire.labellingGraph
-      );
-    }
-
-    console.log('💾 Saving questionnaire. Answers:');
-    return dom_.questionnaire.labellingGraph.fh;
-  },
-  generateAnswers(policyId = '3039', veGroup = store_.selectedVEGroup) {
-    const answers = {};
-    // format expected by setAnswers build-in function
-    answers['3039'] = [
-      {
-        questionId: `violent_extremism/question/video_${policyId}_tvc/applicable_ve_group`,
-        answers: [veGroup],
-      },
-      {
-        questionId: `violent_extremism/question/video_${policyId}_tvc/act_type`,
-        answers: [
-          {
-            id: 'glorification_terrorism',
-            label: 'Glorification of terrorism or terrorist acts',
-            value: {},
-          },
-        ],
-      },
-    ];
-
-    answers['3065'] = [answers['3039'][0]];
-
-    answers['3044'] = [
-      {
-        questionId:
-          'violent_extremism/question/video_3044_tvc/select_applicable_violation_type',
-        answers: [
-          {
-            id: 've_actor_based_violation',
-            label: 'VE Actor based violation',
-            value: {},
-          },
-        ],
-      },
-      ...answers['3039'],
-    ];
-
-    answers['3048'] = [
-      {
-        questionId: `violent_extremism/question/video_${policyId}_tvc/applicable_ve_group`,
-        answers: [store_.selectedVEGroup],
-      },
-    ];
-
-    answers['3999'] = [
-      {
-        questionId:
-          'violent_extremism/question/video_3999_3888_tvc_fte/applicable_individual_name_beats1',
-        answers: [
-          {
-            id: 'yevgeny_prigozhin',
-            label: 'Yevgeny Prigozhin',
-            value: {},
-          },
-        ],
-      },
-    ];
-
-    return answers[policyId];
-  },
-};
-
 let on_ = {
   async newVideo() {
     const { sendNotification, removeLock, setFrequentlyUsedPolicies } = utils_;
@@ -3448,7 +3421,7 @@ function $main() {
   document.addEventListener('keydown', (event) => {
     if (event.key === '`') {
       try {
-        dom_.videoDecisionPanel.onSubmit();
+        utils_.clickSubmit();
       } catch (e) {
         console.log('Could not submit via keypress');
       }
@@ -3477,85 +3450,6 @@ function $main() {
     }
   });
 }
-
-const dummyData = {
-  // APP_REVIEW_COMPLETED
-  'event.data': {
-    name: 'APP_REVIEW_COMPLETED',
-    message: {
-      sessionId: 'yn87g2xo7d3o',
-      result: {
-        type: 'COMPLETE',
-        payload: {
-          applyPolicy: {
-            policyOutputs: [
-              {
-                entityId: {
-                  externalVideoId: 'SyZVvekevxk',
-                },
-                policyId: '3065',
-                primary: true,
-                reviewerNote:
-                  'Violation: Wagner PMC depictive content with upbeat music without 4C EDSA or criticism at @0:00:04\nRussian (not agnostic) ',
-                policyDescription:
-                  'Content produced by or glorifying known Violent Extremist Organizations',
-                dynamicParameters: {
-                  passthroughPolicyParameters: {},
-                },
-                language: 'ru',
-                videoReviewInfo: {
-                  seekTimeMs: '4044',
-                },
-              },
-            ],
-          },
-          graphOutputs: [],
-        },
-      },
-      entityId: {
-        externalVideoId: 'SyZVvekevxk',
-      },
-    },
-  },
-  strikeSummary: {
-    strikeSummary: {
-      totalStrikeCount: 1,
-      activeStrikeCount: 1,
-      activeWarningStrikeCount: 1,
-    },
-    channelStrikeTable: {
-      rows: [
-        {
-          status: 'ACTIVE',
-          strikeFlagAndType: {
-            flag: 'WARNING',
-            strikeType: 'UNIFIED',
-          },
-          createTime: '2023-06-24T13:59:29Z',
-          acknowledgeTime: '2023-06-25T20:57:11Z',
-          expirationTime: '1970-01-01T00:00:00Z',
-          channelPolicyTrainingSession: {
-            trainingCompletionTime: '2023-06-24T13:59:29Z',
-          },
-          strikeEntity: {
-            entityType: 'VIDEO',
-            entity: {
-              video: {
-                externalVideoId: 'sTxvhD_q9ZE',
-                videoTitle: 'Срочно! ПРИГОЖИН взял ШТАБ в Ростове',
-              },
-            },
-            policyDescription:
-              'Video produced by or glorifying known Violent Extremist group/actor',
-            policyId: 3039,
-            createTime: '2023-06-24T06:23:27Z',
-            channelTouStrikeId: '184884119',
-          },
-        },
-      ],
-    },
-  },
-};
 
 $main();
 // [✅] radu pidar
