@@ -1662,24 +1662,22 @@ let action_ = {
 
       function selectTarget(queue) {
         try {
-          // TODO: finish
-          let targetDropdown = getElement('tcs-searchable-dropdown')[0];
-          let foundTargetIndex = targetDropdown.entries.findIndex((entry) =>
-            queue
-              .split(' ')
-              .every((word) =>
-                entry.uniqueId.toLowerCase().split(' - ').includes(word)
-              )
-          );
+          const optionsDropdown = getElement('tcs-searchable-dropdown')[0];
 
-          if (foundTargetIndex.length > 1) {
-            // if more options, look for the one that includes VE
-            foundTargetIndex = foundTargetIndex.findIndex((element) =>
-              element.uniqueId.includes('VE')
-            );
-          }
+          optionsDropdown.searchInput = queue;
 
-          targetDropdown.selectedEntryIndex = foundTargetIndex;
+          setTimeout(() => {
+            let targetOptions = [
+              ...getElement('.entries-container')[0].children[0].children,
+            ];
+
+            if (targetOptions.length < 0)
+              throw new Error('No target option found');
+            if (targetOptions.length > 1)
+              throw new Error('More than one targets found');
+
+            targetOptions[0].click();
+          }, 100);
         } catch (e) {
           console.error(e);
           throw new Error('Could not select target for routing');
