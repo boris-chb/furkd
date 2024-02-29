@@ -629,8 +629,9 @@ let recommendationNotes = {
         title: '{ Slur }',
         value: () =>
           `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for violative slur ${(() => {
-            const highlightedWord = getElement('.current-transcript')?.[0]
-              .textContent;
+            const highlightedWord =
+              getElement('.current-transcript')?.[0].textContent ??
+              getElement('.current-transcript-highlight')?.[0];
 
             return highlightedWord ? highlightedWord : '';
           })()} at ${utils_.get.noteTimestamp}`,
@@ -1677,7 +1678,7 @@ let action_ = {
               throw new Error('More than one targets found');
 
             targetOptions[0].click();
-          }, 100);
+          }, 300);
         } catch (e) {
           console.error(e);
           throw new Error('Could not select target for routing');
