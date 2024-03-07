@@ -631,7 +631,7 @@ let recommendationNotes = {
           `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for violative slur ${(() => {
             const highlightedWord =
               getElement('.current-transcript')?.[0].textContent ??
-              getElement('.current-transcript-highlight')?.[0];
+              getElement('.current-transcript-highlight')?.[0].textContent;
 
             return highlightedWord ? highlightedWord : '';
           })()} at ${utils_.get.noteTimestamp}`,
