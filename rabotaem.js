@@ -1418,10 +1418,10 @@ let utils_ = {
   },
   showNotes(policyId = utils_.get.selectedPolicyId) {
     // remove old notes
-    const existingNotes = getElement('#recommendation-notes')?.[0];
+    const existingNotes = getElement('#recommendation-notes');
 
     if (existingNotes) {
-      existingNotes.parentNode.removeChild(existingNotes);
+      [...existingNotes].forEach((note) => note.remove());
     }
 
     let notesArr = utils_.generateNotes(policyId);
@@ -1968,7 +1968,7 @@ let action_ = {
 
 let questionnaire_ = {
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.gh
+    // BUG TEMPORARY FIX labellingGraph.fh
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
@@ -1977,8 +1977,8 @@ let questionnaire_ = {
     });
 
     if (
-      !dom_.questionnaire.labellingGraph.gh ||
-      dom_.questionnaire.labellingGraph.gh.size === 0
+      !dom_.questionnaire.labellingGraph.fh ||
+      dom_.questionnaire.labellingGraph.fh.size === 0
     ) {
       throw new Error(
         'Questions not Answered!',
@@ -1987,7 +1987,7 @@ let questionnaire_ = {
     }
 
     console.log('💾 Saving questionnaire. Answers:');
-    return dom_.questionnaire.labellingGraph.gh;
+    return dom_.questionnaire.labellingGraph.fh;
   },
   generateAnswers(policyId = '3039', veGroup = store_.selectedVEGroup) {
     const answers = {};
@@ -2133,7 +2133,12 @@ let props_ = {
         {
           key: '🥩 Graphic',
           onClick: () =>
-            action_.video.route(`graphic violence enforcement`, 'gv'),
+            action_.video.route(
+              `graphic violence ${
+                store_.is.queue('xsource') ? 'enforcement' : ''
+              }`,
+              'gv'
+            ),
         },
         {
           key: '⚡ Hate',
@@ -3141,18 +3146,6 @@ let ui_ = {
       `<tcs-text spec="body" >${str}</tcs-text>`
     );
     return textElement;
-  },
-  toggleRecommendations(policyId) {
-    const existing = getElement('#recommendation-notes')?.[0];
-    if (existing) {
-      existing.remove();
-      return true;
-    }
-    ui_.components
-      .recommendationPanel({
-        notesArr: recommendationNotes.strike[policyId],
-      })
-      .render();
   },
   async renderViolativeIds() {
     if (getElement('.violative-ids-section')) return;
