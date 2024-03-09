@@ -485,90 +485,90 @@ let recommendationNotes = {
       {
         title: 'Nasheed',
         value: () =>
-          `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review for Arabic nasheed at ${utils_.get.noteTimestamp}`,
+          `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review for Arabic nasheed ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Religious',
         value: () =>
-          `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review for religious content at ${utils_.get.noteTimestamp}`,
+          `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review for religious content ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Arabic Part',
         value: () =>
-          `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review Arabic part at ${utils_.get.noteTimestamp}`,
+          `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review Arabic part ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Language support (ru)',
         value: () =>
-          `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review language part at ${utils_.get.noteTimestamp}`,
+          `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review language part ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Language support (agn)',
         value: () =>
-          `Agnostic review\nTimestamp: #fullvideo\n\nPlease review language part at ${utils_.get.noteTimestamp}`,
+          `Agnostic review\nTimestamp: #fullvideo\n\nPlease review language part ${utils_.get.noteTimestamp}`,
       },
     ],
     drugs: [
       {
         title: 'Drugs policy',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for drug policy violation at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for drug policy violation ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Illegal Sales',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for illegal sales at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for illegal sales ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Gambling',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for gambling violation at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for gambling violation ${utils_.get.noteTimestamp}`,
       },
     ],
     gv: [
       {
         title: 'MOD',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for MOD at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for MOD ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'GV',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for graphic violence at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for graphic violence ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'POW',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for prisoners of war at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for prisoners of war ${utils_.get.noteTimestamp}`,
       },
     ],
     adult: [
       {
         title: 'Vulgar language',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for excessive use of vulgar language at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for excessive use of vulgar language ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Nudity',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for nudity at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for nudity ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Sexual act',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for implied sexual act at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for implied sexual act ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Adult',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for adult violation at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for adult violation ${utils_.get.noteTimestamp}`,
       },
     ],
     spam: [
       {
         title: 'Spam',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for intent to drive traffic off-site at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for intent to drive traffic off-site ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Spam (link in comments)',
@@ -585,45 +585,45 @@ let recommendationNotes = {
       {
         title: 'Dangerous Pranks',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for dangerous pranks at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for dangerous pranks ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Gambling',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for gambling at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for gambling ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'H&D violation',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for H&D acts at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for H&D acts ${utils_.get.noteTimestamp}`,
       },
     ],
     haras: [
       {
         title: 'Doxxing',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for doxxing at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for doxxing ${utils_.get.noteTimestamp}`,
       },
     ],
     ds: [
       {
         title: 'Terms of Service',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for TOS violations at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for TOS violations ${utils_.get.noteTimestamp}`,
       },
     ],
     cs: [
       {
         title: 'Minors Sex',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for minors sexualization at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for minors sexualization ${utils_.get.noteTimestamp}`,
       },
     ],
     hate: [
       {
         title: 'Slur',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for violative slur at ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for violative slur ${utils_.get.noteTimestamp}`,
       },
       {
         title: '{ Slur }',
@@ -634,7 +634,7 @@ let recommendationNotes = {
               getElement('.current-transcript-highlight')?.[0].textContent;
 
             return highlightedWord ? highlightedWord : '';
-          })()} at ${utils_.get.noteTimestamp}`,
+          })()} ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Hate',
@@ -679,7 +679,7 @@ let recommendationNotes = {
         value: () =>
           `Violation: ${
             utils_.get.selectedVEGroup.text
-          } depictive content >50% of video without 4C EDSA or criticism at ${
+          } depictive content >50% of video without 4C EDSA or criticism ${
             utils_.get.noteTimestamp
           }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
       },
@@ -688,7 +688,7 @@ let recommendationNotes = {
         value: () =>
           `Violation: ${
             utils_.get.selectedVEGroup.text
-          } depictive content with upbeat music without 4C EDSA or criticism at ${
+          } depictive content with upbeat music without 4C EDSA or criticism ${
             utils_.get.noteTimestamp
           }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
       },
@@ -697,7 +697,7 @@ let recommendationNotes = {
         value: () =>
           `Violation: ${
             utils_.get.selectedVEGroup.text
-          } produced content used 2x or more, without 4C EDSA or criticism at ${
+          } produced content used 2x or more, without 4C EDSA or criticism ${
             utils_.get.noteTimestamp
           }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
       },
@@ -706,7 +706,7 @@ let recommendationNotes = {
         value: () =>
           `Violation: ${
             utils_.get.selectedVEGroup.text
-          } glorifying lyrics without 4C EDSA or criticism at ${
+          } glorifying lyrics without 4C EDSA or criticism ${
             utils_.get.noteTimestamp
           }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
       },
@@ -715,7 +715,7 @@ let recommendationNotes = {
         value: () =>
           `Violation: ${
             utils_.get.selectedVEGroup.text
-          } produced song without 4C EDSA or criticism at ${
+          } produced song without 4C EDSA or criticism ${
             utils_.get.noteTimestamp
           }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
       },
@@ -726,7 +726,7 @@ let recommendationNotes = {
         value: () =>
           `Violation: ${
             utils_.get.selectedVEGroup.text
-          } raw re-upload without criticism or 4C EDSA at ${
+          } raw re-upload without criticism or 4C EDSA ${
             utils_.get.noteTimestamp
           }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
       },
@@ -735,7 +735,7 @@ let recommendationNotes = {
         value: () =>
           `Violation: Glorification of ${
             utils_.get.selectedVEGroup.text
-          } without criticism or 4C EDSA at ${utils_.get.noteTimestamp}\n${
+          } without criticism or 4C EDSA ${utils_.get.noteTimestamp}\n${
             !store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''
           }`,
       },
@@ -744,7 +744,7 @@ let recommendationNotes = {
         value: () =>
           `Violation: ${
             utils_.get.selectedVEGroup.text
-          } glorifying lyrics without criticism or 4C EDSA at ${
+          } glorifying lyrics without criticism or 4C EDSA ${
             utils_.get.noteTimestamp
           }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
       },
@@ -754,14 +754,14 @@ let recommendationNotes = {
         value: () =>
           `Violation: ${
             utils_.get.selectedVEGroup.text
-          } raw reupload of produced song without criticism or 4C EDSA at ${
+          } raw reupload of produced song without criticism or 4C EDSA ${
             utils_.get.noteTimestamp
           }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
       },
       {
         title: '[3039] Memorial',
         value: () =>
-          `Violation: ${utils_.get.selectedVEGroup.text} memorial video at ${
+          `Violation: ${utils_.get.selectedVEGroup.text} memorial video ${
             utils_.get.noteTimestamp
           }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
       },
@@ -844,7 +844,7 @@ let recommendationNotes = {
       {
         title: '[3048] Hamas hostages',
         value: () =>
-          `Violation: Hamas hostages without criticism in 4C at ${
+          `Violation: Hamas hostages without criticism in 4C ${
             utils_.get.noteTimestamp
           }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
       },
@@ -1059,7 +1059,7 @@ let utils_ = {
       if (dom_.playerControls.player.getCurrentTime() === 0) {
         return '#fullvideo';
       }
-      return `@${this.currentTimeStr}`;
+      return store_.is.routing ? `@${this.currentTimeStr}` : '';
     },
     get DEPRECATED_noteTimestamp() {
       let t;
@@ -1388,7 +1388,7 @@ let utils_ = {
       store_.submitId = setTimeout(() => btn.click(), minutes * 60 * 1000);
       utils_.removeLock();
       console.log(
-        `⌚ [${store_.submitId}] Submit in ${minutes} minutes, at ${new Date(
+        `⌚ [${store_.submitId}] Submit in ${minutes} minutes, ${new Date(
           Date.now() + minutes * 60 * 1000
         )
           .toJSON()
@@ -3402,7 +3402,7 @@ function $main() {
     // Submitted video, send notification
     if (event.data.name === 'APP_REVIEW_COMPLETED' && notFocused()) {
       sendNotification(
-        `✅ Submitted at ${new Date().toJSON().split('T')[1].slice(0, 8)}`
+        `✅ Submitted ${new Date().toJSON().split('T')[1].slice(0, 8)}`
       );
 
       // removeLock();
