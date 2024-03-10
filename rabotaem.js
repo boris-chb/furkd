@@ -29,6 +29,7 @@ function getElement(query) {
     }
   }
   shadowSearch(document.querySelector('yurt-root-app').shadowRoot, query);
+
   return myElement;
 }
 
@@ -488,9 +489,9 @@ let recommendationNotes = {
           `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review for Arabic nasheed ${utils_.get.noteTimestamp}`,
       },
       {
-        title: 'Religious',
+        title: 'Religious RU + Arabic',
         value: () =>
-          `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review for religious content ${utils_.get.noteTimestamp}`,
+          `9008 for Russian VE - religious speech (no glorification, no EDSA)\nTimestamp: #fullvideo\n\nPlease check Arabic part ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Arabic Part',
@@ -500,12 +501,12 @@ let recommendationNotes = {
       {
         title: 'Language support (ru)',
         value: () =>
-          `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review language part ${utils_.get.noteTimestamp}`,
+          `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review the language part ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Language support (agn)',
         value: () =>
-          `Agnostic review\nTimestamp: #fullvideo\n\nPlease review language part ${utils_.get.noteTimestamp}`,
+          `Agnostic review\nTimestamp: #fullvideo\n\nPlease review the language part ${utils_.get.noteTimestamp}`,
       },
     ],
     drugs: [
@@ -522,14 +523,14 @@ let recommendationNotes = {
       {
         title: 'Gambling',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for gambling violation ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for gambling ${utils_.get.noteTimestamp}`,
       },
     ],
     gv: [
       {
         title: 'MOD',
         value: () =>
-          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for MOD ${utils_.get.noteTimestamp}`,
+          `9008 for VE\nTimestamp: #fullvideo\n\nPlease review for moment of death ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'GV',
@@ -1401,7 +1402,7 @@ let utils_ = {
       console.log('Could not set timer', e.stack);
     }
   },
-  setFrequentlyUsedPolicies() {
+  DEPRECATED_setFrequentlyUsedPolicies() {
     try {
       getElement('yurt-video-decision-panel-v2')[0].frequentlyUsedPolicies =
         store_.frequentlyUsedPolicies;
@@ -2226,6 +2227,11 @@ let dom_ = {
     return store_.is.queue('comments')
       ? getElement('tcs-text[spec=title-2]')?.[0].shadowRoot
       : getElement('yurt-core-plugin-header > div > tcs-view')?.[0];
+  },
+  get videoTitleRow() {
+    let videoTitleRow = getElement('.video-title-row')[0];
+
+    return videoTitleRow;
   },
   get metadataPanel() {
     return getElement('yurt-video-metadata')?.[0].shadowRoot;
@@ -3060,7 +3066,7 @@ let ui_ = {
       }
 
       if (!getElement('.approve-panel__header')) {
-        dom_.header.appendChild(ui_.components.approvePanelHeader);
+        dom_.videoTitleRow.appendChild(ui_.components.approvePanelHeader);
       }
     } catch (e) {
       console.log(e);
@@ -3350,11 +3356,10 @@ let ui_ = {
 
 let on_ = {
   async newVideo() {
-    const { sendNotification, removeLock, setFrequentlyUsedPolicies } = utils_;
+    const { sendNotification, removeLock } = utils_;
     !document.hasFocus() && sendNotification(`New item 👀`);
 
     setTimeout(utils_.click.myReviews, 1000);
-    setFrequentlyUsedPolicies();
     removeLock();
 
     function initUI() {
@@ -3373,7 +3378,7 @@ let on_ = {
         // ui_.mutations.cinemaMode();
       } catch (e) {
         console.log(e);
-        throw new Error('initUI');
+        throw new Error('Could not initialize UI');
       }
     }
 
