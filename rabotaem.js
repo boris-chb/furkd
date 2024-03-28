@@ -1749,22 +1749,12 @@ let action_ = {
       selectPolicy(policyId) {
         try {
           let decisionPolicy = getElement('yurt-core-decision-policy')[0];
-          let policies = [
-            '9008',
-            '3039',
-            '3044',
-            '3065',
-            '5013',
-            '3099',
-            '3999',
-            '3888',
-          ];
 
-          decisionPolicy.policyIds = policies;
+          decisionPolicy.policyIds = [policyId];
 
           // need to set the policies list in two places
           let litVirtualizer = getElement('lit-virtualizer')[0];
-          litVirtualizer.items = policies;
+          litVirtualizer.items = [policyId];
 
           const foundPolicy = [
             ...(getElement('yurt-core-decision-policy-item') ?? []),
@@ -1969,7 +1959,7 @@ let action_ = {
 
 let questionnaire_ = {
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.fh
+    // BUG TEMPORARY FIX labellingGraph.ih
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
@@ -1978,8 +1968,8 @@ let questionnaire_ = {
     });
 
     if (
-      !dom_.questionnaire.labellingGraph.fh ||
-      dom_.questionnaire.labellingGraph.fh.size === 0
+      !dom_.questionnaire.labellingGraph.ih ||
+      dom_.questionnaire.labellingGraph.ih.size === 0
     ) {
       throw new Error(
         'Questions not Answered!',
@@ -1988,7 +1978,7 @@ let questionnaire_ = {
     }
 
     console.log('💾 Saving questionnaire. Answers:');
-    return dom_.questionnaire.labellingGraph.fh;
+    return dom_.questionnaire.labellingGraph.ih;
   },
   generateAnswers(policyId = '3039', veGroup = store_.selectedVEGroup) {
     const answers = {};
