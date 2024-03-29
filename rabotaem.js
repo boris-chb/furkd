@@ -360,7 +360,7 @@ let store_ = {
       return !!decisionViewRoute;
     },
   },
-  ignoreQuestionnairePolicies: ['3099'],
+  ignoreQuestionnairePolicies: ['3099', '6120'],
   frequentlyUsedPolicies: [
     {
       id: '9008',
