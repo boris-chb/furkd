@@ -484,14 +484,24 @@ let recommendationNotes = {
   route: {
     arabic: [
       {
-        title: 'Nasheed',
+        title: 'Nasheed [RU+]',
         value: () =>
           `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review for Arabic nasheed ${utils_.get.noteTimestamp}`,
       },
       {
-        title: 'Religious RU + Arabic',
+        title: 'Nasheed [AGN]',
         value: () =>
-          `9008 for Russian VE - religious speech (no glorification, no EDSA)\nTimestamp: #fullvideo\n\nPlease check Arabic part ${utils_.get.noteTimestamp}`,
+          `Agnostic review\nTimestamp: #fullvideo\n\nPlease review for Arabic nasheed ${utils_.get.noteTimestamp}`,
+      },
+      {
+        title: 'Language support [RU+]',
+        value: () =>
+          `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review the language part ${utils_.get.noteTimestamp}`,
+      },
+      {
+        title: 'Language support [AGN]',
+        value: () =>
+          `Agnostic review\nTimestamp: #fullvideo\n\nPlease review the language part ${utils_.get.noteTimestamp}`,
       },
       {
         title: 'Arabic Part',
@@ -499,14 +509,9 @@ let recommendationNotes = {
           `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review Arabic part ${utils_.get.noteTimestamp}`,
       },
       {
-        title: 'Language support (ru)',
+        title: 'Religious RU + Arabic',
         value: () =>
-          `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review the language part ${utils_.get.noteTimestamp}`,
-      },
-      {
-        title: 'Language support (agn)',
-        value: () =>
-          `Agnostic review\nTimestamp: #fullvideo\n\nPlease review the language part ${utils_.get.noteTimestamp}`,
+          `9008 for Russian VE - religious speech (no glorification, no EDSA)\nTimestamp: #fullvideo\n\nPlease check Arabic part ${utils_.get.noteTimestamp}`,
       },
     ],
     drugs: [
@@ -1603,7 +1608,9 @@ let action_ = {
       const { retry } = lib_;
 
       await retry(action_.video.steps.addReview);
-      await retry(() => action_.video.steps.selectPolicy('9008'));
+      await retry(function selectPolicy() {
+        action_.video.steps.selectPolicy('9008');
+      });
       await retry(utils_.clickSave);
       // setTimeout(dom_.saveReview, 1000);
 
