@@ -484,7 +484,7 @@ let recommendationNotes = {
   route: {
     arabic: [
       {
-        title: 'Nasheed [RU+]',
+        title: 'Nasheed',
         value: () =>
           `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review for Arabic nasheed ${utils_.get.noteTimestamp}`,
       },
@@ -494,7 +494,7 @@ let recommendationNotes = {
           `Agnostic review\nTimestamp: #fullvideo\n\nPlease review for Arabic nasheed ${utils_.get.noteTimestamp}`,
       },
       {
-        title: 'Language support [RU+]',
+        title: 'Language support  ',
         value: () =>
           `9008 for Russian VE, no glorification, no EDSA\nTimestamp: #fullvideo\n\nPlease review the language part ${utils_.get.noteTimestamp}`,
       },
@@ -1966,7 +1966,7 @@ let action_ = {
 
 let questionnaire_ = {
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.ih
+    // BUG TEMPORARY FIX labellingGraph.lh
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
@@ -1975,8 +1975,8 @@ let questionnaire_ = {
     });
 
     if (
-      !dom_.questionnaire.labellingGraph.ih ||
-      dom_.questionnaire.labellingGraph.ih.size === 0
+      !dom_.questionnaire.labellingGraph.lh ||
+      dom_.questionnaire.labellingGraph.lh.size === 0
     ) {
       throw new Error(
         'Questions not Answered!',
@@ -1985,7 +1985,7 @@ let questionnaire_ = {
     }
 
     console.log('💾 Saving questionnaire. Answers:');
-    return dom_.questionnaire.labellingGraph.ih;
+    return dom_.questionnaire.labellingGraph.lh;
   },
   generateAnswers(policyId = '3039', veGroup = store_.selectedVEGroup) {
     const answers = {};
