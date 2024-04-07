@@ -1215,6 +1215,15 @@ let utils_ = {
       },
     },
   },
+  video: {
+    convertToSeconds(timeString) {
+      timeString = timeString.replace('s', '');
+
+      const seconds = parseInt(timeString);
+
+      return seconds;
+    },
+  },
 
   clickNext() {
     try {
@@ -2632,10 +2641,29 @@ let api_ = {
           }),
         }).then((response) => response.json());
 
-        return videosArr;
+        return videosArr.videos;
       } catch (e) {
         console.log('\n\n\t\tCould not fetch channel videos\n\n', e);
       }
+    },
+    async getVideosBySameDuration(
+      targetDuration = utils_.get.videoLength(true)
+    ) {
+      const videos = await api_.get.channelVideos();
+      const targetSeconds = utils_.video.convertToSeconds(targetDuration);
+
+      const similarVideos = videos.filter((video) => {
+        const videoSeconds = utils_.video.convertToSeconds(video.videoDuration);
+        return Math.abs(videoSeconds - targetSeconds) <= 1;
+      });
+
+      return similarVideos;
+    },
+    async getVideosWithStrike() {
+      const videos = await api_.get.channelVideos();
+      return videos.filter(
+        (video) => video.latestStandingPolicy?.id === '3065'
+      );
     },
   },
 };
