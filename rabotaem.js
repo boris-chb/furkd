@@ -2647,10 +2647,9 @@ let api_ = {
       }
     },
     async getVideosBySameDuration(
-      targetDuration = utils_.get.videoLength(true)
+      targetSeconds = utils_.get.videoLength(true)
     ) {
       const videos = await api_.get.channelVideos();
-      const targetSeconds = utils_.video.convertToSeconds(targetDuration);
 
       const similarVideos = videos.filter((video) => {
         const videoSeconds = utils_.video.convertToSeconds(video.videoDuration);
