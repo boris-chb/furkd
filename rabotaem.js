@@ -250,6 +250,11 @@ let store_ = {
       label: 'Hizb-ut Tahrir - OUSUK',
       value: {},
     },
+    houthis: {
+      id: 'the_houthis_ansar_allah',
+      label: 'The Houthis/Ansar Allah - OUSUK',
+      value: {},
+    },
     osama: 'osama_bin_laden',
   },
   wordsByCategory: {
@@ -2093,6 +2098,10 @@ let props_ = {
         {
           value: `lte`,
           label: 'LTTE',
+        },
+        {
+          value: 'houthis',
+          label: 'Houthis',
         },
         {
           value: `unknown`,
