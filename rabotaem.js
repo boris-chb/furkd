@@ -1447,11 +1447,12 @@ let utils_ = {
     let notesArr = utils_.generateNotes(policyId);
 
     // render new ones
-    ui_.components
-      .recommendationPanel({
-        notesArr,
-      })
-      .render();
+    const notesComponent = ui_.components.recommendationPanel({
+      notesArr,
+    });
+
+    notesComponent.render();
+    setTimeout(() => notesComponent.element.scrollIntoView(), 1);
   },
   sendNotification(text, close = true) {
     let n = new Notification(text);
@@ -2660,8 +2661,8 @@ let api_ = {
     },
     async getVideosWithStrike() {
       const videos = await api_.get.channelVideos();
-      return videos.filter(
-        (video) => video.latestStandingPolicy?.id === '3065'
+      return videos.filter((video) =>
+        ['3065', '3039'].includes(video.latestStandingPolicy?.id)
       );
     },
   },
