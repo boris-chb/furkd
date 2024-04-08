@@ -2240,9 +2240,7 @@ let dom_ = {
     return getElement('.video-title-row')?.[0];
   },
   get rightSidebar() {
-    return getElement(
-      'yurt-core-decision-annotation-tabs > div:nth-child(1)'
-    )?.[0];
+    return getElement('yurt-core-entity-history-tldr')[0].shadowRoot;
   },
   get videoDecisionPanel() {
     return getElement('yurt-video-decision-panel-v2')?.[0];
@@ -2401,13 +2399,13 @@ let transcript_ = {
 
     return findLargestArray(res);
   },
-  async getAllChannelTranscripts(channelId) {
+  async getAllChannelTranscripts(channelId = store_.channelId) {
     const { videos } = await utils_.getChannelVideos(channelId);
     const channelVideosIds = videos.map((video) => video.externalVideoId);
 
     // Create an array of promises for fetching transcripts
     const fetchTranscriptsPromises = channelVideosIds.map(async (videoId) => {
-      const t = await transcript_.getTranscriptById(videoId);
+      const t = await transcript_.getTranscriptByVideoId(videoId);
       if (t && Object.keys(t).length > 0) {
         return { [videoId]: t };
       }
@@ -2469,7 +2467,7 @@ let transcript_ = {
       ui_.components.createTable(word.violativeWords, word.videoId)
     );
   },
-  async getTranscriptById(videoId) {
+  async getTranscriptByVideoId(videoId) {
     if (!videoId) return;
     const url = `https://yurt.corp.google.com/_/backends/video/v1/videos/${videoId}/transcript?alt=json&key=${yt.config_.YURT_API_KEY}`;
 
@@ -2913,15 +2911,16 @@ let ui_ = {
         ui_.createIconButton(
           'filter_alt',
           async () => {
-            await lib_.retry(ui_.renderWordsTable);
+            await lib_.retry(() => ui_.renderWordsTable());
             transcript_.checkForLewd();
           },
           'filter-transcript-table'
         ),
         ui_.createIconButton(
           'troubleshoot',
-          async function filterCurrentChannelTranscripts() {
+          async () => {
             transcript_.renderChannelViolativeWordsTable();
+            await renderSimilarDurationVideos();
           },
           'filter-ids-btn'
         ),
@@ -3245,9 +3244,9 @@ let ui_ = {
     dom_.metadataPanel.appendChild(mySection);
     dom_.metadataPanel.appendChild(urlBtn);
   },
-  renderWordsTable() {
+  renderWordsTable(violativeWords = transcript_.getViolativeWords()) {
+    if (!violativeWords) return;
     if (getElement('.violative-words-container')) return;
-    const violativeWords = transcript_.getViolativeWords();
     const {
       strToNode,
       components: { createWordsList },
@@ -3509,9 +3508,6 @@ function $main() {
   });
 }
 
-$main();
-// [✅] radu pidar
-
 function VideoItem({ video, channelMetadata }) {
   const escapedVideoStr = utils_.convertToEscapedJSON(video);
 
@@ -3537,3 +3533,18 @@ async function VideoList({ videosArr }) {
 
   return container;
 }
+
+async function renderSimilarDurationVideos() {
+  try {
+    const mainColumn = getElement('.main-column')[0];
+    const videosArr = await api_.get.getVideosBySameDuration();
+    const videosList = await VideoList({ videosArr });
+
+    mainColumn.appendChild(videosList);
+  } catch (e) {
+    console.log('Could not render videos\n\n', e);
+  }
+}
+
+$main();
+// [✅] radu pidar
