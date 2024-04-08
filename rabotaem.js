@@ -160,6 +160,11 @@ let store_ = {
     label: 'Wagner PMC - VNSA',
     value: {},
   },
+  get channelId() {
+    return dom_.reviewRoot.hostAllocatedMessage.reviewData.videoReviewData
+      .videoReviewMetadata.externalChannelId;
+  },
+  channelMetadata: null,
   opacity: '0.8',
   textAreaRows: 10,
   veGroups: {
@@ -1328,6 +1333,9 @@ let utils_ = {
       return tmp.childNodes[0];
     }
     return tmp.childNodes;
+  },
+  convertToEscapedJSON(obj) {
+    return JSON.stringify(obj).replace(/"/g, '&quot;');
   },
 
   // Channel
@@ -2599,28 +2607,6 @@ let transcript_ = {
 let api_ = {
   KEY: yt.config_.YURT_API_KEY,
   get: {
-    async strikeHistory(
-      channelId = dom_.reviewRoot.hostAllocatedMessage.reviewData
-        .videoReviewData.videoReviewMetadata.externalChannelId
-    ) {
-      try {
-        const url = `https://yurt.corp.google.com/_/backends/review/v1/strikeHistory:fetch?alt=json&key=${yt.config_.YURT_API_KEY}`;
-
-        let history = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            externalChannelId: channelId,
-          }),
-        }).then((response) => response.json());
-
-        return history;
-      } catch (e) {
-        console.log('\n\n\t\t[STRIKE HISTORY] Could not fetch:\n\n', e);
-      }
-    },
     async channelVideos(
       channelId = dom_?.reviewRoot?.hostAllocatedMessage?.reviewData
         ?.videoReviewData?.videoReviewMetadata?.externalChannelId ??
@@ -2664,6 +2650,47 @@ let api_ = {
       return videos.filter((video) =>
         ['3065', '3039'].includes(video.latestStandingPolicy?.id)
       );
+    },
+
+    // misc
+    async channelMetadata(channelId = store_.channelId) {
+      try {
+        const url = `https://yurt.corp.google.com/_/backends/account/v1/accounts/${channelId}/channelMetadata?alt=json&key=${yt.config_.YURT_API_KEY}`;
+
+        let metadata = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }).then((response) => response.json());
+
+        return metadata;
+      } catch (e) {
+        console.log('\n\n\t\t[API] Could not fetch channel metadata\n\n', e);
+      }
+    },
+
+    async strikeHistory(
+      channelId = dom_.reviewRoot.hostAllocatedMessage.reviewData
+        .videoReviewData.videoReviewMetadata.externalChannelId
+    ) {
+      try {
+        const url = `https://yurt.corp.google.com/_/backends/review/v1/strikeHistory:fetch?alt=json&key=${yt.config_.YURT_API_KEY}`;
+
+        let history = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            externalChannelId: channelId,
+          }),
+        }).then((response) => response.json());
+
+        return history;
+      } catch (e) {
+        console.log('\n\n\t\t[STRIKE HISTORY] Could not fetch:\n\n', e);
+      }
     },
   },
 };
@@ -3484,3 +3511,29 @@ function $main() {
 
 $main();
 // [✅] radu pidar
+
+function VideoItem({ video, channelMetadata }) {
+  const escapedVideoStr = utils_.convertToEscapedJSON(video);
+
+  const escapedChannelMetadata = utils_.convertToEscapedJSON(channelMetadata);
+
+  const componentStr = `<yurt-account-video-list-item video="${escapedVideoStr}" channelmetadata="${escapedChannelMetadata}" videoindex=" " positionindex=" " class="pinned-comment-view video-row-container"></yurt-account-video-list-item>`;
+
+  const component = utils_.strToNode(componentStr);
+
+  return component;
+}
+
+async function VideoList({ videosArr }) {
+  const channelMetadata = await api_.get.channelMetadata();
+
+  const videoItems = videosArr.map((video) =>
+    VideoItem({ video, channelMetadata })
+  );
+
+  const container = utils_.strToNode(`<div class="card-container"></div>`);
+
+  container.replaceChildren(...videoItems);
+
+  return container;
+}
