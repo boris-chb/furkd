@@ -4,33 +4,37 @@ try {
   utils_.clearTimers();
 } catch (e) {}
 
-function getElement(query) {
-  var myElement;
-  function shadowSearch(rootElement, queryselector) {
-    if (myElement) {
-      return;
-    }
-    if (
-      queryselector &&
-      rootElement.querySelectorAll(queryselector) &&
-      rootElement.querySelectorAll(queryselector)?.[0]
-    ) {
-      myElement = rootElement.querySelectorAll(queryselector);
-      return;
-    }
-    if (rootElement.nextElementSibling) {
-      shadowSearch(rootElement.nextElementSibling, queryselector);
-    }
-    if (rootElement.shadowRoot) {
-      shadowSearch(rootElement.shadowRoot, queryselector);
-    }
-    if (rootElement.childElementCount > 0) {
-      shadowSearch(rootElement.children[0], queryselector);
-    }
+function shadowSearch(rootElement, queryselector, myElementObj) {
+  if (myElementObj.myElement) {
+    return;
   }
-  shadowSearch(document.querySelector('yurt-root-app').shadowRoot, query);
+  if (
+    queryselector &&
+    rootElement.querySelectorAll(queryselector) &&
+    rootElement.querySelectorAll(queryselector)?.[0]
+  ) {
+    myElementObj.myElement = rootElement.querySelectorAll(queryselector);
+    return;
+  }
+  if (rootElement.nextElementSibling) {
+    shadowSearch(rootElement.nextElementSibling, queryselector, myElementObj);
+  }
+  if (rootElement.shadowRoot) {
+    shadowSearch(rootElement.shadowRoot, queryselector, myElementObj);
+  }
+  if (rootElement.childElementCount > 0) {
+    shadowSearch(rootElement.children[0], queryselector, myElementObj);
+  }
+}
 
-  return myElement;
+function getElement(query) {
+  var myElementObj = { myElement: null };
+  shadowSearch(
+    document.querySelector('yurt-root-app').shadowRoot,
+    query,
+    myElementObj
+  );
+  return myElementObj.myElement;
 }
 
 let rc = {
