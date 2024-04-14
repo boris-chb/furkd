@@ -1639,27 +1639,9 @@ let action_ = {
         action_.video.steps.selectPolicy('9008');
       });
       await retry(utils_.clickSave);
-      // setTimeout(dom_.saveReview, 1000);
-
-      // setTimeout(() => action_.video.steps.selectPolicy('9008'), 100);
-
-      // if (store_.is.queue('xsource')) {
-      //   // approve questionnaire only in xsource
-      //   await retry(function approveQuestionnaire() {
-      //     questionnaire_.setAnswers(questionnaire_.generateAnswers('9008'));
-      //   });
-      // }
-
-      // await retry(function saveReview() {
-      //   dom_.saveReview();
-      //   if (!dom_.decisionCard) throw new Error('Could not save review');
-      // });
 
       if (store_.is.autosubmit) {
-        await retry(function submitVideo() {
-          dom_.videoDecisionPanel.onSubmit();
-        });
-        return true;
+        setTimeout(() => dom_.submitBtn.click(), 1);
       }
     },
     async strike(policyId = '3039') {
@@ -3101,8 +3083,9 @@ let ui_ = {
         dom_.metadataPanel.appendChild(dom_.strikePanel);
       }
       // trigger notes
-      !getElement('.player-controls-btns') &&
+      if (!getElement('.player-controls-btns')) {
         dom_.playerControls.drawControlButtons();
+      }
 
       // filter transcript and append words table below metadata
       if (!getElement('.config-panel-btn')) {
