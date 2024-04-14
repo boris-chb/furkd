@@ -2308,8 +2308,8 @@ let dom_ = {
       this.player.setPlaybackRate(1);
     },
     onReset() {
+      rc.setSeekTime();
       this.player.pauseVideo();
-      this.player.seekTo(0);
     },
 
     drawControlButtons() {
