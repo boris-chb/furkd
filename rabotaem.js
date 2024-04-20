@@ -2388,9 +2388,7 @@ let api_ = {
         console.log('\n\n\t\tCould not fetch channel videos\n\n', e);
       }
     },
-    async getVideosBySameDuration(
-      targetSeconds = utils_.get.videoLength(true)
-    ) {
+    async videosBySameDuration(targetSeconds = utils_.get.videoLength(true)) {
       const videos = await api_.get.channelVideos();
 
       const similarVideos = videos.filter((video) => {
@@ -2400,7 +2398,7 @@ let api_ = {
 
       return similarVideos;
     },
-    async getVideosWithStrike() {
+    async videosWithStrike() {
       const videos = await api_.get.channelVideos();
       return videos.filter((video) =>
         ['3065', '3039'].includes(video.latestStandingPolicy?.id)
