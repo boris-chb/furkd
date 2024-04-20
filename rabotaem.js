@@ -2571,33 +2571,12 @@ let ui_ = {
       parentNode.spacing = 'small';
 
       // MULTIPLE TABS
-      if (config_.SU) {
-        function showTimers() {
-          const { setTimer, strToNode } = utils_;
-          let existingTimers = getElement('.timers')?.[0];
-
-          if (existingTimers) {
-            existingTimers.remove();
-            return;
-          }
-
-          const timersWrapper = strToNode(
-            `<tcs-view class="timers container" align="center" spec="row"></tcs-view>`
-          );
-          const autoreloadCheckbox = strToNode(
-            `<mwc-checkbox value="autoreload-page"></mwc-checkbox>`
-          );
-
-          timersWrapper.replaceChildren(...timersArr);
-          timersWrapper.appendChild(autoreloadCheckbox);
-          parentNode.appendChild(timersWrapper);
+      stopwatch.onclick = (e) => {
+        if (e.ctrlKey) {
+          history.pushState({}, '', '#yort');
+          window.open('https://yurt.corp.google.com/#review');
         }
-
-        stopwatch.onclick = () => {
-          utils_.removeLock();
-          showTimers();
-        };
-      }
+      };
 
       // tick
       store_.stopwatchId = setInterval(() => {
@@ -3253,14 +3232,6 @@ function $main() {
 
   // init
   on_.newVideo();
-
-  // multiple tabs
-  getElement('.stopwatch')?.[0].addEventListener('contextmenu', (e) => {
-    if (e.ctrlKey) {
-      history.pushState({}, '', '#yort');
-      window.open('https://yurt.corp.google.com/#review');
-    }
-  });
 }
 
 function VideoItem({ video, channelMetadata }) {
