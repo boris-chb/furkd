@@ -150,12 +150,10 @@ let observers = {
 let config_ = {
   SU: true,
   USE_KEYPRESS: false,
-  COMMENTS_TIMER_MIN: 1,
-  CLICK_BUTTON_RETRY_COUNT: 100,
-  CLICK_BUTTON_INTERVAL_MS: 1,
-  FUNCTION_CALL_RETRY_MS: 100,
-  NOTIFICATION_TIMEOUT_SEC: 10,
   showLogs: true,
+  FUNCTION_CALL_RETRY_INTERVAL_MS: 300,
+  FUNCTION_CALL_RETRY_DURATION_MS: 3000,
+  NOTIFICATION_TIMEOUT_SEC: 10,
 };
 
 let store_ = {
@@ -964,95 +962,6 @@ let recommendationNotes = {
 };
 
 let utils_ = {
-  click: {
-    element(queryStr, args, retries = config_.CLICK_BUTTON_RETRY_COUNT) {
-      let btn;
-      if (queryStr === 'mwc-list-item') {
-        // for list-item, convert nodelist to array, then filter based on value
-        let btnNodeList = getElement(queryStr);
-        let filterKey = Object.keys(args)?.[0];
-        let filterValue = Object.values(args)?.[0];
-
-        let foundBtn = btnNodeList
-          ? Array.from(btnNodeList).find(
-              (listItem) => listItem[filterKey] === filterValue
-            )
-          : undefined;
-
-        console.log(`[🔍] list-item[${filterKey}=${filterValue}]`);
-
-        btn = foundBtn;
-      } else {
-        queryStr = args
-          ? `${queryStr}[${Object.keys(args)}=${Object.values(args)}]`
-          : queryStr;
-
-        btn = getElement(queryStr)?.[0];
-      }
-
-      if (btn?.active || btn?.checked) return;
-
-      // Try again until the btn renders
-      let btnMissingOrDisabled = !btn || btn?.disabled;
-
-      if (btnMissingOrDisabled && retries) {
-        // btn not found, try again
-        retries--;
-        retries % 10 === 0 &&
-          console.log(Math.floor(retries / 10), `[♻] Looking for ${queryStr}`);
-        setTimeout(
-          () => utils_.click.element(queryStr, null, retries),
-          config_.CLICK_BUTTON_INTERVAL_MS
-        );
-        return;
-      }
-
-      if (retries === 0) return;
-
-      try {
-        btn.click();
-      } catch (e) {
-        console.log('COULD NOT CLICK', queryStr);
-        console.log(e.stack);
-      }
-    },
-    listItem(listArgs) {
-      // Values: 'video' || 'audio' || 'metadata'
-      // STEP: Label the location of abuse (modality)
-      utils_.click.element('mwc-list-item', listArgs);
-    },
-    listItemByInnerText(...args) {
-      let listItems = [...getElement('mwc-list-item')];
-
-      let item = listItems.find((el) =>
-        args.every((innerText) =>
-          el.innerText.toLowerCase()?.includes(innerText.toLowerCase())
-        )
-      );
-
-      try {
-        item.click();
-      } catch (e) {
-        console.log(e.stack);
-      }
-    },
-    checkbox(listArgs) {
-      utils_.click.element('mwc-checkbox', listArgs);
-    },
-    checklist(listArgs) {
-      utils_.click.element('mwc-check-list-item', listArgs);
-    },
-    radio(listArgs) {
-      utils_.click.element('mwc-radio', listArgs);
-    },
-    myReviews() {
-      let annotationTabs = getElement(
-        'yurt-core-decision-annotation-tabs'
-      )?.[0];
-
-      annotationTabs.selectedTab = 0;
-    },
-  },
   get: {
     get selectedPolicyId() {
       let policyItem = getElement('yurt-core-policy-selector-item')?.[0];
@@ -1222,15 +1131,6 @@ let utils_ = {
       language() {
         return this.name()?.split('-')?.[3]?.trim() ?? '';
       },
-    },
-  },
-  video: {
-    convertToSeconds(timeString) {
-      timeString = timeString.replace('s', '');
-
-      const seconds = parseInt(timeString);
-
-      return seconds;
     },
   },
 
@@ -1433,14 +1333,6 @@ let utils_ = {
       console.log('Could not set timer', e.stack);
     }
   },
-  DEPRECATED_setFrequentlyUsedPolicies() {
-    try {
-      getElement('yurt-video-decision-panel-v2')[0].frequentlyUsedPolicies =
-        store_.frequentlyUsedPolicies;
-    } catch (e) {
-      console.log(arguments.callee.name, e.stack);
-    }
-  },
   generateNotes(policyId, isRouting = store_.is.routing) {
     if (!policyId) return;
 
@@ -1448,7 +1340,7 @@ let utils_ = {
       ? recommendationNotes.route[policyId]
       : recommendationNotes.strike[policyId];
   },
-  showNotes(policyId = utils_.get.selectedPolicyId) {
+  toggleNotes(policyId = utils_.get.selectedPolicyId) {
     // remove old notes
     const existingNotes = getElement('#recommendation-notes');
 
@@ -1608,7 +1500,11 @@ let lib_ = {
       }
     };
   },
-  async retry(fn, interval = 100, totalDuration = 2000) {
+  async retry(
+    fn,
+    interval = config_.FUNCTION_CALL_RETRY_INTERVAL_MS,
+    totalDuration = config_.FUNCTION_CALL_RETRY_DURATION_MS
+  ) {
     const startTime = Date.now();
     let endTime = startTime + totalDuration;
 
@@ -1666,7 +1562,7 @@ let action_ = {
       });
 
       await retry(expandNotesArea);
-      await retry(() => utils_.showNotes(policyId));
+      await retry(() => utils_.toggleNotes(policyId));
     },
     route(queue, noteType, reason = 'policy vertical') {
       // TODO
@@ -1828,131 +1724,6 @@ let action_ = {
     addNote(noteStr) {
       let decisionCard = getElement('yurt-core-decision-policy-card')?.[0];
       decisionCard.annotation.notes = noteStr;
-    },
-  },
-  comment: {
-    steps: {
-      selectVEpolicy(commentPolicy = 'FTO') {
-        let policiesArr = Array.from(
-          getElement('yurt-core-policy-selector-item') || []
-        );
-        let VEpolicy = policiesArr?.filter((item) => {
-          let tags = item.policy.tags;
-          return tags?.includes(commentPolicy);
-        })?.[0];
-
-        if (!VEpolicy) {
-          () => this.selectVEpolicy(commentPolicy);
-          return;
-        }
-        console.log('selectVEpolicy', commentPolicy);
-        VEpolicy.click();
-      },
-
-      selectActionType(actionType = 'generic_support') {
-        console.log('selectActionType', actionType);
-
-        utils_.click.element('mwc-radio', { value: actionType });
-      },
-
-      VEgroupType(veType = 've_group_type') {
-        console.log('VEgroupType', veType);
-        utils_.click.element('mwc-radio', { value: veType });
-      },
-
-      selectVEgroup(targetGroup) {
-        console.log('selectVEgroup', targetGroup);
-
-        const VEgroupsArr = Array.from(getElement('mwc-list-item'));
-
-        if (VEgroupsArr.length < 20 || !VEgroupsArr) {
-          // error check
-          setTimeout(
-            () => action_.comment.steps.selectVEgroup(targetGroup),
-            config_.FUNCTION_CALL_RETRY_MS
-          );
-          return;
-        }
-
-        function getVEGroup() {
-          let group = VEgroupsArr?.filter((item) => {
-            //console.log(item.value);
-            //console.log(groupsMap[targetGroup]);
-            return item.value === store_.veGroups[targetGroup];
-          })?.[0];
-          return group;
-        }
-
-        let group = getVEGroup();
-        console.log('getVEGroup', group);
-
-        group && group?.click();
-      },
-
-      selectRelevance(relevance = 'comment_text') {
-        console.log('selectRelevance', relevance);
-
-        utils_.click.element('mwc-checkbox', { value: relevance });
-      },
-
-      selectStamp(stampType = 'the_whole_comment') {
-        console.log('selectRelevance', stampType);
-
-        utils_.click.element('mwc-radio', { value: stampType });
-      },
-    },
-    strikeComment(VEGroup, timerMin, groupType = 've_group_type') {
-      let {
-        selectVEpolicy,
-        selectActionType,
-        VEgroupType,
-        selectVEgroup,
-        selectRelevance,
-        selectStamp,
-      } = action_.comment.steps;
-      let { clickNext, clickDone } = utils_;
-
-      selectVEpolicy();
-      selectActionType();
-      // clickNext();
-      VEgroupType(groupType);
-      // clickNext();
-      selectVEgroup(VEGroup);
-      clickNext();
-      selectRelevance();
-      clickNext();
-      selectStamp();
-      // clickNext();
-      clickDone();
-      if (timerMin) {
-        utils_.setTimer(timerMin, false);
-      }
-    },
-    approveComment: () => {
-      let policiesArr = Array.from(
-        getElement('yurt-core-policy-selector-item')
-      );
-      let approvePolicy = policiesArr.filter(
-        (policy) => policy.policy.id === '35265'
-      )?.[0];
-
-      approvePolicy.click();
-    },
-    routeComment: (targetQueue) => {
-      // TODO?
-      let routeTargetsArr = Array.from(getElement('mwc-list-item'));
-      let hate = routeTargetsArr.filter(
-        (target) =>
-          target.innerHTML.includes('Hate') &&
-          target.innerHTML.includes('English')
-      )?.[0];
-      let xlang = routeTargetsArr.filter((target) =>
-        target.innerHTML.includes('Xlang')
-      )?.[0];
-      let policyVertical = routeTargetsArr.filter((target) =>
-        target.innerHTML.includes('policy vertical')
-      )?.[0];
-      let routeBtn = getElement('.submit')?.[0];
     },
   },
   delete() {
@@ -2886,11 +2657,11 @@ let ui_ = {
       return element;
     },
 
-    get configPanel() {
+    get utilsPanel() {
       // the panel under player with tools like transcript filtering
       // or triggering notes templates
       const container = ui_.strToNode(
-        `<div style="display: flex;" class="config-panel"></div>`
+        `<div style="display: flex;" class="utils-panel"></div>`
       );
 
       const buttons = [
@@ -2912,7 +2683,7 @@ let ui_ = {
         ),
         ui_.createIconButton(
           'note_add',
-          () => utils_.showNotes(),
+          () => utils_.toggleNotes(utils_.get.selectedPolicyId),
           'show-notes-btn'
         ),
         ui_.createIconButton(
@@ -3078,37 +2849,38 @@ let ui_ = {
       // !getElement('.stopwatch') &&
       //   dom_.header.appendChild(ui_.components.stopwatchPanel.stopwatch);
 
+      ui_.renderTimerButtons();
       // panel with policies
       if (!getElement('.action-panel')) {
         dom_.metadataPanel.appendChild(dom_.strikePanel);
       }
-      // trigger notes
+      // player buttons
       if (!getElement('.player-controls-btns')) {
         dom_.playerControls.drawControlButtons();
       }
 
-      // filter transcript and append words table below metadata
-      if (!getElement('.config-panel-btn')) {
+      // utilities under player
+      if (!getElement('.utils-panel-btn')) {
         dom_.filterControlsPanel.appendChild(
           ui_.createIconButton(
             'chevron_right',
             toggleConfigPanel,
-            'config-panel-btn'
+            'utils-panel-btn'
           )
         );
 
-        const configPanel = ui_.components.configPanel;
-        dom_.filterControlsPanel.appendChild(configPanel);
-        configPanel.style.display = 'none';
-        configPanel.style.opacity = '0.2';
+        const utilsPanel = ui_.components.utilsPanel;
+        dom_.filterControlsPanel.appendChild(utilsPanel);
+        utilsPanel.style.display = 'none';
+        utilsPanel.style.opacity = '0.2';
 
-        [...configPanel.children].forEach((child) =>
+        [...utilsPanel.children].forEach((child) =>
           child.addEventListener('click', toggleConfigPanel)
         );
         function toggleConfigPanel() {
-          configPanel.style.display === 'none'
-            ? (configPanel.style.display = 'flex')
-            : (configPanel.style.display = 'none');
+          utilsPanel.style.display === 'none'
+            ? (utilsPanel.style.display = 'flex')
+            : (utilsPanel.style.display = 'none');
         }
       }
 
@@ -3286,7 +3058,7 @@ let ui_ = {
 
     return container;
   },
-  showTimers() {
+  renderTimerButtons() {
     try {
       if (getElement('.submit-timers')) return;
       const { setTimer, strToNode } = utils_;
@@ -3406,7 +3178,6 @@ let on_ = {
     const { sendNotification, removeLock } = utils_;
     !document.hasFocus() && sendNotification(`New item 👀`);
 
-    setTimeout(utils_.click.myReviews, 1000);
     removeLock();
 
     function initUI() {
@@ -3414,7 +3185,6 @@ let on_ = {
       try {
         ui_.draw();
         ui_.mutations.moveChannelLink();
-        ui_.showTimers();
 
         if (store_.is.queue('bluechip')) {
           let queueNameHeader = getElement('.review-dimension-info')[0];
@@ -3425,11 +3195,11 @@ let on_ = {
         // ui_.mutations.cinemaMode();
       } catch (e) {
         console.log(e);
-        throw new Error('Could not initialize UI');
+        throw new Error('newVideo() :: Could not initialize UI');
       }
     }
 
-    await lib_.retry(initUI, 1000, 10000);
+    setTimeout(async () => await lib_.retry(initUI, 2000, 10000));
   },
 };
 
