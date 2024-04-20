@@ -1,4 +1,4 @@
-// 07.03.2024
+// v4.20
 
 try {
   utils_.clearTimers();
@@ -1351,7 +1351,7 @@ let utils_ = {
     let notesArr = utils_.generateNotes(policyId);
 
     // render new ones
-    const notesComponent = ui_.components.recommendationPanel({
+    const notesComponent = ui_.components.notesList({
       notesArr,
     });
 
@@ -1632,7 +1632,7 @@ let action_ = {
         selectTextArea();
         ui_.mutations.expandRouteNotesArea();
         ui_.components
-          .recommendationPanel({
+          .notesList({
             notesArr: recommendationNotes.route[noteType],
           })
           .render();
@@ -2677,36 +2677,36 @@ let ui_ = {
 
       return container;
     },
-    recommendationPanel({ notesArr }) {
+    notesList({ notesArr }) {
       // TODO comments recommendations
       if (store_.is.queue('comments')) return;
 
-      let recommendationList = utils_.strToNode(
+      let notesList = utils_.strToNode(
         `<mwc-list id="recommendation-notes" style="margin: 30px 0px; opacity: 0; transition: opacity 300ms;">${notesArr
           ?.map(
             (note) =>
-              `<mwc-list-item class="recommendation-item" graphic="avatar" value="${note.value()}"><span>${
+              `<mwc-list-item class="recommendation-item" value="${note.value()}"><span>${
                 note.title
-              }</span><mwc-icon slot="graphic">note_add</mwc-icon></mwc-list-item>`
+              }</span></mwc-list-item>`
           )
           .join('')}</mwc-list>`
       );
 
       // Function to handle mouseenter event
       function handleMouseEnter() {
-        recommendationList.style.opacity = 1;
+        notesList.style.opacity = 1;
       }
 
       // Function to handle mouseleave event
       function handleMouseLeave() {
-        recommendationList.style.opacity = 0;
+        notesList.style.opacity = 0;
       }
 
       // Add event listeners
-      recommendationList.addEventListener('mouseenter', handleMouseEnter);
-      recommendationList.addEventListener('mouseleave', handleMouseLeave);
+      notesList.addEventListener('mouseenter', handleMouseEnter);
+      notesList.addEventListener('mouseleave', handleMouseLeave);
 
-      [...recommendationList.childNodes].forEach((recommendation) => {
+      [...notesList.childNodes].forEach((recommendation) => {
         recommendation.onclick = () => {
           action_.video.steps.addNote(recommendation.value);
         };
@@ -2716,11 +2716,11 @@ let ui_ = {
       });
 
       return {
-        element: recommendationList,
+        element: notesList,
         render() {
           // find parent
           const decisionContainer = getElement('.decision-container')[0];
-          decisionContainer.appendChild(recommendationList);
+          decisionContainer.appendChild(notesList);
         },
       };
     },
@@ -3176,7 +3176,8 @@ let on_ = {
       }
     }
 
-    setTimeout(async () => await lib_.retry(initUI, 2000, 10000));
+    // initialize UI one sec after new video received (let yurt render first)
+    setTimeout(async () => await lib_.retry(initUI, 2000, 10000), 1000);
   },
 };
 
