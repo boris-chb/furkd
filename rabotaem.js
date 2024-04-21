@@ -1133,6 +1133,15 @@ let utils_ = {
       },
     },
   },
+  video: {
+    convertToSeconds(timeString) {
+      timeString = timeString.replace('s', '');
+
+      const seconds = parseInt(timeString);
+
+      return seconds;
+    },
+  },
 
   clickNext() {
     try {
@@ -3264,7 +3273,7 @@ async function VideoList({ videosArr }) {
 async function renderSimilarDurationVideos() {
   try {
     const mainColumn = getElement('.main-column')[0];
-    const videosArr = await api_.get.getVideosBySameDuration();
+    const videosArr = await api_.get.videosBySameDuration();
     const videosList = await VideoList({ videosArr });
 
     mainColumn.appendChild(videosList);
