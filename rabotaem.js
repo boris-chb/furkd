@@ -2140,30 +2140,34 @@ let dom_ = {
 
 let transcript_ = {
   getTranscript() {
-    let transcript = getElement('yurt-video-transcript')?.[0];
+    try {
+      let transcript = getElement('yurt-video-transcript')?.[0];
 
-    let res = Object.getOwnPropertyNames(transcript)
-      .filter((opt) => Array.isArray(transcript[opt]))
-      ?.map((opt) => transcript[opt]);
+      let res = Object.getOwnPropertyNames(transcript)
+        .filter((opt) => Array.isArray(transcript[opt]))
+        ?.map((opt) => transcript[opt]);
 
-    function findLargestArray(arrays) {
-      let largestArray = [];
-      let largestSize = 0;
+      function findLargestArray(arrays) {
+        let largestArray = [];
+        let largestSize = 0;
 
-      for (let i = 0; i < arrays.length; i++) {
-        const currentArray = arrays[i];
-        const currentSize = currentArray.length;
+        for (let i = 0; i < arrays.length; i++) {
+          const currentArray = arrays[i];
+          const currentSize = currentArray.length;
 
-        if (currentSize > largestSize) {
-          largestArray = currentArray;
-          largestSize = currentSize;
+          if (currentSize > largestSize) {
+            largestArray = currentArray;
+            largestSize = currentSize;
+          }
         }
+
+        return largestArray;
       }
 
-      return largestArray;
+      return findLargestArray(res);
+    } catch (e) {
+      console.log('Could not get transcript\n\n', e);
     }
-
-    return findLargestArray(res);
   },
   async getAllChannelTranscripts(channelId = store_.channelId) {
     const { videos } = await utils_.getChannelVideos(channelId);
@@ -3244,12 +3248,16 @@ function $main() {
   on_.newVideo();
 }
 
-function VideoItem({ video, channelMetadata }) {
+function VideoItem({ video, channelMetadata, index }) {
   const escapedVideoStr = utils_.convertToEscapedJSON(video);
 
   const escapedChannelMetadata = utils_.convertToEscapedJSON(channelMetadata);
 
-  const componentStr = `<yurt-account-video-list-item video="${escapedVideoStr}" channelmetadata="${escapedChannelMetadata}" videoindex=" " positionindex=" " class="pinned-comment-view video-row-container"></yurt-account-video-list-item>`;
+  const componentStr = `<yurt-account-video-list-item video="${escapedVideoStr}" channelmetadata="${escapedChannelMetadata}" videoindex="${
+    index && index
+  }" positionindex="${
+    index && index
+  }" class="pinned-comment-view video-row-container"></yurt-account-video-list-item>`;
 
   const component = utils_.strToNode(componentStr);
 
@@ -3259,8 +3267,8 @@ function VideoItem({ video, channelMetadata }) {
 async function VideoList({ videosArr }) {
   const channelMetadata = await api_.get.channelMetadata();
 
-  const videoItems = videosArr.map((video) =>
-    VideoItem({ video, channelMetadata })
+  const videoItems = videosArr.map((video, index) =>
+    VideoItem({ video, channelMetadata, index })
   );
 
   const container = utils_.strToNode(`<div class="card-container"></div>`);
