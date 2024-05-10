@@ -2206,7 +2206,7 @@ let transcript_ = {
           transcriptById[videoId]
         );
 
-        console.log('violative words', violativeWords);
+        // console.log('violative words', violativeWords);
 
         // Filter the 've' property and its array from violativeWords
         const filteredViolativeWords = Object.entries(violativeWords)
@@ -2401,15 +2401,20 @@ let api_ = {
         console.log('\n\n\t\tCould not fetch channel videos\n\n', e);
       }
     },
-    async videosBySameDuration(targetSeconds = utils_.get.videoLength(true)) {
+    async videosBySameDurationOrStrike(
+      targetSeconds = utils_.get.videoLength(true)
+    ) {
       const videos = await api_.get.channelVideos();
 
+      const strikeVideos = vids.filter(
+        (vid) => vid?.latestStandingPolicy?.id === '3039'
+      );
       const similarVideos = videos.filter((video) => {
         const videoSeconds = utils_.video.convertToSeconds(video.videoDuration);
         return Math.abs(videoSeconds - targetSeconds) <= 1;
       });
 
-      return similarVideos;
+      return [...strikeVideos, ...similarVideos];
     },
     async videosWithStrike() {
       const videos = await api_.get.channelVideos();
@@ -3271,7 +3276,10 @@ async function VideoList({ videosArr }) {
     VideoItem({ video, channelMetadata, index })
   );
 
-  const container = utils_.strToNode(`<div class="card-container"></div>`);
+  // check for existing container, otherwise create new div
+  const container =
+    getElement('.channel-videos')?.[0] ||
+    utils_.strToNode(`<div class="card-container channel-videos"></div>`);
 
   container.replaceChildren(...videoItems);
 
@@ -3281,7 +3289,7 @@ async function VideoList({ videosArr }) {
 async function renderSimilarDurationVideos() {
   try {
     const mainColumn = getElement('.main-column')[0];
-    const videosArr = await api_.get.videosBySameDuration();
+    const videosArr = await api_.get.videosBySameDurationOrStrike();
     const videosList = await VideoList({ videosArr });
 
     mainColumn.appendChild(videosList);
