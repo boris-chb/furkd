@@ -2406,7 +2406,7 @@ let api_ = {
     ) {
       const videos = await api_.get.channelVideos();
 
-      const strikeVideos = vids.filter(
+      const strikeVideos = videos.filter(
         (vid) => vid?.latestStandingPolicy?.id === '3039'
       );
       const similarVideos = videos.filter((video) => {
