@@ -1917,7 +1917,7 @@ let props_ = {
           onClick: () =>
             action_.video.route(
               `ve ${utils_.get.queue.type() ?? ''} hindi`,
-              'hindi',
+              'arabic',
               'routing for language'
             ),
         },
