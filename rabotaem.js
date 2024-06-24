@@ -1913,6 +1913,15 @@ let props_ = {
             ),
         },
         {
+          key: '🇮🇳 Hindi',
+          onClick: () =>
+            action_.video.route(
+              `ve ${utils_.get.queue.type() ?? ''} hindi`,
+              'hindi',
+              'routing for language'
+            ),
+        },
+        {
           key: '💉💲 Drugs & Sales',
           onClick: () =>
             action_.video.route(`drugs ${utils_.get.queue.type()}`, 'drugs'),
