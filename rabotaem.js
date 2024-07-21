@@ -1384,7 +1384,6 @@ let utils_ = {
     if (lock) {
       lock.lockTimeoutSec = 3000;
       lock.secondsToExpiry = 3000;
-      lock.onExpired = () => {};
     }
 
     console.log(`🔐LOCK: ${utils_.formatTime(lock?.secondsToExpiry)}`);
