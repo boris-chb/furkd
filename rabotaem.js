@@ -693,47 +693,11 @@ let recommendationNotes = {
   strike: {
     3065: [
       {
-        title: '[3065] Depictive >50%',
+        title: '[3065] Depictive no EDSA',
         value: () =>
           `Violation: ${
             utils_.get.selectedVEGroup.text
-          } depictive content >50% of video without 4C EDSA or criticism ${
-            utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
-      },
-      {
-        title: '[3065] Upbeat Music',
-        value: () =>
-          `Violation: ${
-            utils_.get.selectedVEGroup.text
-          } depictive content with upbeat music without 4C EDSA or criticism ${
-            utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
-      },
-      {
-        title: '[3065] >2x',
-        value: () =>
-          `Violation: ${
-            utils_.get.selectedVEGroup.text
-          } produced content used 2x or more, without 4C EDSA or criticism ${
-            utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
-      },
-      {
-        title: '[3065] Glorifying Lyrics',
-        value: () =>
-          `Violation: ${
-            utils_.get.selectedVEGroup.text
-          } glorifying lyrics without 4C EDSA or criticism ${
-            utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
-      },
-      {
-        title: '[3065] Produced Song',
-        value: () =>
-          `Violation: ${
-            utils_.get.selectedVEGroup.text
-          } produced song without 4C EDSA or criticism ${
+          } depictive content without glorification, 4C EDSA or criticism ${
             utils_.get.noteTimestamp
           }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
       },
@@ -751,11 +715,9 @@ let recommendationNotes = {
       {
         title: '[3039] Glorification',
         value: () =>
-          `Violation: Glorification of ${
-            utils_.get.selectedVEGroup.text
-          } without criticism or 4C EDSA ${utils_.get.noteTimestamp}\n${
-            !store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''
-          }`,
+          `Violation: Glorification of ${utils_.get.selectedVEGroup.text} ${
+            utils_.get.noteTimestamp
+          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
       },
       {
         title: '[3039] Glorifying Lyrics',
@@ -780,6 +742,15 @@ let recommendationNotes = {
         title: '[3039] Memorial',
         value: () =>
           `Violation: ${utils_.get.selectedVEGroup.text} memorial video ${
+            utils_.get.noteTimestamp
+          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
+      },
+      {
+        title: '[3039] Sole Purpose',
+        value: () =>
+          `Violation: Video sole purpose is to share ${
+            utils_.get.selectedVEGroup.text
+          } content, without 4C EDSA or criticism ${
             utils_.get.noteTimestamp
           }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
       },
