@@ -1725,7 +1725,7 @@ let action_ = {
 
 let questionnaire_ = {
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.qe
+    // BUG TEMPORARY FIX labellingGraph.pe
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
@@ -1734,8 +1734,8 @@ let questionnaire_ = {
     });
 
     if (
-      !dom_.questionnaire.labellingGraph.qe ||
-      dom_.questionnaire.labellingGraph.qe.size === 0
+      !dom_.questionnaire.labellingGraph.pe ||
+      dom_.questionnaire.labellingGraph.pe.size === 0
     ) {
       throw new Error(
         'Questions not Answered!',
@@ -1744,7 +1744,7 @@ let questionnaire_ = {
     }
 
     console.log('💾 Saving questionnaire. Answers:');
-    return dom_.questionnaire.labellingGraph.qe;
+    return dom_.questionnaire.labellingGraph.pe;
   },
   generateAnswers(policyId = '3039', veGroup = store_.selectedVEGroup) {
     const answers = {};
