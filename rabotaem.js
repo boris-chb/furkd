@@ -1,4 +1,4 @@
-// v4.20
+// v12.12
 
 try {
   utils_.clearTimers();
@@ -213,6 +213,11 @@ let store_ = {
       label: 'Continuity Irish Republican Army (CIRA) - OUSUK',
       value: {},
     },
+    irgc: {
+      id: 'islamic_revolutionary_guard_corps_irgc',
+      label: 'Islamic Revolutionary Guard Corps (IRGC) - OUSUK',
+      value: {},
+    },
     lte: {
       id: 'liberation_tigers_of_tamil',
       label: 'Liberation Tigers of Tamil Eelam (LTE) - OUSUK',
@@ -263,6 +268,11 @@ let store_ = {
       value: {},
     },
     osama: 'osama_bin_laden',
+    prigozhin: {
+      id: 'yevgeny_prigozhin',
+      label: 'The Houthis/Ansar Allah - OUSUK',
+      value: {},
+    },
   },
   wordsByCategory: {
     ve: [
@@ -842,7 +852,7 @@ let recommendationNotes = {
       {
         title: '[3999] Prigozhin',
         value: () =>
-          `Violation: Yevgeny Prigozhin (GDP) expressing views, without 4C EDSA or criticism ${
+          `Violation: Yevgeny Prigozhin (GDP) speech, without 4C EDSA or criticism ${
             utils_.get.noteTimestamp
           }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
       },
@@ -934,6 +944,11 @@ let recommendationNotes = {
 
 let utils_ = {
   get: {
+    get totalWorkingTime() {
+      return utils_.formatTime(
+        JSON.parse(localStorage.getItem('elapsedTime')).elapsedTime
+      );
+    },
     get selectedPolicyId() {
       let policyItem = getElement('yurt-core-policy-selector-item')?.[0];
       if (!policyItem) return;
@@ -1804,6 +1819,31 @@ let questionnaire_ = {
       },
     ];
 
+    let muhandis = {
+      questionId: '',
+      answers: [
+        {
+          id: 'abu_mahdi_al_muhandis',
+          label: 'Abu Mahdi al-Muhandis',
+          value: {},
+        },
+      ],
+    };
+
+    answers['3888'] = [
+      {
+        questionId:
+          'violent_extremism/question/video_3999_3888_tvc_fte/applicable_individual_name_beats1',
+        answers: [
+          {
+            id: 'yevgeny_prigozhin',
+            label: 'Yevgeny Prigozhin',
+            value: {},
+          },
+        ],
+      },
+    ];
+
     return answers[policyId];
   },
 };
@@ -1867,6 +1907,20 @@ let props_ = {
         },
       ],
     },
+    gdp: {
+      label: 'Select GDP',
+      value: 'gdp_group_dropdown',
+      options: [
+        {
+          value: 'prigozhin',
+          label: 'Yevgeny Prigozhin',
+        },
+        {
+          value: `muhandis`,
+          label: 'Muhandis',
+        },
+      ],
+    },
   },
   dropdownList: {
     route: {
@@ -1877,7 +1931,7 @@ let props_ = {
           key: '🇸🇦 Arabic',
           onClick: () =>
             action_.video.route(
-              `ve ${utils_.get.queue.type() ?? ''} arabic`,
+              `arabic extremism`,
               'arabic',
               'routing for language'
             ),
@@ -1886,7 +1940,7 @@ let props_ = {
           key: '🇮🇳 Hindi',
           onClick: () =>
             action_.video.route(
-              `ve ${utils_.get.queue.type() ?? ''} hindi`,
+              `hindi extremism`,
               'arabic',
               'routing for language'
             ),
@@ -1902,13 +1956,7 @@ let props_ = {
         },
         {
           key: '🥩 Graphic',
-          onClick: () =>
-            action_.video.route(
-              `graphic violence ${
-                store_.is.queue('xsource') ? 'enforcement' : ''
-              }`,
-              'gv'
-            ),
+          onClick: () => action_.video.route(`graphic violence`, 'gv'),
         },
         {
           key: '⚡ Hate',
@@ -2528,7 +2576,7 @@ let ui_ = {
 
       const routeToArabic = ui_.createButton('🇸🇦 Arabic', () =>
         action_.video.route(
-          `ve ${utils_.get.queue.type() ?? ''} arabic`,
+          `arabic violent extremism`,
           'arabic',
           'routing for language'
         )
@@ -2557,9 +2605,19 @@ let ui_ = {
     get stopwatchPanel() {
       const getTimeStr = () => `${utils_.formatTime(utils_.get.timeElapsed)}`;
 
+      const container = utils_.strToNode(
+        '<tcs-view display="flex"></tcs-view>'
+      );
+
       const stopwatch = utils_.strToNode(
         `<tcs-chip spec="tag" text=${getTimeStr()} class="stopwatch container"></tcs-chip>`
       );
+
+      const workingTime = utils_.strToNode(
+        `<tcs-chip spec="tag" text=${utils_.get.totalWorkingTime} class="working-time container"></tcs-chip>`
+      );
+
+      container.replaceChildren(...[stopwatch, workingTime]);
 
       let parentNode = store_.is.queue('comments')
         ? getElement('tcs-text[spec=title-2]')?.[0]?.shadowRoot
@@ -2581,7 +2639,7 @@ let ui_ = {
       }, 1000);
 
       return {
-        stopwatch,
+        stopwatch: container,
       };
     },
     get actionPanel() {
@@ -2594,23 +2652,36 @@ let ui_ = {
       } = ui_;
 
       const container = utils_.strToNode(
-        `<div style="display: flex; flex-direction: column; gap: 8px; align-items: center;" class="strike-panel container"></div>`
+        `<div style="display: flex; flex-direction:column; gap: 8px; align-items: center;" class="strike-panel container"></div>`
       );
 
-      const veGroupDropdownSelector = createDropdownSelector(
-        props_.dropdown.strike
+      // HERE
+      const veGroupDropdown = createDropdownSelector(props_.dropdown.strike);
+
+      const gdpDropdown = createDropdownSelector(props_.dropdown.gdp);
+
+      const dropdownContainer = utils_.strToNode(
+        `<div style="display:flex; justify-content: space-around; width: 100%; gap: 8px; margin: 12px;"></div>`
       );
 
-      veGroupDropdownSelector.style.width = '80%';
+      dropdownContainer.replaceChildren(veGroupDropdown, gdpDropdown);
+
+      // veGroupDropdown.style.width = '80%';
       stopwatch.style.alignSelf = 'flex-start';
       stopwatch.style.paddingLeft = '10px';
       stopwatch.style.paddingTop = '10px';
 
-      veGroupDropdownSelector.onclick = (e) => e.stopPropagation();
+      veGroupDropdown.onclick = (e) => e.stopPropagation();
+      dropdownContainer.onclick = (e) => e.stopPropagation();
 
-      veGroupDropdownSelector.onchange = () => {
+      veGroupDropdown.onchange = () => {
         store_.selectedVEGroup =
-          store_.newVeGroups[veGroupDropdownSelector.selected.value];
+          store_.newVeGroups[veGroupDropdown.selected.value];
+      };
+
+      gdpDropdown.onchange = () => {
+        store_.selectedVEGroup =
+          store_.newVeGroups[veGroupDropdown.selected.value];
       };
 
       const [approveMenu, strikeMenu] = Object.keys(props_.dropdownList).map(
@@ -2621,7 +2692,7 @@ let ui_ = {
         stopwatch,
         approveMenu,
         strikeMenu,
-        veGroupDropdownSelector
+        dropdownContainer
       );
 
       const element = createCard({
@@ -3041,11 +3112,12 @@ let ui_ = {
       if (!mwcMenu)
         throw new Error('Nowhere to append buttons (mwcMenu not rendered)');
 
-      const timersArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((timerMin) =>
-        ui_.createButton(timerMin, () => {
-          setTimer(timerMin);
-          mwcMenu.open = false;
-        })
+      const timersArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20].map(
+        (timerMin) =>
+          ui_.createButton(timerMin, () => {
+            setTimer(timerMin);
+            mwcMenu.open = false;
+          })
       );
 
       const timersWrapper = strToNode(
@@ -3176,6 +3248,7 @@ let on_ = {
     // initialize UI one sec after new video received (let yurt render first)
     setTimeout(async () => await lib_.retry(initUI, 2000, 10000), 1000);
   },
+  async onSubmit() {},
 };
 
 function $main() {
@@ -3189,18 +3262,52 @@ function $main() {
 
   window.addEventListener('message', function (event) {
     const { sendNotification } = utils_;
-    const notFocused = () => !document.hasFocus();
 
     // New video, send notification if not focused
     if (event.data.name === 'HOST_ALLOCATED') {
       on_.newVideo();
     }
 
-    // Submitted video, send notification
-    if (event.data.name === 'APP_REVIEW_COMPLETED' && notFocused()) {
-      sendNotification(
-        `✅ Submitted ${new Date().toJSON().split('T')[1].slice(0, 8)}`
-      );
+    // Submitted video, track time & send notification
+    if (event.data.name === 'APP_REVIEW_COMPLETED') {
+      // track time
+      const data = JSON.parse(localStorage.getItem('elapsedTime'));
+
+      if (data) {
+        const { elapsedTime, startTime } = data;
+        const TTL = 12 * 60 * 60 * 1000; // 12 hours in ms
+
+        if (new Date().getTime() - startTime > TTL) {
+          // TTL expired, create a new object with current elapsed time and reset start time
+          const newData = {
+            elapsedTime: utils_.get.timeElapsed,
+            startTime: new Date().getTime(),
+          };
+          localStorage.setItem('elapsedTime', JSON.stringify(newData));
+        } else {
+          // TTL hasn't expired, update the old elapsed time with the new one
+          const newElapsedTime = elapsedTime + utils_.get.timeElapsed;
+          const updatedData = { elapsedTime: newElapsedTime, startTime };
+          localStorage.setItem('elapsedTime', JSON.stringify(updatedData));
+        }
+      } else {
+        // No data in localStorage, initialize with the current elapsed time and start time
+        const newData = {
+          elapsedTime: utils_.get.timeElapsed,
+          startTime: new Date().getTime(),
+        };
+        localStorage.setItem('elapsedTime', JSON.stringify(newData));
+      }
+
+      let workingTimeContainer = getElement('.working-time')[0];
+      workingTimeContainer.text = utils_.get.totalWorkingTime;
+
+      // send notification
+      if (!document.hasFocus()) {
+        sendNotification(
+          `✅ Submitted ${new Date().toJSON().split('T')[1].slice(0, 8)}`
+        );
+      }
 
       // removeLock();
     }
