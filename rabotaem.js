@@ -1672,27 +1672,6 @@ let action_ = {
           throw new Error('Could not select policy', policyId);
         }
       },
-      selectLanguage(language) {
-        // DEPRECATED since 15.02.2024
-        return;
-        try {
-          if (!language) return;
-          let langOptions = Array.from(
-            getElement('#decision-panel-language-select > mwc-list-item')
-          );
-
-          const foundLanguageOption = langOptions.filter((option) =>
-            option.value.toLowerCase().includes(language.toLowerCase())
-          )?.[0];
-
-          foundLanguageOption.click();
-
-          return foundLanguageOption.value;
-        } catch (e) {
-          console.log(e);
-          throw new Error('Could not select language', language);
-        }
-      },
       addNote(note) {
         try {
           let noteInputBox =
@@ -2575,11 +2554,7 @@ let ui_ = {
       );
 
       const routeToArabic = ui_.createButton('🇸🇦 Arabic', () =>
-        action_.video.route(
-          `arabic violent extremism`,
-          'arabic',
-          'routing for language'
-        )
+        action_.video.route(`arabic`, 'arabic', 'routing for language')
       );
 
       container.replaceChildren(
