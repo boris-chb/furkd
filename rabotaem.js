@@ -706,10 +706,12 @@ let recommendationNotes = {
         title: '[3065] Depictive no EDSA',
         value: () =>
           `Violation: ${
-            utils_.get.selectedVEGroup.text
+            utils_.get.selectedVEGroup.text === 'VNSA'
+              ? 'VE actor'
+              : utils_.get.selectedVEGroup.text
           } depictive content without glorification, 4C EDSA or criticism ${
             utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
+          }\n${store_.is.queue('russian') ? 'Russian (not agnostic)' : ''}`,
       },
     ],
     3039: [
@@ -717,125 +719,82 @@ let recommendationNotes = {
         title: '[3039] Raw reupload',
         value: () =>
           `Violation: ${
-            utils_.get.selectedVEGroup.text
-          } raw re-upload without criticism or 4C EDSA ${
+            utils_.get.selectedVEGroup.text === 'VNSA'
+              ? 'VE actor'
+              : utils_.get.selectedVEGroup.text
+          } produced content raw re-upload without criticism or 4C EDSA ${
             utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
+          }\n${store_.is.queue('russian') ? 'Russian (not agnostic)' : ''}`,
       },
       {
         title: '[3039] Glorification',
         value: () =>
-          `Violation: Glorification of ${utils_.get.selectedVEGroup.text} ${
-            utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
+          `Violation: Glorification of ${
+            utils_.get.selectedVEGroup.text === 'VNSA'
+              ? 'VE actor'
+              : utils_.get.selectedVEGroup.text
+          } ${utils_.get.noteTimestamp}\n${
+            store_.is.queue('russian') ? 'Russian (not agnostic)' : ''
+          }`,
       },
       {
         title: '[3039] Glorifying Lyrics',
         value: () =>
           `Violation: ${
-            utils_.get.selectedVEGroup.text
-          } glorifying lyrics without criticism or 4C EDSA ${
-            utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
+            utils_.get.selectedVEGroup.text === 'VNSA'
+              ? 'VE actor'
+              : utils_.get.selectedVEGroup.text
+          } glorifying lyrics ${utils_.get.noteTimestamp}\n${
+            store_.is.queue('russian') ? 'Russian (not agnostic)' : ''
+          }`,
       },
 
       {
         title: '[3039] Produced Song',
         value: () =>
-          `Violation: ${
-            utils_.get.selectedVEGroup.text
-          } raw reupload of produced song without criticism or 4C EDSA ${
+          `Violation: Raw reupload of ${
+            utils_.get.selectedVEGroup.text === 'VNSA'
+              ? 'VE actor'
+              : utils_.get.selectedVEGroup.text
+          } produced song, without 4C EDSA or criticism ${
             utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
+          }\n${store_.is.queue('russian') ? 'Russian (not agnostic)' : ''}`,
       },
       {
         title: '[3039] Memorial',
         value: () =>
-          `Violation: ${utils_.get.selectedVEGroup.text} memorial video ${
-            utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
+          `Violation: ${
+            utils_.get.selectedVEGroup.text === 'VNSA'
+              ? 'VE actor'
+              : utils_.get.selectedVEGroup.text
+          } memorial video ${utils_.get.noteTimestamp}\n${
+            store_.is.queue('russian') ? 'Russian (not agnostic)' : ''
+          }`,
       },
       {
         title: '[3039] Sole Purpose',
         value: () =>
-          `Violation: Video sole purpose is to share ${
-            utils_.get.selectedVEGroup.text
+          `Violation: Video main focus is to share ${
+            utils_.get.selectedVEGroup.text === 'VNSA'
+              ? 'VE actor'
+              : utils_.get.selectedVEGroup.text
           } content, without 4C EDSA or criticism ${
             utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
+          }\n${store_.is.queue('russian') ? 'Russian (not agnostic)' : ''}`,
       },
     ],
     3044: [
       {
-        title: '[3044] Raw reupload',
-        value: () =>
-          `Violation: ${
-            utils_.get.selectedVEGroup.text
-          } raw re-upload without criticism or 4C EDSA ${
-            utils_.get.noteTimestamp
-          }\n\nViolative video: ___________\n\nViolation: ${
-            utils_.get.selectedVEGroup.text
-          } __________ @0:00:00\n\nViolative video: ___________\n\nViolation: ${
-            utils_.get.selectedVEGroup.text
-          } __________ @0:00:00\n${
-            !store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''
-          }`,
-      },
-      {
         title: '[3044] Glorification',
         value: () =>
           `Violation: ${
-            utils_.get.selectedVEGroup.text
-          } glorification without criticism or 4C EDSA ${
+            utils_.get.selectedVEGroup.text === 'VNSA'
+              ? 'VE actor'
+              : utils_.get.selectedVEGroup.text
+          } glorification ${
             utils_.get.noteTimestamp
-          }\n\nViolative video: ___________\n\nViolation: ${
-            utils_.get.selectedVEGroup.text
-          } __________ @0:00:00\n\nViolative video: ___________\n\nViolation: ${
-            utils_.get.selectedVEGroup.text
-          } __________ @0:00:00\n${
-            !store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''
-          }`,
-      },
-      {
-        title: '[3044] Glorifying Lyrics',
-        value: () =>
-          `Violation: ${
-            utils_.get.selectedVEGroup.text
-          } song with glorifying lyrics ${
-            utils_.get.noteTimestamp
-          }\n\nViolative video: ___________\n\nViolation: ${
-            utils_.get.selectedVEGroup.text
-          } __________ @0:00:00\n\nViolative video: ___________\n\nViolation: ${
-            utils_.get.selectedVEGroup.text
-          } __________ @0:00:00\n${
-            !store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''
-          }`,
-      },
-      {
-        title: '[3044][1] Raw reupload',
-        value: () =>
-          `Violation: ${
-            utils_.get.selectedVEGroup.text
-          } raw re-upload without criticism or 4C EDSA ${
-            utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
-      },
-      {
-        title: '[3044][1] Glorification',
-        value: () =>
-          `Violation: ${
-            utils_.get.selectedVEGroup.text
-          } glorification without criticism or 4C EDSA ${
-            utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
-      },
-      {
-        title: '[3044][1] Glorifying Lyrics',
-        value: () =>
-          `Violation: ${
-            utils_.get.selectedVEGroup.text
-          } song with glorifying lyrics ${utils_.get.noteTimestamp}\n${
-            !store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''
+          }\nChannel dedicated\n__________\n__________\n${
+            store_.is.queue('russian') ? 'Russian (not agnostic)' : ''
           }`,
       },
     ],
@@ -845,16 +804,18 @@ let recommendationNotes = {
         value: () =>
           `Violation: Hamas hostages without criticism in 4C ${
             utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
+          }\n${store_.is.queue('russian') ? 'Russian (not agnostic)' : ''}`,
       },
     ],
     3999: [
       {
         title: '[3999] Prigozhin',
         value: () =>
-          `Violation: Yevgeny Prigozhin (GDP) speech, without 4C EDSA or criticism ${
+          `Violation: Yevgeny Prigozhin (GDP) expressing views, criticism ${
             utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
+          }\nNon-PIA\n${
+            store_.is.queue('russian') ? 'Russian (not agnostic)' : ''
+          }`,
       },
     ],
     3099: [
@@ -863,21 +824,27 @@ let recommendationNotes = {
         value: () =>
           `Violation: VEB School attack without 4C EDSA or criticism ${
             utils_.get.noteTimestamp
-          }\n${store_.is.queue('russian') ? 'Russian (not agnostic)' : ''}`,
+          }\nChannel not dedicated\n${
+            store_.is.queue('russian') ? 'Russian (not agnostic)' : ''
+          }`,
       },
       {
         title: '[3099] Hostages',
         value: () =>
           `Violation: Hostages subject to physical abuse, without 4C EDSA ${
             utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
+          }\nChannel not dedicated\n${
+            store_.is.queue('russian') ? 'Russian (not agnostic)' : ''
+          }`,
       },
       {
         title: '[3099] External Link',
         value: () =>
           `Violation: Statements, legible or audible links in the 4-corners or metadata, directing viewers to footage that could contain hostage-taking content. Link validation is not necessary. Links are assessed based on surrounding context, without 4C EDSA #fullvideo ${
             utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
+          }\nChannel not dedicated\n${
+            store_.is.queue('russian') ? 'Russian (not agnostic)' : ''
+          }`,
       },
     ],
     3888: [
@@ -886,7 +853,9 @@ let recommendationNotes = {
         value: () =>
           `Yevgeny Prigozhin expressing views without criticism ${
             utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
+          }\nChannel dedicated\n${
+            store_.is.queue('russian') ? 'Russian (not agnostic)' : ''
+          }`,
       },
     ],
     5013: [
@@ -894,11 +863,13 @@ let recommendationNotes = {
         title: '[5013] Raw reupload',
         value: () =>
           `${
-            utils_.get.selectedVEGroup.text
+            utils_.get.selectedVEGroup.text === 'VNSA'
+              ? 'VE actor'
+              : utils_.get.selectedVEGroup.text
           } raw re-upload without criticism or 4C EDSA ${
             utils_.get.noteTimestamp
           }\n5013 PIA\n${
-            !store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''
+            store_.is.queue('russian') ? 'Russian (not agnostic)' : ''
           }`,
       },
     ],
@@ -908,7 +879,7 @@ let recommendationNotes = {
         value: () =>
           `Perpetrator-filmed footage where weapons, injured bodies, or violence is in frame or heard in audio ${
             utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
+          }\n${store_.is.queue('russian') ? 'Russian (not agnostic)' : ''}`,
       },
     ],
   },
@@ -2411,11 +2382,15 @@ let api_ = {
       const videos = await api_.get.channelVideos();
 
       const strikeVideos = videos.filter(
-        (vid) => vid?.latestStandingPolicy?.id === '3039'
+        (vid) =>
+          vid?.latestStandingPolicy?.policyVertical === 'VIOLENT_EXTREMISM'
       );
       const similarVideos = videos.filter((video) => {
         const videoSeconds = utils_.video.convertToSeconds(video.videoDuration);
-        return Math.abs(videoSeconds - targetSeconds) <= 1;
+        return (
+          video.externalVideoId !== utils_.get.videoId &&
+          Math.abs(videoSeconds - targetSeconds) <= 1
+        );
       });
 
       return [...strikeVideos, ...similarVideos];
@@ -3331,9 +3306,9 @@ function VideoItem({ video, channelMetadata, index }) {
 async function VideoList({ videosArr }) {
   const channelMetadata = await api_.get.channelMetadata();
 
-  const videoItems = videosArr.map((video, index) =>
-    VideoItem({ video, channelMetadata, index })
-  );
+  const videoItems = videosArr
+    .filter((vid) => vid.externalVideoId !== utils_.get.videoId)
+    .map((video, index) => VideoItem({ video, channelMetadata, index }));
 
   // check for existing container, otherwise create new div
   const container =
