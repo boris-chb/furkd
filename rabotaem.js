@@ -859,49 +859,21 @@ let recommendationNotes = {
     ],
     3099: [
       {
-        title: '[3099] School shooting + music',
+        title: '[3099] School attack',
         value: () =>
-          `Violation: School shooting attack in 4C paired with upbeat music ${
+          `Violation: VEB School attack without 4C EDSA or criticism ${
+            utils_.get.noteTimestamp
+          }\n${store_.is.queue('russian') ? 'Russian (not agnostic)' : ''}`,
+      },
+      {
+        title: '[3099] Hostages',
+        value: () =>
+          `Violation: Hostages subject to physical abuse, without 4C EDSA ${
             utils_.get.noteTimestamp
           }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
       },
       {
-        title: '[3099] Physical abuse',
-        value: () =>
-          `Violation: Hostages are being beaten, slapped, shot, sprayed with liquids, left unattended despite visible wounds, burned, submerged in water, or any other form of violent physical contact, without 4C EDSA ${
-            utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
-      },
-      {
-        title: '[3099] Verbal abuse',
-        value: () =>
-          `Hostages are being threatened, mocked, called names or insults, taunted, etc., without 4C EDSA ${
-            utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
-      },
-      {
-        title: '[3099] Humiliation',
-        value: () =>
-          `Violation: Hostages are stripped of their clothes, shown naked, paraded in front of crowds, forced to beg, etc., without 4C EDSA  ${
-            utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
-      },
-      {
-        title: '[3099] Restrained',
-        value: () =>
-          `Violation: Hostages are shown tied up, handcuffed, jailed, blindfolded, gagged, or otherwise confined, without 4C EDSA ${
-            utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
-      },
-      {
-        title: '[3099] Likely prepared or forced statements in captivity',
-        value: () =>
-          `Violation: Hostages are shown reading scripted or prepared remarks while captive. If the individual is described in the 4-corners or metadata as a hostage, treat statements as though they are prepared or forced. E.g., confessions, appeals to military or civilian leadership, soliciting demands etc., without 4C EDSA  ${
-            utils_.get.noteTimestamp
-          }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
-      },
-      {
-        title: '[3099] Drive traffic',
+        title: '[3099] External Link',
         value: () =>
           `Violation: Statements, legible or audible links in the 4-corners or metadata, directing viewers to footage that could contain hostage-taking content. Link validation is not necessary. Links are assessed based on surrounding context, without 4C EDSA #fullvideo ${
             utils_.get.noteTimestamp
@@ -912,7 +884,7 @@ let recommendationNotes = {
       {
         title: '[3888] Prigozhin',
         value: () =>
-          `Yevgeny Prigozhin produced content without 4C EDSA or criticism ${
+          `Yevgeny Prigozhin expressing views without criticism ${
             utils_.get.noteTimestamp
           }\n${!store_.is.queue('bluechip') ? 'Russian (not agnostic)' : ''}`,
       },
@@ -1042,6 +1014,15 @@ let utils_ = {
       const label = getElement(
         'mwc-select[value=strike_ve_group_dropdown]'
       )?.[0].value;
+
+      return { text, label };
+    },
+    get selectedGDP() {
+      const text = getElement('mwc-select[value=strike_ve_group_dropdown]')?.[0]
+        .selectedText;
+
+      const label = getElement('mwc-select[value=gdp_group_dropdown]')?.[0]
+        .value;
 
       return { text, label };
     },
@@ -1640,16 +1621,18 @@ let action_ = {
           let decisionTab = getElement('yurt-core-decision-capture')[0];
           decisionTab.tabMode = 0;
 
-          // click add review after 200ms
-          const t = setTimeout(function clickAddReview() {
-            const addReviewBtn = getElement(
-              'tcs-button[data-test-id="start-review-button"]'
-            )[0];
-            addReviewBtn.click();
-          }, 100);
+          const continueReviewBtn = getElement(
+            'tcs-button[data-test-id="continue-review-button"]'
+          )?.[0];
+          continueReviewBtn?.click();
+
+          const addReviewBtn = getElement(
+            'tcs-button[data-test-id="start-review-button"]'
+          )[0];
+          addReviewBtn.click();
         } catch (e) {
-          clearTimeout(t);
-          throw new Error('Could not set Add Review');
+          console.log('[add review]\n', e);
+          throw new Error('Could not Add Review');
         }
       },
       selectPolicy(policyId) {
@@ -1719,7 +1702,7 @@ let action_ = {
 
 let questionnaire_ = {
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.og
+    // BUG TEMPORARY FIX labellingGraph.dg
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
@@ -1728,21 +1711,21 @@ let questionnaire_ = {
     });
 
     if (
-      !dom_.questionnaire.labellingGraph.og ||
-      dom_.questionnaire.labellingGraph.og.size === 0
+      !dom_.questionnaire.labellingGraph.dg ||
+      dom_.questionnaire.labellingGraph.dg.size === 0
     ) {
       throw new Error(
-        'Questions not Answered!',
+        '\nquestionnaire not answered\n',
         dom_.questionnaire.labellingGraph
       );
     }
 
     console.log('💾 Saving questionnaire. Answers:');
-    return dom_.questionnaire.labellingGraph.og;
+    return dom_.questionnaire.labellingGraph.dg;
   },
   generateAnswers(policyId = '3039', veGroup = store_.selectedVEGroup) {
     const answers = {};
-    // format expected by setAnswers build-in function
+    // format expected by setAnswers built-in function
     answers['3039'] = [
       {
         questionId: `violent_extremism/question/video_${policyId}_tvc/applicable_ve_group`,
@@ -1760,7 +1743,22 @@ let questionnaire_ = {
       },
     ];
 
-    answers['3065'] = [answers['3039'][0]];
+    answers['3065'] = [
+      {
+        questionId: `violent_extremism/question/video_${policyId}_tvc/applicable_ve_group`,
+        answers: [veGroup],
+      },
+      {
+        questionId: `violent_extremism/question/video_${policyId}_tvc/act_type`,
+        answers: [
+          {
+            id: 'unknown',
+            label: 'Unknown act type',
+            value: {},
+          },
+        ],
+      },
+    ];
 
     answers['3044'] = [
       {
