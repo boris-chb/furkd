@@ -711,7 +711,11 @@ let recommendationNotes = {
               : utils_.get.selectedVEGroup.text
           } depictive content without glorification, 4C EDSA or criticism ${
             utils_.get.noteTimestamp
-          }\n${store_.is.queue('russian') ? 'Russian (not agnostic)' : ''}`,
+          }\n${
+            store_.is.queue('russian')
+              ? 'Russian (not agnostic)'
+              : 'agnostic review'
+          }`,
       },
     ],
     3039: [
@@ -724,7 +728,11 @@ let recommendationNotes = {
               : utils_.get.selectedVEGroup.text
           } produced content raw re-upload without criticism or 4C EDSA ${
             utils_.get.noteTimestamp
-          }\n${store_.is.queue('russian') ? 'Russian (not agnostic)' : ''}`,
+          }\n${
+            store_.is.queue('russian')
+              ? 'Russian (not agnostic)'
+              : 'agnostic review'
+          }`,
       },
       {
         title: '[3039] Glorification',
@@ -734,7 +742,9 @@ let recommendationNotes = {
               ? 'VE actor'
               : utils_.get.selectedVEGroup.text
           } ${utils_.get.noteTimestamp}\n${
-            store_.is.queue('russian') ? 'Russian (not agnostic)' : ''
+            store_.is.queue('russian')
+              ? 'Russian (not agnostic)'
+              : 'agnostic review'
           }`,
       },
       {
@@ -745,7 +755,9 @@ let recommendationNotes = {
               ? 'VE actor'
               : utils_.get.selectedVEGroup.text
           } glorifying lyrics ${utils_.get.noteTimestamp}\n${
-            store_.is.queue('russian') ? 'Russian (not agnostic)' : ''
+            store_.is.queue('russian')
+              ? 'Russian (not agnostic)'
+              : 'agnostic review'
           }`,
       },
 
@@ -758,7 +770,11 @@ let recommendationNotes = {
               : utils_.get.selectedVEGroup.text
           } produced song, without 4C EDSA or criticism ${
             utils_.get.noteTimestamp
-          }\n${store_.is.queue('russian') ? 'Russian (not agnostic)' : ''}`,
+          }\n${
+            store_.is.queue('russian')
+              ? 'Russian (not agnostic)'
+              : 'agnostic review'
+          }`,
       },
       {
         title: '[3039] Memorial',
@@ -768,7 +784,9 @@ let recommendationNotes = {
               ? 'VE actor'
               : utils_.get.selectedVEGroup.text
           } memorial video ${utils_.get.noteTimestamp}\n${
-            store_.is.queue('russian') ? 'Russian (not agnostic)' : ''
+            store_.is.queue('russian')
+              ? 'Russian (not agnostic)'
+              : 'agnostic review'
           }`,
       },
       {
@@ -780,7 +798,11 @@ let recommendationNotes = {
               : utils_.get.selectedVEGroup.text
           } content, without 4C EDSA or criticism ${
             utils_.get.noteTimestamp
-          }\n${store_.is.queue('russian') ? 'Russian (not agnostic)' : ''}`,
+          }\n${
+            store_.is.queue('russian')
+              ? 'Russian (not agnostic)'
+              : 'agnostic review'
+          }`,
       },
     ],
     3044: [
@@ -794,7 +816,9 @@ let recommendationNotes = {
           } glorification ${
             utils_.get.noteTimestamp
           }\nChannel dedicated\n__________\n__________\n${
-            store_.is.queue('russian') ? 'Russian (not agnostic)' : ''
+            store_.is.queue('russian')
+              ? 'Russian (not agnostic)'
+              : 'agnostic review'
           }`,
       },
     ],
@@ -804,7 +828,11 @@ let recommendationNotes = {
         value: () =>
           `Violation: Hamas hostages without criticism in 4C ${
             utils_.get.noteTimestamp
-          }\n${store_.is.queue('russian') ? 'Russian (not agnostic)' : ''}`,
+          }\n${
+            store_.is.queue('russian')
+              ? 'Russian (not agnostic)'
+              : 'agnostic review'
+          }`,
       },
     ],
     3999: [
@@ -814,7 +842,9 @@ let recommendationNotes = {
           `Violation: Yevgeny Prigozhin (GDP) expressing views, criticism ${
             utils_.get.noteTimestamp
           }\nNon-PIA\n${
-            store_.is.queue('russian') ? 'Russian (not agnostic)' : ''
+            store_.is.queue('russian')
+              ? 'Russian (not agnostic)'
+              : 'agnostic review'
           }`,
       },
     ],
@@ -825,7 +855,9 @@ let recommendationNotes = {
           `Violation: VEB School attack without 4C EDSA or criticism ${
             utils_.get.noteTimestamp
           }\nChannel not dedicated\n${
-            store_.is.queue('russian') ? 'Russian (not agnostic)' : ''
+            store_.is.queue('russian')
+              ? 'Russian (not agnostic)'
+              : 'agnostic review'
           }`,
       },
       {
@@ -834,7 +866,9 @@ let recommendationNotes = {
           `Violation: Hostages subject to physical abuse, without 4C EDSA ${
             utils_.get.noteTimestamp
           }\nChannel not dedicated\n${
-            store_.is.queue('russian') ? 'Russian (not agnostic)' : ''
+            store_.is.queue('russian')
+              ? 'Russian (not agnostic)'
+              : 'agnostic review'
           }`,
       },
       {
@@ -843,7 +877,9 @@ let recommendationNotes = {
           `Violation: Statements, legible or audible links in the 4-corners or metadata, directing viewers to footage that could contain hostage-taking content. Link validation is not necessary. Links are assessed based on surrounding context, without 4C EDSA #fullvideo ${
             utils_.get.noteTimestamp
           }\nChannel not dedicated\n${
-            store_.is.queue('russian') ? 'Russian (not agnostic)' : ''
+            store_.is.queue('russian')
+              ? 'Russian (not agnostic)'
+              : 'agnostic review'
           }`,
       },
     ],
@@ -854,7 +890,9 @@ let recommendationNotes = {
           `Yevgeny Prigozhin expressing views without criticism ${
             utils_.get.noteTimestamp
           }\nChannel dedicated\n${
-            store_.is.queue('russian') ? 'Russian (not agnostic)' : ''
+            store_.is.queue('russian')
+              ? 'Russian (not agnostic)'
+              : 'agnostic review'
           }`,
       },
     ],
@@ -869,7 +907,9 @@ let recommendationNotes = {
           } raw re-upload without criticism or 4C EDSA ${
             utils_.get.noteTimestamp
           }\n5013 PIA\n${
-            store_.is.queue('russian') ? 'Russian (not agnostic)' : ''
+            store_.is.queue('russian')
+              ? 'Russian (not agnostic)'
+              : 'agnostic review'
           }`,
       },
     ],
@@ -879,7 +919,11 @@ let recommendationNotes = {
         value: () =>
           `Perpetrator-filmed footage where weapons, injured bodies, or violence is in frame or heard in audio ${
             utils_.get.noteTimestamp
-          }\n${store_.is.queue('russian') ? 'Russian (not agnostic)' : ''}`,
+          }\n${
+            store_.is.queue('russian')
+              ? 'Russian (not agnostic)'
+              : 'agnostic review'
+          }`,
       },
     ],
   },
@@ -1583,6 +1627,15 @@ let action_ = {
           })
           .render();
       }, 1);
+
+      // click on 'target queue' input field so the dropdown menu renders
+      setTimeout(
+        () =>
+          getElement(
+            'mwc-textfield[data-test-id="search-input"]'
+          )?.[0]?.click(),
+        1
+      );
     },
     // click add review, select policy, select language etc...
     steps: {
@@ -1878,20 +1931,12 @@ let props_ = {
         {
           key: '🇸🇦 Arabic',
           onClick: () =>
-            action_.video.route(
-              `arabic extremism`,
-              'arabic',
-              'routing for language'
-            ),
+            action_.video.route(`arabic`, 'arabic', 'routing for language'),
         },
         {
           key: '🇮🇳 Hindi',
           onClick: () =>
-            action_.video.route(
-              `hindi extremism`,
-              'arabic',
-              'routing for language'
-            ),
+            action_.video.route(`hindi`, 'arabic', 'routing for language'),
         },
         {
           key: '💉💲 Drugs & Sales',
