@@ -1652,10 +1652,20 @@ let action_ = {
 
           const addReviewBtn = getElement(
             'tcs-button[data-test-id="start-review-button"]'
-          )[0];
-          addReviewBtn.click();
+          )?.[0];
+
+          if (continueReviewBtn) {
+            continueReviewBtn.click();
+            return;
+          } else if (addReviewBtn) {
+            addReviewBtn.click();
+            return;
+          }
+          throw new Error(
+            '[add review] No Add Review or Continue Review button found.'
+          );
         } catch (e) {
-          console.log('[add review]\n', e);
+          console.log('[add review] Error:\n', e);
           throw new Error('Could not Add Review');
         }
       },
