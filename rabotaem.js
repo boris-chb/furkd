@@ -821,6 +821,21 @@ let recommendationNotes = {
               : 'agnostic review'
           }`,
       },
+      {
+        title: '[3044] Glorification',
+        value: () =>
+          `Violation: ${
+            utils_.get.selectedVEGroup.text === 'VNSA'
+              ? 'VE actor'
+              : utils_.get.selectedVEGroup.text
+          } glorification ${
+            utils_.get.noteTimestamp
+          }\nChannel dedicated\n__________\n__________\n${
+            store_.is.queue('russian')
+              ? 'Russian (not agnostic)'
+              : 'agnostic review'
+          }`,
+      },
     ],
     3048: [
       {
@@ -1794,20 +1809,7 @@ let questionnaire_ = {
       },
     ];
 
-    answers['3044'] = [
-      {
-        questionId:
-          'violent_extremism/question/video_3044_tvc/select_applicable_violation_type',
-        answers: [
-          {
-            id: 've_actor_based_violation',
-            label: 'VE Actor based violation',
-            value: {},
-          },
-        ],
-      },
-      ...answers['3039'],
-    ];
+    answers['3044'] = [...answers['3039']];
 
     answers['3048'] = [
       {
@@ -2543,9 +2545,9 @@ let ui_ = {
 
       return node;
     },
-    createGrid(cols = 3, elementSize = '170px') {
+    createGrid(cols = 3, elementSize = '135px') {
       const grid = ui_.strToNode(
-        `<div style="display: grid; grid-template-columns: repeat(${cols}, ${elementSize}); gap: 8px; margin: 12px;"></div>`
+        `<div style="display: grid; grid-template-columns: repeat(${cols}, ${elementSize}); gap: 10px;"></div>`
       );
 
       return grid;
