@@ -2060,7 +2060,7 @@ let dom_ = {
     return getElement('.mdc-button--unelevated')?.[0];
   },
   get submitEndReviewBtn() {
-    return getElement('div > mwc-menu > mwc-list-item')?.[0];
+    return getElement('div > md-menu > md-menu-item')?.[0];
   },
   get routeBtn() {
     return getElement('div > tcs-view > tcs-button')?.[0];
