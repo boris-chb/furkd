@@ -2066,7 +2066,7 @@ let dom_ = {
     return getElement('div > tcs-view > tcs-button')?.[0];
   },
   get routeEndReviewBtn() {
-    return getElement('div > mwc-menu > mwc-list-item')?.[0];
+    return getElement('div > md-menu > md-menu-item')?.[0];
   },
   get transcriptContainer() {
     let transcriptContainer;
