@@ -4,6 +4,12 @@ try {
   utils_.clearTimers();
 } catch (e) {}
 
+yt.config_.YURT_API_KEY = 'AIzaSyDYl294dgpLu1jAgBqOQ33gCSgou0zEd7U';
+
+window.trustedTypes.createPolicy('default', {
+  createHTML: (string, sink) => string,
+});
+
 function shadowSearch(rootElement, queryselector, myElementObj) {
   if (myElementObj.myElement) {
     return;
@@ -372,14 +378,29 @@ let store_ = {
       return utils_.get.queue.name()?.includes(qName.toLowerCase());
     },
     get routing() {
-      // return dom_.videoDecisionPanel.viewMode === 1; DEPRECATED
-      let decisionViewRoute;
-      try {
-        decisionViewRoute = getElement('yurt-core-decision-view-route')[0];
-      } catch (e) {
-        console.log(e);
-      }
-      return !!decisionViewRoute;
+      return (
+        document
+          .querySelector('body > yurt-root-app')
+          .shadowRoot.querySelector('redux-provider > yurt-root-app-connected')
+          .shadowRoot.querySelector(
+            'tcs-view > app-drawer-layout > app-header-layout > yurt-core-router'
+          )
+          .shadowRoot.querySelector('yurt-review-root')
+          .shadowRoot.querySelector('tcs-view > yurt-root-plugin-manager')
+          .shadowRoot.querySelector('div > yurt-video-root')
+          .shadowRoot.querySelector(
+            'yurt-review-layout > decision-panel-widget'
+          )
+          .shadowRoot.querySelector(
+            'div.decision-actions-container > div.action-buttons-container > decision-panel-action-button:nth-child(5)'
+          )
+          .shadowRoot.querySelector('action-button')
+          .shadowRoot.querySelector(
+            '#action-button-container > md-filled-tonal-icon-button'
+          )
+          .shadowRoot.querySelector('#button')
+          .getAttribute('aria-pressed') === 'true'
+      );
     },
   },
   ignoreQuestionnairePolicies: ['3099', '6120'],
@@ -1140,6 +1161,10 @@ let utils_ = {
     },
   },
 
+  wait(s = 0.2) {
+    return new Promise((res) => setTimeout(res, s * 1000));
+  },
+
   clickNext() {
     try {
       let nextBtn = getElement('.next-button')[0];
@@ -1308,36 +1333,26 @@ let utils_ = {
     // clear the previous timer
     clearTimeout(store_.submitId);
 
-    const { submitBtn, submitEndReviewBtn, routeBtn, routeEndReviewBtn } = dom_;
-    const { is } = store_;
+    const { submitBtn, submitEndReviewBtn } = dom_;
 
-    let btn;
+    utils_.removeLock();
+    console.log(
+      `⌚ [${store_.submitId}] Submit in ${minutes} minutes, ${new Date(
+        Date.now() + minutes * 60 * 1000
+      )
+        .toJSON()
+        .split('T')[1]
+        .slice(0, 8)}.${
+        endReview ? '\n\n\t\t.. and ending the review ❗\n\n' : ''
+      }`
+    );
 
-    // check whether is routing or actioning
-    if (is.routing) {
-      // routing video
-      btn = endReview ? routeEndReviewBtn : routeBtn;
-    } else {
-      // action
-      btn = endReview ? submitEndReviewBtn : submitBtn;
-    }
-
-    try {
-      store_.submitId = setTimeout(() => btn.click(), minutes * 60 * 1000);
-      utils_.removeLock();
-      console.log(
-        `⌚ [${store_.submitId}] Submit in ${minutes} minutes, ${new Date(
-          Date.now() + minutes * 60 * 1000
-        )
-          .toJSON()
-          .split('T')[1]
-          .slice(0, 8)}.${
-          endReview ? '\n\n\t\t.. and ending the review ❗\n\n' : ''
-        }`
-      );
-    } catch (e) {
-      console.log('Could not set timer', e.stack);
-    }
+    store_.submitId = setTimeout(() => {
+      try {
+        const btn = endReview ? submitEndReviewBtn : submitBtn;
+        btn.click();
+      } catch (e) {}
+    }, minutes * 60 * 1000);
   },
   generateNotes(policyId, isRouting = store_.is.routing) {
     if (!policyId) return;
@@ -1533,17 +1548,26 @@ let action_ = {
   video: {
     // actual complete actions
     async approve() {
-      const { retry } = lib_;
-
-      await retry(action_.video.steps.addReview);
-      await retry(function selectPolicy() {
-        action_.video.steps.selectPolicy('9008');
-      });
-      await retry(utils_.clickSave);
-
-      if (store_.is.autosubmit) {
-        setTimeout(() => dom_.submitBtn.click(), 1);
-      }
+      const { show, generateAnswers, setAnswers, done, next } = questionnaire_;
+      const { wait } = utils_;
+      show();
+      await wait(0.5);
+      const answers = generateAnswers('9008');
+      setAnswers(answers);
+      await wait();
+      await next();
+      await wait();
+      done();
+      await wait();
+      this.selectPolicy();
+      await wait();
+      this.saveReview();
+    },
+    selectPolicy() {
+      getElement('yurt-core-decision-policy-item')?.[0].click();
+    },
+    saveReview() {
+      getElement('[data-test-id="save-button"]')?.[0].click();
     },
     async strike(policyId = '3039') {
       const { expandNotesArea } = ui_.mutations;
@@ -1575,15 +1599,39 @@ let action_ = {
 
       // helper functions
       function clickRoute() {
-        let decisionCapture = getElement('yurt-core-decision-capture')[0];
-        decisionCapture.setRouteView();
+        if (store_.is.routing) return;
+        document
+          .querySelector('body > yurt-root-app')
+          .shadowRoot.querySelector('redux-provider > yurt-root-app-connected')
+          .shadowRoot.querySelector(
+            'tcs-view > app-drawer-layout > app-header-layout > yurt-core-router'
+          )
+          .shadowRoot.querySelector('yurt-review-root')
+          .shadowRoot.querySelector('tcs-view > yurt-root-plugin-manager')
+          .shadowRoot.querySelector('div > yurt-video-root')
+          .shadowRoot.querySelector(
+            'yurt-review-layout > decision-panel-widget'
+          )
+          .shadowRoot.querySelector(
+            'div.decision-actions-container > div.action-buttons-container > decision-panel-action-button:nth-child(5)'
+          )
+          .shadowRoot.querySelector('action-button')
+          .shadowRoot.querySelector(
+            '#action-button-container > md-filled-tonal-icon-button'
+          )
+          .shadowRoot.querySelector('#button')
+          .click();
       }
 
       function selectTarget(queue) {
         try {
-          const optionsDropdown = getElement('tcs-searchable-dropdown')[0];
+          const optionsDropdown = getElement('tcs-searchable-dropdown')?.[0];
 
-          optionsDropdown.searchInput = queue;
+          optionsDropdown.searchInput = '';
+
+          setTimeout(() => {
+            optionsDropdown.searchInput = queue;
+          }, 300);
 
           setTimeout(() => {
             let targetOptions = [
@@ -1596,7 +1644,7 @@ let action_ = {
               throw new Error('More than one targets found');
 
             targetOptions[0].click();
-          }, 300);
+          }, 500);
         } catch (e) {
           console.error(e);
           throw new Error('Could not select target for routing');
@@ -1641,7 +1689,7 @@ let action_ = {
             notesArr: recommendationNotes.route[noteType],
           })
           .render();
-      }, 1);
+      }, 500);
 
       // click on 'target queue' input field so the dropdown menu renders
       setTimeout(
@@ -1649,7 +1697,7 @@ let action_ = {
           getElement(
             'mwc-textfield[data-test-id="search-input"]'
           )?.[0]?.click(),
-        1
+        500
       );
     },
     // click add review, select policy, select language etc...
@@ -1751,7 +1799,7 @@ let action_ = {
 
 let questionnaire_ = {
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.gh
+    // BUG TEMPORARY FIX labellingGraph.md
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
@@ -1760,8 +1808,8 @@ let questionnaire_ = {
     });
 
     if (
-      !dom_.questionnaire.labellingGraph.gh ||
-      dom_.questionnaire.labellingGraph.gh.size === 0
+      !dom_.questionnaire.labellingGraph.md ||
+      dom_.questionnaire.labellingGraph.md.size === 0
     ) {
       throw new Error(
         '\nquestionnaire not answered\n',
@@ -1770,88 +1818,53 @@ let questionnaire_ = {
     }
 
     console.log('💾 Saving questionnaire. Answers:');
-    return dom_.questionnaire.labellingGraph.gh;
+    return dom_.questionnaire.labellingGraph.md;
   },
-  generateAnswers(policyId = '3039', veGroup = store_.selectedVEGroup) {
+  generateAnswers(policyId = '9008', veGroup = store_.selectedVEGroup) {
     const answers = {};
     // format expected by setAnswers built-in function
-    answers['3039'] = [
+    answers['9008'] = [
       {
-        questionId: `violent_extremism/question/video_${policyId}_tvc/applicable_ve_group`,
-        answers: [veGroup],
-      },
-      {
-        questionId: `violent_extremism/question/video_${policyId}_tvc/act_type`,
+        questionId: 'violent_extremism/question/video_main/exit_fbl',
         answers: [
           {
-            id: 'glorification_terrorism',
-            label: 'Glorification of terrorism or terrorist acts',
+            id: 'no_skip',
+            label: "I don't need to skip",
             value: {},
           },
         ],
       },
-    ];
-
-    answers['3065'] = [
-      {
-        questionId: `violent_extremism/question/video_${policyId}_tvc/applicable_ve_group`,
-        answers: [veGroup],
-      },
-      {
-        questionId: `violent_extremism/question/video_${policyId}_tvc/act_type`,
-        answers: [
-          {
-            id: 'unknown',
-            label: 'Unknown act type',
-            value: {},
-          },
-        ],
-      },
-    ];
-
-    answers['3044'] = [...answers['3039']];
-
-    answers['3048'] = [
-      {
-        questionId: `violent_extremism/question/video_${policyId}_tvc/applicable_ve_group`,
-        answers: [store_.selectedVEGroup],
-      },
-    ];
-
-    answers['3999'] = [
       {
         questionId:
-          'violent_extremism/question/video_3999_3888_tvc_fte/applicable_individual_name_beats1',
+          'violent_extremism/question/video_main/does_this_video_or_its_z2hlS_Bu0t7a',
         answers: [
           {
-            id: 'yevgeny_prigozhin',
-            label: 'Yevgeny Prigozhin',
+            id: 'no',
+            label: 'No',
             value: {},
           },
         ],
       },
-    ];
-
-    let muhandis = {
-      questionId: '',
-      answers: [
-        {
-          id: 'abu_mahdi_al_muhandis',
-          label: 'Abu Mahdi al-Muhandis',
-          value: {},
-        },
-      ],
-    };
-
-    answers['3888'] = [
       {
         questionId:
-          'violent_extremism/question/video_3999_3888_tvc_fte/applicable_individual_name_beats1',
+          'violent_extremism/question/video_main/other_vertical_policy__z2hlG7qagtky',
         answers: [
           {
-            id: 'yevgeny_prigozhin',
-            label: 'Yevgeny Prigozhin',
+            id: 'no',
+            label: 'No',
             value: {},
+          },
+        ],
+      },
+      {
+        questionId: 'violent_extremism/question/video_main/recommend_9008',
+        answers: [
+          {
+            id: '9008',
+            label: '9008',
+            value: {
+              integerValue: '9008',
+            },
           },
         ],
       },
@@ -1859,11 +1872,65 @@ let questionnaire_ = {
 
     return answers[policyId];
   },
+  show() {
+    const qBtn = document
+      .querySelector('body > yurt-root-app')
+      .shadowRoot.querySelector('redux-provider > yurt-root-app-connected')
+      .shadowRoot.querySelector(
+        'tcs-view > app-drawer-layout > app-header-layout > yurt-core-router'
+      )
+      .shadowRoot.querySelector('yurt-review-root')
+      .shadowRoot.querySelector('tcs-view > yurt-root-plugin-manager')
+      .shadowRoot.querySelector('div > yurt-video-root')
+      .shadowRoot.querySelector('yurt-review-layout > decision-panel-widget')
+      .shadowRoot.querySelector(
+        'div.decision-actions-container > div.action-buttons-container > decision-panel-action-button:nth-child(3)'
+      )
+      .shadowRoot.querySelector('action-button')
+      .shadowRoot.querySelector(
+        '#action-button-container > md-filled-tonal-icon-button'
+      )
+      .shadowRoot.querySelector('#button');
+
+    if (qBtn.getAttribute('aria-pressed') === 'true') return;
+
+    qBtn.click();
+  },
+  done() {
+    try {
+      getElement(
+        'tcs-button[data-test-id="questionnaire-done-button"]'
+      )[0].click();
+    } catch (e) {
+      console.log('[questionnaire] Could not click done...');
+    }
+  },
+  async next() {
+    const getNextButton = () => {
+      let nextBtn = getElement(
+        '[data-test-id="label-questionnaire-next-button"]'
+      )?.[0];
+
+      return nextBtn;
+    };
+
+    // Start the loop
+    let nextBtn = getNextButton();
+
+    while (nextBtn) {
+      console.log('Click next');
+      nextBtn.click();
+      await utils_.wait(0.05);
+      nextBtn = getNextButton();
+    }
+  },
 };
 
 let props_ = {
   button: {
-    approve: [{ text: 'Approve', onClick: action_.video.approve }],
+    approve: [
+      { text: 'Approve', onClick: async () => await action_.video.approve() },
+    ],
   },
   dropdown: {
     strike: {
@@ -2057,10 +2124,44 @@ let dom_ = {
     return getElement('yurt-video-metadata')?.[0].shadowRoot;
   },
   get submitBtn() {
-    return getElement('.mdc-button--unelevated')?.[0];
+    return document
+      .querySelector('body > yurt-root-app')
+      .shadowRoot.querySelector('redux-provider > yurt-root-app-connected')
+      .shadowRoot.querySelector(
+        'tcs-view > app-drawer-layout > app-header-layout > yurt-core-router'
+      )
+      .shadowRoot.querySelector('yurt-review-root')
+      .shadowRoot.querySelector('tcs-view > yurt-root-plugin-manager')
+      .shadowRoot.querySelector('div > yurt-video-root')
+      .shadowRoot.querySelector('yurt-review-layout > decision-panel-widget')
+      .shadowRoot.querySelector(
+        'div.decision-actions-container > div.decision-buttons-container > decision-panel-action-button:nth-child(3)'
+      )
+      .shadowRoot.querySelector('action-button')
+      .shadowRoot.querySelector(
+        '#action-button-container > md-filled-tonal-icon-button'
+      )
+      .shadowRoot.querySelector('#button');
   },
   get submitEndReviewBtn() {
-    return getElement('div > md-menu > md-menu-item')?.[0];
+    return document
+      .querySelector('body > yurt-root-app')
+      .shadowRoot.querySelector('redux-provider > yurt-root-app-connected')
+      .shadowRoot.querySelector(
+        'tcs-view > app-drawer-layout > app-header-layout > yurt-core-router'
+      )
+      .shadowRoot.querySelector('yurt-review-root')
+      .shadowRoot.querySelector('tcs-view > yurt-root-plugin-manager')
+      .shadowRoot.querySelector('div > yurt-video-root')
+      .shadowRoot.querySelector('yurt-review-layout > decision-panel-widget')
+      .shadowRoot.querySelector(
+        'div.decision-actions-container > div.decision-buttons-container > decision-panel-action-button:nth-child(2)'
+      )
+      .shadowRoot.querySelector('action-button')
+      .shadowRoot.querySelector(
+        '#action-button-container > md-filled-tonal-icon-button'
+      )
+      .shadowRoot.querySelector('#button');
   },
   get routeBtn() {
     return getElement('div > tcs-view > tcs-button')?.[0];
@@ -2696,7 +2797,7 @@ let ui_ = {
       container.replaceChildren(
         stopwatch,
         approveMenu,
-        strikeMenu,
+        ui_.getTimerButtons(),
         dropdownContainer
       );
 
@@ -2755,10 +2856,10 @@ let ui_ = {
       if (store_.is.queue('comments')) return;
 
       let notesList = utils_.strToNode(
-        `<mwc-list id="recommendation-notes" style="margin: 30px 0px; opacity: 0; transition: opacity 300ms;">${notesArr
+        `<mwc-list id="recommendation-notes" style="margin: 30px 0px; opacity: 20; transition: opacity 100ms;">${notesArr
           ?.map(
             (note) =>
-              `<mwc-list-item class="recommendation-item" value="${note.value()}"><span>${
+              `<mwc-list-item class="recommendation-item" style="color: #BBBBBB; font-size: large; font-weight: bold;" value="${note.value()}"><span>${
                 note.title
               }</span></mwc-list-item>`
           )
@@ -2791,9 +2892,28 @@ let ui_ = {
       return {
         element: notesList,
         render() {
+          const existingNotes = getElement('#recommendation-notes');
+          if (existingNotes?.length > 0)
+            existingNotes.forEach((n) => n?.remove());
+
           // find parent
-          const decisionContainer = getElement('.decision-container')[0];
+          const decisionContainer = document
+            .querySelector('body > yurt-root-app')
+            .shadowRoot.querySelector(
+              'redux-provider > yurt-root-app-connected'
+            )
+            .shadowRoot.querySelector(
+              'tcs-view > app-drawer-layout > app-header-layout > yurt-core-router'
+            )
+            .shadowRoot.querySelector('yurt-review-root')
+            .shadowRoot.querySelector('tcs-view > yurt-root-plugin-manager')
+            .shadowRoot.querySelector('div > yurt-video-root')
+            .shadowRoot.querySelector(
+              'yurt-review-layout > decision-panel-widget'
+            )
+            .shadowRoot.querySelector('div.decision-views-container.expand');
           decisionContainer.appendChild(notesList);
+          setTimeout(() => notesList.scrollIntoView(), 200);
         },
       };
     },
@@ -2899,7 +3019,7 @@ let ui_ = {
       // !getElement('.stopwatch') &&
       //   dom_.header.appendChild(ui_.components.stopwatchPanel.stopwatch);
 
-      ui_.renderTimerButtons();
+      ui_.getTimerButtons();
       // panel with policies
       if (!getElement('.action-panel')) {
         dom_.metadataPanel.appendChild(dom_.strikePanel);
@@ -2986,13 +3106,15 @@ let ui_ = {
     const { strToNode } = ui_;
     const { children } = props;
 
-    const container = ui_.atoms.createGrid(3);
+    const container = ui_.strToNode(
+      '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; width:100%;"></div>'
+    );
 
     const childListItems = children.map((item) => {
       const listItem = strToNode(`<mwc-list-item value="${
         item?.value ?? ''
       }" graphic="control" aria-disabled="false">
-      <span class="option-label"><tcs-text style="border-radius: 8px;">${
+      <span class="option-label"><tcs-text style="width:96px; padding:0px;border-radius: 8px;">${
         item?.key ?? ''
       }</tcs-text></span>
       </mwc-list-item>`);
@@ -3108,7 +3230,7 @@ let ui_ = {
 
     return container;
   },
-  renderTimerButtons() {
+  getTimerButtons() {
     try {
       if (getElement('.submit-timers')) return;
       const { setTimer, strToNode } = utils_;
@@ -3126,14 +3248,15 @@ let ui_ = {
       );
 
       const timersWrapper = strToNode(
-        `<div class="submit-timers" style="display: grid; grid-template-columns: 1fr 1fr 1fr;"></div>`
+        `<div class="submit-timers" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(64px, 1fr)); width: 100%; padding: 0px 12px;"></div>`
       );
       const endReviewCheckbox = strToNode(
         `<mwc-checkbox class="endreview-checkbox"></mwc-checkbox>`
       );
 
       timersWrapper.replaceChildren(...[...timersArr, endReviewCheckbox]);
-      mwcMenu.replaceChildren(...[...mwcMenu.children, timersWrapper]);
+
+      return timersWrapper;
       // stopwatch.parentNode.appendChild(timersWrapper);
     } catch (e) {
       console.log('Could not show timers', e);
@@ -3234,16 +3357,14 @@ let on_ = {
     function initUI() {
       // transcript_.observeTranscriptMutations();
       try {
-        ui_.draw();
-        ui_.mutations.moveChannelLink();
+        if (store_.is.queue('comments') || store_.is.queue('livechat')) {
+          getElement('mwc-tab[label="My Reviews"]')[0].click();
 
-        if (store_.is.queue('bluechip')) {
-          let queueNameHeader = getElement('.review-dimension-info')[0];
-          queueNameHeader.style.color = 'darkred';
+          const policies = getElement('yurt-core-decision-policy')?.[0];
+          policies.policyIds = ['34303', '34317', '35265'];
+          return;
         }
-
-        // EXPERIMENTAL
-        // ui_.mutations.cinemaMode();
+        ui_.draw();
       } catch (e) {
         console.log(e);
         throw new Error('newVideo() :: Could not initialize UI');
