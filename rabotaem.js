@@ -1798,6 +1798,20 @@ let action_ = {
 };
 
 let questionnaire_ = {
+  getQuestionnaireTimestamps: () => {
+    const currentTime = Math.floor(dom_.videoPlayer.getCurrentTime());
+    const startTime = currentTime > 0 ? currentTime : 0;
+    const endTime =
+      currentTime > 0
+        ? currentTime
+        : Math.floor(dom_.videoPlayer.getVideoStats().vd);
+
+    return {
+      startTime: startTime + 's',
+      endTime: endTime + 's',
+      intervalRatio: currentTime === 0 ? 1 : 0,
+    };
+  },
   setAnswers(answers) {
     // BUG TEMPORARY FIX labellingGraph.md
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
@@ -1820,7 +1834,7 @@ let questionnaire_ = {
     console.log('💾 Saving questionnaire. Answers:');
     return dom_.questionnaire.labellingGraph.md;
   },
-  generateAnswers(policyId = '9008', veGroup = store_.selectedVEGroup) {
+  generateAnswers: (policyId = '9008', veGroup = store_.selectedVEGroup) => {
     const answers = {};
     // format expected by setAnswers built-in function
     answers['9008'] = [
@@ -1869,6 +1883,132 @@ let questionnaire_ = {
         ],
       },
     ];
+
+    answers['3065:gaming'] = [
+      {
+        questionId: 'violent_extremism/question/video_main/exit_fbl',
+        answers: [
+          {
+            id: 'no_skip',
+            label: "I don't need to skip",
+            value: {},
+          },
+        ],
+      },
+      {
+        questionId:
+          'violent_extremism/question/video_main/does_this_video_or_its_z2hlS_Bu0t7a',
+        answers: [
+          {
+            id: 'yes',
+            label: 'Yes',
+            value: {},
+          },
+        ],
+      },
+      {
+        questionId: 'violent_extremism/question/video_main/violation',
+        answers: [
+          {
+            id: 'violent_extremism_in_gaming',
+            label: 'Violent Extremism in Gaming',
+            value: {},
+          },
+        ],
+      },
+      {
+        questionId:
+          'violent_extremism/question/video_main/select_applicable_ve_a_6~2S_UK413kb',
+        answers: [
+          {
+            ...store_.selectedVEGroup,
+            value: {},
+          },
+        ],
+      },
+      {
+        questionId:
+          'violent_extremism/question/video_main/what_does_the_video_co_xTMTadCT8Jhc',
+        answers: [
+          {
+            id: 'violative_dissemination_of_ve_actor_content_including_through_sandboxing_or_modding',
+            label:
+              'Violative Dissemination of VE Actor Content, including through sandboxing or modding',
+            value: {},
+          },
+        ],
+      },
+      {
+        questionId:
+          'violent_extremism/question/video_main/indicate_where_the_dis_YCNTvJYfsqsU',
+        answers: [
+          {
+            id: 'visual_content_of_the_video_non_text',
+            label: 'Visual content of the video (non-text)',
+          },
+        ],
+      },
+      {
+        questionId: 'violent_extremism/question/video_main/ts_',
+        answers: [
+          {
+            id: 'time_interval',
+            value: {
+              timeValue: {
+                intervals: [questionnaire_.getQuestionnaireTimestamps()],
+              },
+            },
+          },
+        ],
+      },
+      {
+        questionId:
+          'violent_extremism/question/video_main/does_the_content_conta_YCNTLbxxDSfe',
+        answers: [
+          {
+            id: 'no',
+            label: 'No',
+            value: {},
+          },
+        ],
+      },
+      {
+        questionId:
+          'violent_extremism/question/video_main/does_the_video_contain_8YA~da3cylMU',
+        answers: [
+          {
+            id: 'no',
+            label: 'No',
+            value: {},
+          },
+        ],
+      },
+      {
+        questionId:
+          'violent_extremism/question/video_main/is_the_uploader_a_publ_NSNTHZ1QIsFc',
+        answers: [
+          {
+            id: 'no',
+            label: 'No',
+            value: {},
+          },
+        ],
+      },
+      {
+        questionId: 'violent_extremism/question/video_main/recommend_3065',
+        answers: [
+          {
+            id: '3065',
+            label: '3065',
+            value: {
+              integerValue: '3065',
+            },
+          },
+        ],
+      },
+    ];
+
+    console.log(answers);
 
     return answers[policyId];
   },
@@ -1923,6 +2063,23 @@ let questionnaire_ = {
       await utils_.wait(0.05);
       nextBtn = getNextButton();
     }
+  },
+  convertAnswers(answersMap) {
+    if (!(answersMap instanceof Map)) {
+      console.log('Input must be a JavaScript Map.');
+      return [];
+    }
+
+    const result = Array.from(answersMap.entries()).map(
+      ([questionId, answers]) => {
+        return {
+          questionId: questionId,
+          answers: answers,
+        };
+      }
+    );
+
+    return result;
   },
 };
 
