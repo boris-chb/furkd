@@ -1813,7 +1813,7 @@ let questionnaire_ = {
     };
   },
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.md
+    // BUG TEMPORARY FIX labellingGraph.rd
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
@@ -1822,8 +1822,8 @@ let questionnaire_ = {
     });
 
     if (
-      !dom_.questionnaire.labellingGraph.md ||
-      dom_.questionnaire.labellingGraph.md.size === 0
+      !dom_.questionnaire.labellingGraph.rd ||
+      dom_.questionnaire.labellingGraph.rd.size === 0
     ) {
       throw new Error(
         '\nquestionnaire not answered\n',
@@ -1832,7 +1832,7 @@ let questionnaire_ = {
     }
 
     console.log('💾 Saving questionnaire. Answers:');
-    return dom_.questionnaire.labellingGraph.md;
+    return dom_.questionnaire.labellingGraph.rd;
   },
   generateAnswers(policyId = '9008', veGroup = store_.selectedVEGroup) {
     const answers = {};
@@ -1883,8 +1883,6 @@ let questionnaire_ = {
         ],
       },
     ];
-
-    this.answers['3065']['gaming']();
 
     return answers[policyId];
   },
@@ -3584,6 +3582,8 @@ let ui_ = {
       const endReviewCheckbox = strToNode(
         `<mwc-checkbox class="endreview-checkbox"></mwc-checkbox>`
       );
+
+      endReviewCheckbox.onclick = (e) => e.stopPropagation();
 
       timersWrapper.replaceChildren(...[...timersArr, endReviewCheckbox]);
 
