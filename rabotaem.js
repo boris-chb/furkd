@@ -1834,7 +1834,7 @@ let questionnaire_ = {
     console.log('💾 Saving questionnaire. Answers:');
     return dom_.questionnaire.labellingGraph.md;
   },
-  generateAnswers: (policyId = '9008', veGroup = store_.selectedVEGroup) => {
+  generateAnswers(policyId = '9008', veGroup = store_.selectedVEGroup) {
     const answers = {};
     // format expected by setAnswers built-in function
     answers['9008'] = [
@@ -1884,131 +1884,7 @@ let questionnaire_ = {
       },
     ];
 
-    answers['3065:gaming'] = [
-      {
-        questionId: 'violent_extremism/question/video_main/exit_fbl',
-        answers: [
-          {
-            id: 'no_skip',
-            label: "I don't need to skip",
-            value: {},
-          },
-        ],
-      },
-      {
-        questionId:
-          'violent_extremism/question/video_main/does_this_video_or_its_z2hlS_Bu0t7a',
-        answers: [
-          {
-            id: 'yes',
-            label: 'Yes',
-            value: {},
-          },
-        ],
-      },
-      {
-        questionId: 'violent_extremism/question/video_main/violation',
-        answers: [
-          {
-            id: 'violent_extremism_in_gaming',
-            label: 'Violent Extremism in Gaming',
-            value: {},
-          },
-        ],
-      },
-      {
-        questionId:
-          'violent_extremism/question/video_main/select_applicable_ve_a_6~2S_UK413kb',
-        answers: [
-          {
-            ...store_.selectedVEGroup,
-            value: {},
-          },
-        ],
-      },
-      {
-        questionId:
-          'violent_extremism/question/video_main/what_does_the_video_co_xTMTadCT8Jhc',
-        answers: [
-          {
-            id: 'violative_dissemination_of_ve_actor_content_including_through_sandboxing_or_modding',
-            label:
-              'Violative Dissemination of VE Actor Content, including through sandboxing or modding',
-            value: {},
-          },
-        ],
-      },
-      {
-        questionId:
-          'violent_extremism/question/video_main/indicate_where_the_dis_YCNTvJYfsqsU',
-        answers: [
-          {
-            id: 'visual_content_of_the_video_non_text',
-            label: 'Visual content of the video (non-text)',
-          },
-        ],
-      },
-      {
-        questionId: 'violent_extremism/question/video_main/ts_',
-        answers: [
-          {
-            id: 'time_interval',
-            value: {
-              timeValue: {
-                intervals: [questionnaire_.getQuestionnaireTimestamps()],
-              },
-            },
-          },
-        ],
-      },
-      {
-        questionId:
-          'violent_extremism/question/video_main/does_the_content_conta_YCNTLbxxDSfe',
-        answers: [
-          {
-            id: 'no',
-            label: 'No',
-            value: {},
-          },
-        ],
-      },
-      {
-        questionId:
-          'violent_extremism/question/video_main/does_the_video_contain_8YA~da3cylMU',
-        answers: [
-          {
-            id: 'no',
-            label: 'No',
-            value: {},
-          },
-        ],
-      },
-      {
-        questionId:
-          'violent_extremism/question/video_main/is_the_uploader_a_publ_NSNTHZ1QIsFc',
-        answers: [
-          {
-            id: 'no',
-            label: 'No',
-            value: {},
-          },
-        ],
-      },
-      {
-        questionId: 'violent_extremism/question/video_main/recommend_3065',
-        answers: [
-          {
-            id: '3065',
-            label: '3065',
-            value: {
-              integerValue: '3065',
-            },
-          },
-        ],
-      },
-    ];
-
-    console.log(answers);
+    this.answers['3065']['gaming']();
 
     return answers[policyId];
   },
@@ -2081,7 +1957,305 @@ let questionnaire_ = {
 
     return result;
   },
+  answers: {
+    3039: {
+      song() {
+        return [
+          {
+            questionId: 'violent_extremism/question/video_main/exit_fbl',
+            answers: [
+              {
+                id: 'no_skip',
+                label: "I don't need to skip",
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_main/does_this_video_or_its_z2hlS_Bu0t7a',
+            answers: [
+              {
+                id: 'yes',
+                label: 'Yes',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/video_main/violation',
+            answers: [
+              {
+                id: 'violent_extremist_songs',
+                label: 'Violent Extremist Songs',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_main/what_type_of_song_in_t_KztGsbU9Ad78',
+            answers: [
+              {
+                id: 'song_is_produced_by_or_glorifies_a_ve_actor_or_contains_imagery_references_associated_with_a_ve_actor',
+                label:
+                  'Song is produced by or glorifies a VE actor, or contains imagery/references associated with a VE actor',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_main/select_applicable_ve_a_Fa3SEncaaQZY',
+            answers: [
+              {
+                id: 'wagner_pmc',
+                label: 'Wagner PMC - VNSA',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_main/choose_the_best_catego_KztGW7iaOA7G',
+            answers: [
+              {
+                id: 'song_is_glorifying_a_ve_actor',
+                label: 'Song is glorifying a VE actor',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_main/what_kind_of_song_viol_i8xU2ntUYdxW',
+            answers: [
+              {
+                id: 'violative_song_is_featured_with_any_of_the_12_glorification_signals_listed_in_the_gvd_kb',
+                label:
+                  'Violative song is featured with any of the 12 glorification signals listed in the GVD KB',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/video_main/ts_glorify_song',
+            answers: [
+              {
+                id: 'time_interval',
+                value: {
+                  timeValue: {
+                    intervals: [],
+                  },
+                },
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_main/does_the_content_conta_p6xUmOtAHukE',
+            answers: [
+              {
+                id: 'no',
+                label: 'No',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_main/does_the_video_contain_C1A~NQZGF_01',
+            answers: [
+              {
+                id: 'no',
+                label: 'No',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_main/is_the_uploader_a_publ_KCg~XEYPqUth',
+            answers: [
+              {
+                id: 'no',
+                label: 'No',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_main/does_this_channel_meet_p6xUAI4ReFuw',
+            answers: [
+              {
+                id: 'no',
+                label: 'No',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_main/select_the_act_type_p6xUnLCCiQcp',
+            answers: [
+              {
+                id: 'glorification_terrorism',
+                label: 'Glorification of terrorism or terrorist acts',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/video_main/recommend_3039',
+            answers: [
+              {
+                id: '3039',
+                label: '3039',
+                value: {
+                  integerValue: '3039',
+                },
+              },
+            ],
+          },
+        ];
+      },
+    },
+    3065: {
+      gaming: () => {
+        console.log('3065 gaming');
+
+        return [
+          {
+            questionId: 'violent_extremism/question/video_main/exit_fbl',
+            answers: [
+              {
+                id: 'no_skip',
+                label: "I don't need to skip",
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_main/does_this_video_or_its_z2hlS_Bu0t7a',
+            answers: [
+              {
+                id: 'yes',
+                label: 'Yes',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/video_main/violation',
+            answers: [
+              {
+                id: 'violent_extremism_in_gaming',
+                label: 'Violent Extremism in Gaming',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_main/select_applicable_ve_a_6~2S_UK413kb',
+            answers: [
+              {
+                ...store_.selectedVEGroup,
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_main/what_does_the_video_co_xTMTadCT8Jhc',
+            answers: [
+              {
+                id: 'violative_dissemination_of_ve_actor_content_including_through_sandboxing_or_modding',
+                label:
+                  'Violative Dissemination of VE Actor Content, including through sandboxing or modding',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_main/indicate_where_the_dis_YCNTvJYfsqsU',
+            answers: [
+              {
+                id: 'visual_content_of_the_video_non_text',
+                label: 'Visual content of the video (non-text)',
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/video_main/ts_',
+            answers: [
+              {
+                id: 'time_interval',
+                value: {
+                  timeValue: {
+                    intervals: [questionnaire_.getQuestionnaireTimestamps()],
+                  },
+                },
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_main/does_the_content_conta_YCNTLbxxDSfe',
+            answers: [
+              {
+                id: 'no',
+                label: 'No',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_main/does_the_video_contain_8YA~da3cylMU',
+            answers: [
+              {
+                id: 'no',
+                label: 'No',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId:
+              'violent_extremism/question/video_main/is_the_uploader_a_publ_NSNTHZ1QIsFc',
+            answers: [
+              {
+                id: 'no',
+                label: 'No',
+                value: {},
+              },
+            ],
+          },
+          {
+            questionId: 'violent_extremism/question/video_main/recommend_3065',
+            answers: [
+              {
+                id: '3065',
+                label: '3065',
+                value: {
+                  integerValue: '3065',
+                },
+              },
+            ],
+          },
+        ];
+      },
+    },
+  },
 };
+
+class Questionnaire {
+  constructor() {}
+}
 
 let props_ = {
   button: {
