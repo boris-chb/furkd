@@ -1813,7 +1813,7 @@ let questionnaire_ = {
     };
   },
   setAnswers(answers) {
-    // BUG TEMPORARY FIX labellingGraph.rd
+    // BUG TEMPORARY FIX labellingGraph.hf
     if (!dom_.questionnaire) throw new Error('[i] Questionnaire Not Rendered');
 
     // questionnaire answering logic
@@ -1822,8 +1822,8 @@ let questionnaire_ = {
     });
 
     if (
-      !dom_.questionnaire.labellingGraph.rd ||
-      dom_.questionnaire.labellingGraph.rd.size === 0
+      !dom_.questionnaire.labellingGraph.hf ||
+      dom_.questionnaire.labellingGraph.hf.size === 0
     ) {
       throw new Error(
         '\nquestionnaire not answered\n',
@@ -1832,7 +1832,7 @@ let questionnaire_ = {
     }
 
     console.log('💾 Saving questionnaire. Answers:');
-    return dom_.questionnaire.labellingGraph.rd;
+    return dom_.questionnaire.labellingGraph.hf;
   },
   generateAnswers(policyId = '9008', veGroup = store_.selectedVEGroup) {
     const answers = {};
