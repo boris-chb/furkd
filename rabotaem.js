@@ -2453,44 +2453,62 @@ let dom_ = {
     return getElement('yurt-video-metadata')?.[0].shadowRoot;
   },
   get submitBtn() {
-    return document
+    const root = document
       .querySelector('body > yurt-root-app')
-      .shadowRoot.querySelector('redux-provider > yurt-root-app-connected')
-      .shadowRoot.querySelector(
+      ?.shadowRoot?.querySelector('redux-provider > yurt-root-app-connected')
+      ?.shadowRoot?.querySelector(
         'tcs-view > app-drawer-layout > app-header-layout > yurt-core-router'
       )
-      .shadowRoot.querySelector('yurt-review-root')
-      .shadowRoot.querySelector('tcs-view > yurt-root-plugin-manager')
-      .shadowRoot.querySelector('div > yurt-video-root')
-      .shadowRoot.querySelector('yurt-review-layout > decision-panel-widget')
-      .shadowRoot.querySelector(
+      ?.shadowRoot?.querySelector('yurt-review-root')
+      ?.shadowRoot?.querySelector(
+        'tcs-view > yurt-root-plugin-manager'
+      )?.shadowRoot;
+
+    if (!root) return null;
+
+    const container =
+      root.querySelector('div > yurt-video-root') ||
+      root.querySelector('div > yurt-account-root');
+
+    return container?.shadowRoot
+      ?.querySelector('yurt-review-layout > decision-panel-widget')
+      ?.shadowRoot?.querySelector(
         'div.decision-actions-container > div.decision-buttons-container > decision-panel-action-button:nth-child(3)'
       )
-      .shadowRoot.querySelector('action-button')
-      .shadowRoot.querySelector(
+      ?.shadowRoot?.querySelector('action-button')
+      ?.shadowRoot?.querySelector(
         '#action-button-container > md-filled-tonal-icon-button'
       )
-      .shadowRoot.querySelector('#button');
+      ?.shadowRoot?.querySelector('#button');
   },
   get submitEndReviewBtn() {
-    return document
+    const root = document
       .querySelector('body > yurt-root-app')
-      .shadowRoot.querySelector('redux-provider > yurt-root-app-connected')
-      .shadowRoot.querySelector(
+      ?.shadowRoot?.querySelector('redux-provider > yurt-root-app-connected')
+      ?.shadowRoot?.querySelector(
         'tcs-view > app-drawer-layout > app-header-layout > yurt-core-router'
       )
-      .shadowRoot.querySelector('yurt-review-root')
-      .shadowRoot.querySelector('tcs-view > yurt-root-plugin-manager')
-      .shadowRoot.querySelector('div > yurt-video-root')
-      .shadowRoot.querySelector('yurt-review-layout > decision-panel-widget')
-      .shadowRoot.querySelector(
+      ?.shadowRoot?.querySelector('yurt-review-root')
+      ?.shadowRoot?.querySelector(
+        'tcs-view > yurt-root-plugin-manager'
+      )?.shadowRoot;
+
+    if (!root) return null;
+
+    const container =
+      root.querySelector('div > yurt-video-root') ||
+      root.querySelector('div > yurt-account-root');
+
+    return container?.shadowRoot
+      ?.querySelector('yurt-review-layout > decision-panel-widget')
+      ?.shadowRoot?.querySelector(
         'div.decision-actions-container > div.decision-buttons-container > decision-panel-action-button:nth-child(2)'
       )
-      .shadowRoot.querySelector('action-button')
-      .shadowRoot.querySelector(
+      ?.shadowRoot?.querySelector('action-button')
+      ?.shadowRoot?.querySelector(
         '#action-button-container > md-filled-tonal-icon-button'
       )
-      .shadowRoot.querySelector('#button');
+      ?.shadowRoot?.querySelector('#button');
   },
   get routeBtn() {
     return getElement('div > tcs-view > tcs-button')?.[0];
